@@ -18,8 +18,7 @@
       <p class="how-to-kicker">HOW TO "PLAY"</p>
       <ul class="tips-list">
         <li>Drag a shape anywhere inside the board.</li>
-        <li>Drag the ring handle above a shape to rotate it with the mouse.</li>
-        <li>Click the <strong>+</strong> icon on a shape to read more.</li>
+        <li>Use the buttons on any shape to rotate or flip.</li>
       </ul>
     </section>
 
@@ -47,9 +46,9 @@
   </div>
 
   <div id="image-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="image-modal-title">
-    <div class="modal-card image-modal-card">
+    <div id="image-modal-card" class="modal-card image-modal-card">
       <button id="close-image-modal" class="modal-close" type="button" aria-label="Close image pop-up">×</button>
-      <img id="image-modal-title" class="image-modal-preview" src="home.png" alt="Home shape illustration">
+      <img id="image-modal-title" class="image-modal-preview" src="house-solid.png" alt="House shape illustration">
     </div>
   </div>
 
@@ -60,9 +59,11 @@
           <polygon class="piece-polygon"></polygon>
         </svg>
         <div class="piece-overlay">
-          <button class="rotate-handle" type="button" aria-label="Rotate shape"></button>
           <div class="piece-label"></div>
-          <button class="info-button" type="button" aria-label="Open information">+</button>
+          <div class="piece-controls">
+            <button class="rotate-handle" type="button" aria-label="Rotate shape"></button>
+            <button class="flip-handle" type="button" aria-label="Flip shape">&#8596;</button>
+          </div>
         </div>
       </div>
     </article>

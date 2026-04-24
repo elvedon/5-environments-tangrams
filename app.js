@@ -15,7 +15,7 @@ const avatars = [
     imageSrc: "monica.png",
     filename: "monica.png",
     colors: ["#e7cd80", "#d2a637"],
-    description: "The teacher notices how the environments operate in practice and adjusts instruction, support, and structure in response."
+    description: "Monica prefers plants and Pokemon to (most?) people."
   },
   {
     name: "Family",

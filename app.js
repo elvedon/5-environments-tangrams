@@ -2,6 +2,43 @@ const SMALL_TRIANGLE_LEG = 105;
 const LARGE_TRIANGLE_LEG = SMALL_TRIANGLE_LEG * 2;
 const MEDIUM_TRIANGLE_LEG = Math.sqrt(2) * SMALL_TRIANGLE_LEG;
 
+const avatars = [
+  {
+    imageSrc: "andrea.png",
+    filename: "andrea.png",
+    colors: ["#f3c89c", "#d99873"],
+    description: "Andrea likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.",
+    popupImageSolid: "cat-solid.png",
+    popupImageHint: "cat-hint.png"
+  },
+  {
+    imageSrc: "monica.png",
+    filename: "monica.png",
+    colors: ["#e7cd80", "#d2a637"],
+    description: "The teacher notices how the environments operate in practice and adjusts instruction, support, and structure in response."
+  },
+  {
+    name: "Family",
+    colors: ["#f0d2b2", "#c89262"],
+    description: "Family members offer continuity, context, and insight into what helps a learner feel secure, known, and able to grow."
+  },
+  {
+    name: "Peer",
+    colors: ["#d0eadc", "#74a98b"],
+    description: "Peers influence belonging, collaboration, trust, and the social climate that makes participation feel possible."
+  },
+  {
+    name: "Leader",
+    colors: ["#f1d7a7", "#c7a04e"],
+    description: "Leaders shape the surrounding conditions by setting priorities, protecting time, and supporting coherent systems."
+  },
+  {
+    name: "Researcher",
+    colors: ["#cddde2", "#6f8f95"],
+    description: "Researchers contribute frameworks, evidence, and questions that make the environments easier to see and improve."
+  }
+];
+
 const pieces = [
   {
     id: "physical",
@@ -128,6 +165,16 @@ const imageModal = document.getElementById("image-modal");
 const imageModalCard = document.getElementById("image-modal-card");
 const imageModalPreview = document.getElementById("image-modal-title");
 const imageToggleLink = document.getElementById("image-toggle-link");
+const avatarStrip = document.getElementById("avatar-strip");
+const avatarModal = document.getElementById("avatar-modal");
+const avatarModalCard = document.getElementById("avatar-modal-card");
+const avatarModalPortrait = document.getElementById("avatar-modal-portrait");
+const avatarModalTitle = document.getElementById("avatar-modal-title");
+const avatarModalBody = document.getElementById("avatar-modal-body");
+const avatarModalImageWrap = document.getElementById("avatar-modal-image-wrap");
+const avatarModalImage = document.getElementById("avatar-modal-image");
+const avatarImageToggleLink = document.getElementById("avatar-image-toggle-link");
+const closeAvatarModalButton = document.getElementById("close-avatar-modal");
 const homeLink = document.getElementById("home-link");
 const closeImageModalButton = document.getElementById("close-image-modal");
 const closeModalButton = document.getElementById("close-modal");
@@ -137,6 +184,14 @@ let activeDrag = null;
 let highestZ = 20;
 let imageModalDrag = null;
 let imageModalShowingHint = false;
+let avatarModalDrag = null;
+let avatarModalShowingHint = false;
+let activeAvatar = null;
+
+function labelFromFilename(filename) {
+  const stem = filename.replace(/\.[^.]+$/, "");
+  return stem ? stem.charAt(0).toUpperCase() + stem.slice(1) : "";
+}
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -243,6 +298,7 @@ function closeModal() {
 }
 
 function openImageModal() {
+  closeAvatarModal();
   imageModalShowingHint = false;
   imageModalPreview.src = "house-solid.png";
   imageToggleLink.textContent = "hint";
@@ -256,19 +312,62 @@ function closeImageModal() {
   imageModalDrag = null;
 }
 
+function openAvatarModal(avatar) {
+  closeImageModal();
+  activeAvatar = avatar;
+  avatarModalShowingHint = false;
+  avatarModalTitle.textContent = avatar.name;
+  avatarModalBody.textContent = avatar.description;
+  avatarModalPortrait.style.setProperty("--avatar-top", avatar.colors[0]);
+  avatarModalPortrait.style.setProperty("--avatar-bottom", avatar.colors[1]);
+  avatarModalPortrait.classList.toggle("avatar-image-backed", Boolean(avatar.imageSrc));
+  avatarModalPortrait.style.setProperty("--avatar-image", avatar.imageSrc ? `url("${avatar.imageSrc}")` : "none");
+  if (avatar.popupImageSolid) {
+    avatarModalImageWrap.classList.remove("hidden");
+    avatarModalImage.src = avatar.popupImageSolid;
+    avatarImageToggleLink.textContent = "hint";
+  } else {
+    avatarModalImageWrap.classList.add("hidden");
+  }
+  centerAvatarModalCard();
+  avatarModal.classList.remove("hidden");
+}
+
+function closeAvatarModal() {
+  avatarModal.classList.add("hidden");
+  avatarModalCard.classList.remove("dragging");
+  avatarModalDrag = null;
+  activeAvatar = null;
+}
+
 function toggleImageModalHint() {
   imageModalShowingHint = !imageModalShowingHint;
   imageModalPreview.src = imageModalShowingHint ? "house-solve.png" : "house-solid.png";
   imageToggleLink.textContent = imageModalShowingHint ? "hide" : "hint";
 }
 
+function toggleAvatarModalHint() {
+  if (!activeAvatar?.popupImageSolid || !activeAvatar?.popupImageHint) {
+    return;
+  }
+
+  avatarModalShowingHint = !avatarModalShowingHint;
+  avatarModalImage.src = avatarModalShowingHint ? activeAvatar.popupImageHint : activeAvatar.popupImageSolid;
+  avatarImageToggleLink.textContent = avatarModalShowingHint ? "hide" : "hint";
+}
+
 function centerImageModalCard() {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const cardWidth = Math.min(420, viewportWidth - 40);
-  const cardHeight = Math.min(380, viewportHeight - 40);
+  const cardWidth = Math.min(320, viewportWidth - 40);
+  const cardHeight = Math.min(260, viewportHeight - 40);
   imageModalCard.style.left = `${Math.max(20, (viewportWidth - cardWidth) / 2)}px`;
   imageModalCard.style.top = `${Math.max(20, (viewportHeight - cardHeight) / 2)}px`;
+}
+
+function centerAvatarModalCard() {
+  avatarModalCard.style.left = "44px";
+  avatarModalCard.style.top = "110px";
 }
 
 function beginImageModalDrag(event) {
@@ -308,6 +407,71 @@ function endImageModalDrag(event) {
 
   imageModalCard.classList.remove("dragging");
   imageModalDrag = null;
+}
+
+function beginAvatarModalDrag(event) {
+  if (event.target.closest(".modal-close") || event.target.closest(".avatar-image-toggle-link")) {
+    return;
+  }
+
+  const rect = avatarModalCard.getBoundingClientRect();
+  avatarModalDrag = {
+    pointerId: event.pointerId,
+    offsetX: event.clientX - rect.left,
+    offsetY: event.clientY - rect.top
+  };
+
+  avatarModalCard.classList.add("dragging");
+  avatarModalCard.setPointerCapture(event.pointerId);
+}
+
+function updateAvatarModalDrag(event) {
+  if (!avatarModalDrag || avatarModalDrag.pointerId !== event.pointerId) {
+    return;
+  }
+
+  const maxLeft = Math.max(20, window.innerWidth - avatarModalCard.offsetWidth - 20);
+  const maxTop = Math.max(20, window.innerHeight - avatarModalCard.offsetHeight - 20);
+  const left = clamp(event.clientX - avatarModalDrag.offsetX, 20, maxLeft);
+  const top = clamp(event.clientY - avatarModalDrag.offsetY, 20, maxTop);
+
+  avatarModalCard.style.left = `${left}px`;
+  avatarModalCard.style.top = `${top}px`;
+}
+
+function endAvatarModalDrag(event) {
+  if (!avatarModalDrag || (event && avatarModalDrag.pointerId !== event.pointerId)) {
+    return;
+  }
+
+  avatarModalCard.classList.remove("dragging");
+  avatarModalDrag = null;
+}
+
+function buildAvatarStrip() {
+  avatars.forEach((avatar) => {
+    avatar.name = avatar.filename ? labelFromFilename(avatar.filename) : avatar.name;
+
+    const chip = document.createElement("div");
+    chip.className = "avatar-chip";
+
+    const portrait = document.createElement("div");
+    portrait.className = "avatar-portrait";
+    portrait.style.setProperty("--avatar-top", avatar.colors[0]);
+    portrait.style.setProperty("--avatar-bottom", avatar.colors[1]);
+    portrait.classList.toggle("avatar-image-backed", Boolean(avatar.imageSrc));
+    portrait.style.setProperty("--avatar-image", avatar.imageSrc ? `url("${avatar.imageSrc}")` : "none");
+
+    const nameButton = document.createElement("button");
+    nameButton.className = "avatar-name";
+    nameButton.type = "button";
+    nameButton.textContent = avatar.name;
+    nameButton.addEventListener("click", () => openAvatarModal(avatar));
+
+    chip.appendChild(portrait);
+    chip.appendChild(nameButton);
+    avatarStrip.appendChild(chip);
+  });
 }
 
 function beginDrag(event, element, state) {
@@ -479,12 +643,21 @@ homeLink.addEventListener("click", openImageModal);
 closeImageModalButton.addEventListener("click", closeImageModal);
 imageToggleLink.addEventListener("click", toggleImageModalHint);
 imageModalCard.addEventListener("pointerdown", beginImageModalDrag);
+closeAvatarModalButton.addEventListener("click", closeAvatarModal);
+avatarImageToggleLink.addEventListener("click", toggleAvatarModalHint);
+avatarModalCard.addEventListener("pointerdown", beginAvatarModalDrag);
 document.addEventListener("pointermove", updateImageModalDrag);
 document.addEventListener("pointerup", endImageModalDrag);
 document.addEventListener("pointercancel", endImageModalDrag);
+document.addEventListener("pointermove", updateAvatarModalDrag);
+document.addEventListener("pointerup", endAvatarModalDrag);
+document.addEventListener("pointercancel", endAvatarModalDrag);
 window.addEventListener("resize", () => {
   if (!imageModal.classList.contains("hidden") && !imageModalDrag) {
     centerImageModalCard();
+  }
+  if (!avatarModal.classList.contains("hidden") && !avatarModalDrag) {
+    centerAvatarModalCard();
   }
 });
 
@@ -492,10 +665,12 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeModal();
     closeImageModal();
+    closeAvatarModal();
     endInteraction();
   }
 });
 
 resetButton.addEventListener("click", buildPieces);
 
+buildAvatarStrip();
 buildPieces();

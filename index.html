@@ -24,9 +24,7 @@
 
     <section class="game-panel">
       <div class="board-header">
-        <div>
-          <p class="board-title">Puzzle Board</p>
-        </div>
+        <div id="avatar-strip" class="avatar-strip" aria-label="People related to the puzzle"></div>
         <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
       </div>
 
@@ -49,6 +47,22 @@
     <div id="image-modal-card" class="modal-card image-modal-card">
       <button id="close-image-modal" class="modal-close" type="button" aria-label="Close image pop-up">×</button>
       <img id="image-modal-title" class="image-modal-preview" src="house-solid.png" alt="House shape illustration">
+      <button id="image-toggle-link" class="image-toggle-link" type="button">hint</button>
+    </div>
+  </div>
+
+  <div id="avatar-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="avatar-modal-title">
+    <div id="avatar-modal-card" class="modal-card avatar-modal-card">
+      <button id="close-avatar-modal" class="modal-close" type="button" aria-label="Close avatar pop-up">×</button>
+      <div class="avatar-modal-head">
+        <div id="avatar-modal-portrait" class="avatar-modal-portrait" aria-hidden="true"></div>
+        <h2 id="avatar-modal-title"></h2>
+      </div>
+      <p id="avatar-modal-body"></p>
+      <div id="avatar-modal-image-wrap" class="avatar-modal-image-wrap hidden">
+        <img id="avatar-modal-image" class="avatar-modal-image" src="cat-solid.png" alt="Tangram animal illustration">
+        <button id="avatar-image-toggle-link" class="image-toggle-link avatar-image-toggle-link" type="button">hint</button>
+      </div>
     </div>
   </div>
 

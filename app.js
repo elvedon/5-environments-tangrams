@@ -126,6 +126,8 @@ const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
 const imageModal = document.getElementById("image-modal");
 const imageModalCard = document.getElementById("image-modal-card");
+const imageModalPreview = document.getElementById("image-modal-title");
+const imageToggleLink = document.getElementById("image-toggle-link");
 const homeLink = document.getElementById("home-link");
 const closeImageModalButton = document.getElementById("close-image-modal");
 const closeModalButton = document.getElementById("close-modal");
@@ -134,6 +136,7 @@ const resetButton = document.getElementById("reset-button");
 let activeDrag = null;
 let highestZ = 20;
 let imageModalDrag = null;
+let imageModalShowingHint = false;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -240,6 +243,9 @@ function closeModal() {
 }
 
 function openImageModal() {
+  imageModalShowingHint = false;
+  imageModalPreview.src = "house-solid.png";
+  imageToggleLink.textContent = "hint";
   centerImageModalCard();
   imageModal.classList.remove("hidden");
 }
@@ -248,6 +254,12 @@ function closeImageModal() {
   imageModal.classList.add("hidden");
   imageModalCard.classList.remove("dragging");
   imageModalDrag = null;
+}
+
+function toggleImageModalHint() {
+  imageModalShowingHint = !imageModalShowingHint;
+  imageModalPreview.src = imageModalShowingHint ? "house-solve.png" : "house-solid.png";
+  imageToggleLink.textContent = imageModalShowingHint ? "hide" : "hint";
 }
 
 function centerImageModalCard() {
@@ -260,7 +272,7 @@ function centerImageModalCard() {
 }
 
 function beginImageModalDrag(event) {
-  if (event.target.closest(".modal-close")) {
+  if (event.target.closest(".modal-close") || event.target.closest(".image-toggle-link")) {
     return;
   }
 
@@ -465,6 +477,7 @@ modal.addEventListener("click", (event) => {
 
 homeLink.addEventListener("click", openImageModal);
 closeImageModalButton.addEventListener("click", closeImageModal);
+imageToggleLink.addEventListener("click", toggleImageModalHint);
 imageModalCard.addEventListener("pointerdown", beginImageModalDrag);
 document.addEventListener("pointermove", updateImageModalDrag);
 document.addEventListener("pointerup", endImageModalDrag);

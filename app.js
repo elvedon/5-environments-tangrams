@@ -408,8 +408,11 @@ function createPiece(piece) {
   applyPieceTransform(element, state);
 
   element.addEventListener("pointerdown", (event) => beginDrag(event, element, state));
-  rotateHandle.addEventListener("pointerdown", (event) => beginRotate(event, element, state));
-  if (piece.canFlip) {
+  if (rotateHandle) {
+    rotateHandle.addEventListener("pointerdown", (event) => beginRotate(event, element, state));
+  }
+
+  if (piece.canFlip && flipHandle) {
     flipHandle.addEventListener("click", (event) => {
       event.stopPropagation();
       state.flipped = !state.flipped;
@@ -417,7 +420,9 @@ function createPiece(piece) {
     });
   } else {
     element.classList.add("piece-no-flip");
-    flipHandle.disabled = true;
+    if (flipHandle) {
+      flipHandle.disabled = true;
+    }
   }
 
   if (!piece.label) {

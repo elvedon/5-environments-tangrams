@@ -102,7 +102,7 @@ const pieces = [
   },
   {
     id: "small-b",
-    label: "Research",
+    label: "Teacher",
     tangramType: "Small Triangle",
     color: "#6f8f95",
     width: SMALL_TRIANGLE_LEG,

@@ -22,17 +22,17 @@ const pieces = [
   {
     id: "creative",
     label: "Creative",
-    tangramType: "Medium Triangle",
+    tangramType: "Large Triangle",
     color: "#4d88a8",
-    width: MEDIUM_TRIANGLE_LEG,
-    height: MEDIUM_TRIANGLE_LEG,
-    points: `0,${MEDIUM_TRIANGLE_LEG} 0,0 ${MEDIUM_TRIANGLE_LEG},${MEDIUM_TRIANGLE_LEG}`,
+    width: LARGE_TRIANGLE_LEG,
+    height: LARGE_TRIANGLE_LEG,
+    points: `0,${LARGE_TRIANGLE_LEG} 0,0 ${LARGE_TRIANGLE_LEG},${LARGE_TRIANGLE_LEG}`,
     info: 'The <strong class="accent-emphasis">creative environment</strong> emphasizes curiosity, problem finding, and flexible, original thinking.',
     learnMoreHref: "details/overview.html",
-    labelX: 38,
+    labelX: 40,
     labelY: 60,
-    x: 284,
-    y: 84,
+    x: 248,
+    y: 58,
     rotation: 16
   },
   {
@@ -56,15 +56,15 @@ const pieces = [
     label: "Social",
     tangramType: "Square",
     color: "#3e9b6b",
-    width: MEDIUM_TRIANGLE_LEG,
-    height: MEDIUM_TRIANGLE_LEG,
-    points: `0,0 ${MEDIUM_TRIANGLE_LEG},0 ${MEDIUM_TRIANGLE_LEG},${MEDIUM_TRIANGLE_LEG} 0,${MEDIUM_TRIANGLE_LEG}`,
+    width: SMALL_TRIANGLE_LEG,
+    height: SMALL_TRIANGLE_LEG,
+    points: `0,0 ${SMALL_TRIANGLE_LEG},0 ${SMALL_TRIANGLE_LEG},${SMALL_TRIANGLE_LEG} 0,${SMALL_TRIANGLE_LEG}`,
     info: 'The <strong class="accent-emphasis">social environment</strong> involves relationships, collaboration, and a sense of belonging within a learning community.',
     learnMoreHref: "details/overview.html",
     labelX: 50,
-    labelY: 42,
-    x: 168,
-    y: 298,
+    labelY: 40,
+    x: 174,
+    y: 314,
     rotation: 7
   },
   {
@@ -82,6 +82,38 @@ const pieces = [
     x: 338,
     y: 300,
     rotation: -12
+  },
+  {
+    id: "small-a",
+    label: "",
+    tangramType: "Small Triangle",
+    color: "#c7858a",
+    width: SMALL_TRIANGLE_LEG,
+    height: SMALL_TRIANGLE_LEG,
+    points: `0,${SMALL_TRIANGLE_LEG} 0,0 ${SMALL_TRIANGLE_LEG},${SMALL_TRIANGLE_LEG}`,
+    info: "",
+    learnMoreHref: "details/overview.html",
+    labelX: 50,
+    labelY: 42,
+    x: 566,
+    y: 286,
+    rotation: 18
+  },
+  {
+    id: "small-b",
+    label: "",
+    tangramType: "Small Triangle",
+    color: "#6f8f95",
+    width: SMALL_TRIANGLE_LEG,
+    height: SMALL_TRIANGLE_LEG,
+    points: `0,${SMALL_TRIANGLE_LEG} 0,0 ${SMALL_TRIANGLE_LEG},${SMALL_TRIANGLE_LEG}`,
+    info: "",
+    learnMoreHref: "details/overview.html",
+    labelX: 50,
+    labelY: 42,
+    x: 642,
+    y: 212,
+    rotation: -22
   }
 ];
 
@@ -253,10 +285,19 @@ function createPiece(piece) {
 
   element.addEventListener("pointerdown", (event) => beginDrag(event, element, state));
   rotateHandle.addEventListener("pointerdown", (event) => beginRotate(event, element, state));
-  infoButton.addEventListener("click", (event) => {
-    event.stopPropagation();
-    openModal(piece);
-  });
+  if (piece.info) {
+    infoButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      openModal(piece);
+    });
+  } else {
+    element.classList.add("piece-no-info");
+    infoButton.disabled = true;
+  }
+
+  if (!piece.label) {
+    element.classList.add("piece-no-label");
+  }
 
   board.appendChild(fragment);
 }

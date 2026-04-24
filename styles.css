@@ -236,6 +236,15 @@ h1 {
     0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
+.piece-no-label .piece-label,
+.piece-no-info .info-button {
+  display: none;
+}
+
+.piece-no-label .piece-overlay {
+  gap: 0;
+}
+
 .rotate-handle,
 .info-button {
   position: relative;

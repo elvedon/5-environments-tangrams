@@ -18,24 +18,24 @@ const avatars = [
     description: "Monica prefers plants and Pokemon to (most?) people."
   },
   {
-    name: "Family",
+    name: "Karen",
     colors: ["#f0d2b2", "#c89262"],
-    description: "Family members offer continuity, context, and insight into what helps a learner feel secure, known, and able to grow."
+    description: "Insert your learning profile description and a tangram on theme."
   },
   {
-    name: "Peer",
+    name: "Kathleen",
     colors: ["#d0eadc", "#74a98b"],
-    description: "Peers influence belonging, collaboration, trust, and the social climate that makes participation feel possible."
+    description: "Insert your learning profile description and a tangram on theme."
   },
   {
-    name: "Leader",
+    name: "Tamara",
     colors: ["#f1d7a7", "#c7a04e"],
-    description: "Leaders shape the surrounding conditions by setting priorities, protecting time, and supporting coherent systems."
+    description: "Insert your learning profile description and a tangram on theme."
   },
   {
-    name: "Researcher",
+    name: "Cara",
     colors: ["#cddde2", "#6f8f95"],
-    description: "Researchers contribute frameworks, evidence, and questions that make the environments easier to see and improve."
+    description: "Insert your learning profile description and a tangram on theme."
   }
 ];
 

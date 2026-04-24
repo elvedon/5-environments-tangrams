@@ -90,12 +90,17 @@ h1 {
 }
 
 .intro-link {
-  display: inline-block;
-  margin-top: 12px;
   color: #8d5a31;
   font-style: italic;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
+}
+
+.intro-link-copy,
+.modal-link-copy {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .inline-image-link {
@@ -457,7 +462,6 @@ h1 {
 }
 
 .avatar-modal-image-wrap {
-  position: relative;
   width: 240px;
   margin-top: 14px;
 }
@@ -478,8 +482,9 @@ h1 {
 }
 
 .avatar-image-toggle-link {
-  right: 12px;
-  bottom: 10px;
+  position: static;
+  display: inline-block;
+  margin-top: 8px;
 }
 
 .avatar-modal-portrait {

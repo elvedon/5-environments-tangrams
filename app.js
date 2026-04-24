@@ -19,22 +19,22 @@ const avatars = [
   },
   {
     name: "Karen",
-    colors: ["#f0d2b2", "#c89262"],
+    colors: ["#dfb2b6", "#c7858a"],
     description: "Insert your learning profile description and a tangram on theme."
   },
   {
     name: "Kathleen",
-    colors: ["#d0eadc", "#74a98b"],
+    colors: ["#98bdd2", "#4d88a8"],
     description: "Insert your learning profile description and a tangram on theme."
   },
   {
     name: "Tamara",
-    colors: ["#f1d7a7", "#c7a04e"],
+    colors: ["#b590c2", "#8c5e9f"],
     description: "Insert your learning profile description and a tangram on theme."
   },
   {
     name: "Cara",
-    colors: ["#cddde2", "#6f8f95"],
+    colors: ["#8ac5a7", "#3e9b6b"],
     description: "Insert your learning profile description and a tangram on theme."
   }
 ];

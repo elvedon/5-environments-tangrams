@@ -4,10 +4,10 @@ const MEDIUM_TRIANGLE_LEG = Math.sqrt(2) * SMALL_TRIANGLE_LEG;
 
 const avatars = [
   {
-    imageSrc: "andrea.png",
-    filename: "andrea.png",
+    imageSrc: "katie.png",
+    filename: "katie.png",
     colors: ["#f3c89c", "#d99873"],
-    description: "Andrea likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.",
+    description: "Katie likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.",
     popupImageSolid: "cat-solid.png",
     popupImageHint: "cat-hint.png"
   },

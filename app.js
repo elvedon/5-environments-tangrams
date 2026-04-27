@@ -12,10 +12,12 @@ const avatars = [
     popupImageHint: "cat-hint.png"
   },
   {
-    imageSrc: "monica.png",
-    filename: "monica.png",
+    imageSrc: "olivia.png",
+    name: "Olivia",
     colors: ["#e7cd80", "#d2a637"],
-    description: "Monica prefers plants and Pokemon to (most?) people."
+    description: "Olivia thrives in calm, low-stimulation environments where she can think deeply and work independently or in small, non-confrontational groups. She is especially drawn to nature and plants, and engages most when learning connects to natural systems or outdoor contexts. She contributes best through reflective or asynchronous work and is further motivated by imaginative, digital, and game-based environments.",
+    popupImageSolid: "tree-solid.png",
+    popupImageHint: "tree-hint.png"
   },
   {
     name: "Karen",

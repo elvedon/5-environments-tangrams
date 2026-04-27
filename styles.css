@@ -483,8 +483,9 @@ h1 {
 
 .avatar-image-toggle-link {
   position: static;
-  display: inline-block;
-  margin-top: 8px;
+  display: block;
+  width: fit-content;
+  margin: 8px 0 0 auto;
 }
 
 .avatar-modal-portrait {
@@ -525,6 +526,40 @@ h1 {
   color: var(--ink);
 }
 
+.detail-page .app-shell {
+  display: block;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.detail-page .intro-panel {
+  width: 100%;
+  padding: 34px 38px;
+}
+
+.detail-page .intro-copy,
+.detail-page .detail-copy,
+.detail-page .detail-list {
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.detail-page .intro-copy,
+.detail-page .detail-copy {
+  margin: 0 0 20px;
+}
+
+.detail-page .detail-list {
+  margin: 0;
+  padding-left: 40px;
+}
+
+.detail-page .detail-list li {
+  margin-bottom: 16px;
+  padding-left: 8px;
+}
+
 @media (max-width: 960px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -536,6 +571,10 @@ h1 {
 
   .board-header {
     flex-direction: column;
+  }
+
+  .detail-page .intro-panel {
+    padding: 28px;
   }
 }
 

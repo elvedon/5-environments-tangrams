@@ -6,7 +6,7 @@ const avatars = [
   {
     imageSrc: "katie.png",
     filename: "katie.png",
-    colors: ["#f3c89c", "#d99873"],
+    colors: ["#98bdd2", "#4d88a8"],
     description: "Katie likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.",
     popupImageSolid: "cat-solid.png",
     popupImageHint: "cat-hint.png"
@@ -15,29 +15,25 @@ const avatars = [
     imageSrc: "olivia.png",
     name: "Olivia",
     colors: ["#e7cd80", "#d2a637"],
-    description: "Olivia thrives in calm, low-stimulation environments where she can think deeply and work independently or in small, non-confrontational groups. She is especially drawn to nature and plants, and engages most when learning connects to natural systems or outdoor contexts. She contributes best through reflective or asynchronous work and is further motivated by imaginative, digital, and game-based environments.",
+    description: "Olivia loves nature and thrives in calm environments. She prefers organized, low-confrontation groups and asynchronous learning, and enjoys game-based or imaginative work.",
     popupImageSolid: "tree-solid.png",
     popupImageHint: "tree-hint.png"
   },
   {
-    name: "Karen",
+    imageSrc: "james.png",
+    filename: "james.png",
     colors: ["#dfb2b6", "#c7858a"],
-    description: "Insert your learning profile description and a tangram on theme."
+    description: "James thrives in intellectually demanding environments that allow for sustained independent work in math and programming. He prefers minimal praise, values direct and thoughtful feedback, and engages best in small-group settings that support rigorous, idea-driven discussion.",
+    popupImageSolid: "square-solid.png",
+    popupImageHint: "square-hint.png"
   },
   {
-    name: "Kathleen",
-    colors: ["#98bdd2", "#4d88a8"],
-    description: "Insert your learning profile description and a tangram on theme."
-  },
-  {
-    name: "Tamara",
+    imageSrc: "alex.png",
+    filename: "alex.png",
     colors: ["#b590c2", "#8c5e9f"],
-    description: "Insert your learning profile description and a tangram on theme."
-  },
-  {
-    name: "Cara",
-    colors: ["#8ac5a7", "#3e9b6b"],
-    description: "Insert your learning profile description and a tangram on theme."
+    description: "Alex loves high-energy, fast-paced environments and is most engaged when learning is active, social, and a little performative-through sports, acting, or anything that lets their energy and personality shine.",
+    popupImageSolid: "dancer-solid.png",
+    popupImageHint: "dancer-hint.png"
   }
 ];
 
@@ -60,13 +56,13 @@ const pieces = [
   },
   {
     id: "creative",
-    label: "Creative",
+    label: "Instructional",
     tangramType: "Large Triangle",
     color: "#4d88a8",
     width: LARGE_TRIANGLE_LEG,
     height: LARGE_TRIANGLE_LEG,
     points: `0,${LARGE_TRIANGLE_LEG} 0,0 ${LARGE_TRIANGLE_LEG},${LARGE_TRIANGLE_LEG}`,
-    info: 'The <strong class="accent-emphasis">creative environment</strong> emphasizes curiosity, problem finding, and flexible, original thinking.',
+    info: 'The <strong class="accent-emphasis">instructional environment</strong> focuses on methods, pacing, choices, and ways students can show what they know.',
     learnMoreHref: "details/overview.html",
     labelX: 40,
     labelY: 60,
@@ -125,7 +121,7 @@ const pieces = [
   },
   {
     id: "small-a",
-    label: "Child",
+    label: "Student",
     tangramType: "Small Triangle",
     color: "#c7858a",
     width: SMALL_TRIANGLE_LEG,

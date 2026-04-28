@@ -179,8 +179,8 @@ h1 {
 }
 
 .avatar-portrait {
-  width: 54px;
-  height: 54px;
+  width: 74px;
+  height: 74px;
   margin: 0 auto 8px;
 }
 
@@ -662,8 +662,8 @@ h1 {
 
 .detail-page .detail-avatar-image {
   display: block;
-  width: 54px;
-  height: 54px;
+  width: 74px;
+  height: 74px;
   margin: 0 auto 8px;
   object-fit: cover;
   border-radius: 50%;

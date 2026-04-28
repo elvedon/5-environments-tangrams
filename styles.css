@@ -29,7 +29,7 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
+  grid-template-columns: 368px minmax(0, 1fr);
   gap: 24px;
   padding: 24px;
   min-height: 100vh;
@@ -470,7 +470,7 @@ h1 {
 
 .avatar-modal-card {
   position: absolute;
-  width: min(360px, 100%);
+  width: min(410px, 100%);
   cursor: grab;
   user-select: none;
 }
@@ -536,7 +536,7 @@ h1 {
   position: static;
   display: block;
   width: fit-content;
-  margin: 8px 0 0 auto;
+  margin: 0 0 8px auto;
 }
 
 .avatar-modal-portrait {

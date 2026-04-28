@@ -7,7 +7,7 @@ const avatars = [
     imageSrc: "katie.png",
     filename: "katie.png",
     colors: ["#98bdd2", "#4d88a8"],
-    description: "Katie likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.",
+    description: "Katie loves engaging deeply with complex, unconventional ideas, often drawing on strong verbal and conceptual thinking, and benefits from uninterrupted time to explore concepts in depth. She works best in focused environments where she can channel her energy independently or in small groups.",
     popupImageSolid: "cat-solid.png",
     popupImageHint: "cat-hint.png"
   },
@@ -15,7 +15,7 @@ const avatars = [
     imageSrc: "james.png",
     filename: "james.png",
     colors: ["#dfb2b6", "#c7858a"],
-    description: "James thrives in intellectually demanding environments that allow for sustained independent work in math and programming. He prefers minimal praise, values direct and thoughtful feedback, and engages best in small-group settings that support rigorous, idea-driven discussion.",
+    description: "James thrives in intense, intellectually demanding environments and prefers sustained independent work or small, idea-driven groups with similar-ability peers. He engages deeply with abstract, logical problems in math and programming and benefits from precise feedback and opportunities to extend his analytical thinking.",
     popupImageSolid: "square-solid.png",
     popupImageHint: "square-hint.png"
   },
@@ -23,7 +23,7 @@ const avatars = [
     imageSrc: "alex.png",
     filename: "alex.png",
     colors: ["#b590c2", "#8c5e9f"],
-    description: "Alex loves high-energy, fast-paced environments and is most engaged when learning is active, social, and a little performative-through sports, acting, or anything that lets their energy and personality shine.",
+    description: "Alex thrives in high-energy, fast-paced environments and works best in active, social settings. He engages through movement, performance, and interaction-often using physical and expressive strengths-and benefits from frequent participation and opportunities to learn through doing.",
     popupImageSolid: "dancer-solid.png",
     popupImageHint: "dancer-hint.png"
   },
@@ -31,7 +31,7 @@ const avatars = [
     imageSrc: "olivia.png",
     name: "Olivia",
     colors: ["#e7cd80", "#d2a637"],
-    description: "Olivia loves nature and thrives in calm environments. She prefers organized, low-confrontation groups and asynchronous learning, and enjoys game-based or imaginative work.",
+    description: "Olivia engages through strong visual-spatial and naturalistic strengths, often drawn to imaginative, game-based tasks. She works best in calm, organized environments, preferring independent or low-conflict, structured groups, and benefits from clear expectations and predictable, self-paced work.",
     popupImageSolid: "tree-solid.png",
     popupImageHint: "tree-hint.png"
   }
@@ -453,7 +453,7 @@ function centerImageModalCard() {
 
 function centerAvatarModalCard() {
   avatarModalCard.style.left = "44px";
-  avatarModalCard.style.top = "110px";
+  avatarModalCard.style.top = "56px";
 }
 
 function beginImageModalDrag(event) {

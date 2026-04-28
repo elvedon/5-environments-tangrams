@@ -159,6 +159,9 @@ const modal = document.getElementById("info-modal");
 const modalTitle = document.getElementById("modal-title");
 const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
+const modalLinkCopy = document.getElementById("modal-link-copy");
+const modalContinueCopy = document.getElementById("modal-continue-copy");
+const modalContinueLink = document.getElementById("modal-continue-link");
 const imageModal = document.getElementById("image-modal");
 const imageModalCard = document.getElementById("image-modal-card");
 const imageModalPreview = document.getElementById("image-modal-title");
@@ -189,6 +192,7 @@ let avatarModalDrag = null;
 let avatarModalShowingHint = false;
 let activeAvatar = null;
 let activeSolveImage = "";
+let hasShownFirstSolveMessage = false;
 
 function labelFromFilename(filename) {
   const stem = filename.replace(/\.[^.]+$/, "");
@@ -292,11 +296,21 @@ function openModal(piece) {
   modalTitle.textContent = piece.label;
   modalBody.innerHTML = piece.info;
   modalLink.href = piece.learnMoreHref;
+  modalLinkCopy.classList.remove("hidden");
+  modalContinueCopy.classList.add("hidden");
   modal.classList.remove("hidden");
 }
 
 function closeModal() {
   modal.classList.add("hidden");
+}
+
+function openFirstSolveModal() {
+  modalTitle.textContent = "Feeling frustrated?";
+  modalBody.textContent = "Getting the five environments right for a student rarely happens immediately. It requires ongoing attention, adjustment, and persistence.";
+  modalLinkCopy.classList.add("hidden");
+  modalContinueCopy.classList.remove("hidden");
+  modal.classList.remove("hidden");
 }
 
 function showSolveOverlay(imageSrc) {
@@ -386,6 +400,12 @@ function getActiveSolveImage() {
 function solveCurrentPattern() {
   const imageSrc = getActiveSolveImage();
   if (!imageSrc) {
+    return;
+  }
+
+  if (!hasShownFirstSolveMessage) {
+    hasShownFirstSolveMessage = true;
+    openFirstSolveModal();
     return;
   }
 
@@ -679,6 +699,10 @@ document.addEventListener("pointercancel", endInteraction);
 document.addEventListener("lostpointercapture", endInteraction, true);
 
 closeModalButton.addEventListener("click", closeModal);
+modalContinueLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  closeModal();
+});
 modal.addEventListener("click", (event) => {
   if (event.target === modal) {
     closeModal();

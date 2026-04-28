@@ -151,13 +151,13 @@ h1 {
 .avatar-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 22px;
   align-items: flex-start;
   flex: 1;
 }
 
 .avatar-chip {
-  width: 82px;
+  width: 100px;
   text-align: center;
 }
 
@@ -179,8 +179,8 @@ h1 {
 }
 
 .avatar-portrait {
-  width: 74px;
-  height: 74px;
+  width: 92px;
+  height: 92px;
   margin: 0 auto 8px;
 }
 

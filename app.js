@@ -56,7 +56,7 @@ const pieces = [
   },
   {
     id: "creative",
-    label: "Instructional",
+    label: "Creative",
     tangramType: "Large Triangle",
     color: "#4d88a8",
     width: LARGE_TRIANGLE_LEG,
@@ -104,7 +104,7 @@ const pieces = [
   },
   {
     id: "academic",
-    label: "Intellectual",
+    label: "Academic",
     tangramType: "Parallelogram",
     canFlip: true,
     color: "#d2a637",

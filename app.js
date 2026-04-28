@@ -340,7 +340,7 @@ function closeAvatarModal() {
 
 function toggleImageModalHint() {
   imageModalShowingHint = !imageModalShowingHint;
-  imageModalPreview.src = imageModalShowingHint ? "house-solve.png" : "house-solid.png";
+  imageModalPreview.src = imageModalShowingHint ? "house-hint.png" : "house-solid.png";
   imageToggleLink.textContent = imageModalShowingHint ? "hide" : "hint";
 }
 
@@ -355,11 +355,9 @@ function toggleAvatarModalHint() {
 }
 
 function centerImageModalCard() {
-  const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const cardWidth = Math.min(320, viewportWidth - 40);
   const cardHeight = Math.min(260, viewportHeight - 40);
-  imageModalCard.style.left = `${Math.max(20, (viewportWidth - cardWidth) / 2)}px`;
+  imageModalCard.style.left = "44px";
   imageModalCard.style.top = `${Math.max(20, (viewportHeight - cardHeight) / 2)}px`;
 }
 

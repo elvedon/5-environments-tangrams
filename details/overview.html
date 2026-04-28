@@ -25,7 +25,76 @@
         <li><strong>Academic</strong> - The level and type of thinking expected: depth, complexity, challenge, and alignment with students’ strengths.</li>
         <li><strong>Creative</strong> - Opportunities for students to create, express ideas, and show understanding in meaningful, flexible, and self-directed ways.</li>
       </ol>
+      <div class="detail-avatar-row" aria-label="Learner examples">
+        <div class="avatar-chip">
+          <img class="detail-avatar-image" src="../katie.png" alt="Katie" style="--avatar-top: #98bdd2; --avatar-bottom: #4d88a8;">
+          <button class="detail-avatar-name detail-avatar-trigger is-active" type="button" data-profile="katie">Katie</button>
+        </div>
+        <div class="avatar-chip">
+          <img class="detail-avatar-image" src="../james.png" alt="James" style="--avatar-top: #dfb2b6; --avatar-bottom: #c7858a;">
+          <button class="detail-avatar-name detail-avatar-trigger" type="button" data-profile="james">James</button>
+        </div>
+        <div class="avatar-chip">
+          <img class="detail-avatar-image" src="../alex.png" alt="Alex" style="--avatar-top: #b590c2; --avatar-bottom: #8c5e9f;">
+          <button class="detail-avatar-name detail-avatar-trigger" type="button" data-profile="alex">Alex</button>
+        </div>
+        <div class="avatar-chip">
+          <img class="detail-avatar-image" src="../olivia.png" alt="Olivia" style="--avatar-top: #e7cd80; --avatar-bottom: #d2a637;">
+          <button class="detail-avatar-name detail-avatar-trigger" type="button" data-profile="olivia">Olivia</button>
+        </div>
+      </div>
+      <div id="detail-avatar-description" class="detail-avatar-description">
+        Katie likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.<br><br>
+        <strong>IDEAS FOR HER:</strong><br><br>
+        <strong>Physical:</strong> Try letting her choose a seat in low-traffic spot and let her stay there for independent work. Allow headphones if needed to screen out distractions.<br><br>
+        <strong>Emotional:</strong> Ask, "What direction are you taking?" to support risk-taking without pressure.<br><br>
+        <strong>Social:</strong> When grouping, use pairs or triads with students who like discussing ideas, not just finishing quickly.<br><br>
+        <strong>Academic:</strong> After she shows understanding, skip repetition and give prompts like: "What’s another way to think about this?" or "What changes if we shift one assumption?"<br><br>
+        <strong>Creative:</strong> Welcome her tendency to challenge assumptions and play "devil's advocate." Offer extensions like, "Solve this in a way most people wouldn’t try," or "Apply this idea somewhere unexpected."
+      </div>
     </section>
   </main>
+  <script>
+    const avatarTriggers = document.querySelectorAll(".detail-avatar-trigger");
+    const avatarDescription = document.getElementById("detail-avatar-description");
+    const avatarProfiles = {
+      katie: `Katie likes calm spaces where she can work independently or in small, collaborative groups that allow her to explore unconventional or challenging concepts.<br><br>
+        <strong>IDEAS FOR HER:</strong><br><br>
+        <strong>Physical:</strong> Try letting her choose a seat in low-traffic spot and let her stay there for independent work. Allow headphones if needed to screen out distractions.<br><br>
+        <strong>Emotional:</strong> Ask, "What direction are you taking?" to support risk-taking without pressure.<br><br>
+        <strong>Social:</strong> When grouping, use pairs or triads with students who like discussing ideas, not just finishing quickly.<br><br>
+        <strong>Academic:</strong> After she shows understanding, skip repetition and give prompts like: "What’s another way to think about this?" or "What changes if we shift one assumption?"<br><br>
+        <strong>Creative:</strong> Welcome her tendency to challenge assumptions and play "devil's advocate." Offer extensions like, "Solve this in a way most people wouldn’t try," or "Apply this idea somewhere unexpected."`,
+      olivia: `Olivia loves nature and thrives in calm environments. She prefers organized, low-confrontation groups and asynchronous learning, and enjoys game-based or imaginative work.<br><br>
+        <strong>IDEAS FOR HER:</strong><br><br>
+        <strong>Physical:</strong> Seat her in a calm, predictable area and keep materials organized and easy to access. Incorporate natural elements when possible (plants, outdoor views, or occasional outside work time).<br><br>
+        <strong>Emotional:</strong> Keep the tone low-pressure and steady. Avoid putting her on the spot or in competitive situations. Give clear expectations so she can work without uncertainty or confrontation.<br><br>
+        <strong>Social:</strong> Use structured, low-conflict groups (clear roles, small size) or allow her to work independently. Favor asynchronous collaboration (shared docs, turn-taking) over real-time debate.<br><br>
+        <strong>Academic:</strong> Provide clear, organized tasks she can move through at her own pace. Break work into predictable steps so she can stay focused without constant direction.<br><br>
+        <strong>Creative:</strong> Build in imaginative or game-based options-design a game, create a scenario, or connect content to nature. Let her engage through storytelling or playful problem-solving rather than purely analytical tasks.`,
+      james: `James thrives in intellectually demanding environments that allow for sustained independent work in math and programming. He prefers minimal praise, values direct and thoughtful feedback, and engages best in small-group settings that support rigorous, idea-driven discussion.<br><br>
+        <strong>IDEAS FOR HIM:</strong><br><br>
+        <strong>Physical:</strong> Seat him in a quiet, low-traffic spot with reliable access to a laptop and tools. Allow long, uninterrupted work blocks.<br><br>
+        <strong>Emotional:</strong> Instead of praise, give brief, direct feedback (e.g., "Your proof handles edge cases-tighten step 3."). Normalize critique as part of the work.<br><br>
+        <strong>Social:</strong> Default to independent work. Use small groups (2-3) for structured, idea-driven discussion (e.g., compare approaches, defend solutions).<br><br>
+        <strong>Academic:</strong> Provide high-ceiling tasks (proofs, algorithm design, optimization) and reduce repetition.<br><br>
+        <strong>Creative:</strong> Offer extensions like: "Design a more efficient algorithm," "break this solution with a counterexample," or "build a small program to test your idea."`,
+      alex: `Alex loves high-energy, fast-paced environments and is most engaged when learning is active, social, and a little performative-through sports, acting, or anything that lets their energy and personality shine.<br><br>
+        <strong>IDEAS FOR THEM:</strong><br><br>
+        <strong>Physical:</strong> Give them access to movement-open space, flexible seating, and chances to stand, move, or act things out. Avoid long periods of sitting still.<br><br>
+        <strong>Emotional:</strong> Keep the tone upbeat and encouraging. Use quick, positive feedback and build in moments where energy and enthusiasm are clearly valued.<br><br>
+        <strong>Social:</strong> Use frequent group work and team-based activities. Build in roles that let Alex take the lead, present, or energize the group.<br><br>
+        <strong>Academic:</strong> Design fast-paced tasks with clear goals and quick transitions. Use challenges, timed activities, or competitions to keep momentum high.<br><br>
+        <strong>Creative:</strong> Incorporate performance-skits, simulations, debates, or sports-style applications. Let Alex demonstrate understanding through action and expression.`
+    };
+
+    avatarTriggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        avatarTriggers.forEach((button) => button.classList.remove("is-active"));
+        trigger.classList.add("is-active");
+        avatarDescription.innerHTML = avatarProfiles[trigger.dataset.profile] || "";
+      });
+    });
+  </script>
 </body>
 </html>

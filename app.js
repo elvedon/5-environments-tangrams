@@ -12,14 +12,6 @@ const avatars = [
     popupImageHint: "cat-hint.png"
   },
   {
-    imageSrc: "olivia.png",
-    name: "Olivia",
-    colors: ["#e7cd80", "#d2a637"],
-    description: "Olivia loves nature and thrives in calm environments. She prefers organized, low-confrontation groups and asynchronous learning, and enjoys game-based or imaginative work.",
-    popupImageSolid: "tree-solid.png",
-    popupImageHint: "tree-hint.png"
-  },
-  {
     imageSrc: "james.png",
     filename: "james.png",
     colors: ["#dfb2b6", "#c7858a"],
@@ -34,6 +26,14 @@ const avatars = [
     description: "Alex loves high-energy, fast-paced environments and is most engaged when learning is active, social, and a little performative-through sports, acting, or anything that lets their energy and personality shine.",
     popupImageSolid: "dancer-solid.png",
     popupImageHint: "dancer-hint.png"
+  },
+  {
+    imageSrc: "olivia.png",
+    name: "Olivia",
+    colors: ["#e7cd80", "#d2a637"],
+    description: "Olivia loves nature and thrives in calm environments. She prefers organized, low-confrontation groups and asynchronous learning, and enjoys game-based or imaginative work.",
+    popupImageSolid: "tree-solid.png",
+    popupImageHint: "tree-hint.png"
   }
 ];
 

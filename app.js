@@ -177,6 +177,9 @@ const homeLink = document.getElementById("home-link");
 const closeImageModalButton = document.getElementById("close-image-modal");
 const closeModalButton = document.getElementById("close-modal");
 const resetButton = document.getElementById("reset-button");
+const solveButton = document.getElementById("solve-button");
+const solveOverlay = document.getElementById("solve-overlay");
+const solveOverlayImage = document.getElementById("solve-overlay-image");
 
 let activeDrag = null;
 let highestZ = 20;
@@ -185,6 +188,7 @@ let imageModalShowingHint = false;
 let avatarModalDrag = null;
 let avatarModalShowingHint = false;
 let activeAvatar = null;
+let activeSolveImage = "";
 
 function labelFromFilename(filename) {
   const stem = filename.replace(/\.[^.]+$/, "");
@@ -295,7 +299,35 @@ function closeModal() {
   modal.classList.add("hidden");
 }
 
+function showSolveOverlay(imageSrc) {
+  activeSolveImage = imageSrc;
+  solveOverlayImage.src = imageSrc;
+  board.classList.add("showing-solution");
+  solveOverlay.classList.remove("hidden");
+}
+
+function hideSolveOverlay() {
+  activeSolveImage = "";
+  board.classList.remove("showing-solution");
+  solveOverlay.classList.add("hidden");
+}
+
+function deriveSolveImageFromSource(imageSrc) {
+  if (!imageSrc) {
+    return "";
+  }
+
+  return imageSrc.replace(/-solid\.(png|jpg|jpeg|gif)$/i, "-solve.$1");
+}
+
+function resetIfSolveTargetChanges(nextSolveImage) {
+  if (activeSolveImage && nextSolveImage && activeSolveImage !== nextSolveImage) {
+    buildPieces();
+  }
+}
+
 function openImageModal() {
+  resetIfSolveTargetChanges("house-solve.png");
   closeAvatarModal();
   imageModalShowingHint = false;
   imageModalPreview.src = "house-solid.png";
@@ -311,6 +343,7 @@ function closeImageModal() {
 }
 
 function openAvatarModal(avatar) {
+  resetIfSolveTargetChanges(deriveSolveImageFromSource(avatar.popupImageSolid));
   closeImageModal();
   activeAvatar = avatar;
   avatarModalShowingHint = false;
@@ -336,6 +369,27 @@ function closeAvatarModal() {
   avatarModalCard.classList.remove("dragging");
   avatarModalDrag = null;
   activeAvatar = null;
+}
+
+function getActiveSolveImage() {
+  if (!imageModal.classList.contains("hidden")) {
+    return "house-solve.png";
+  }
+
+  if (!avatarModal.classList.contains("hidden") && activeAvatar?.popupImageSolid) {
+    return deriveSolveImageFromSource(activeAvatar.popupImageSolid);
+  }
+
+  return "";
+}
+
+function solveCurrentPattern() {
+  const imageSrc = getActiveSolveImage();
+  if (!imageSrc) {
+    return;
+  }
+
+  showSolveOverlay(imageSrc);
 }
 
 function toggleImageModalHint() {
@@ -606,6 +660,7 @@ function createPiece(piece) {
 
 function buildPieces() {
   board.querySelectorAll(".piece").forEach((node) => node.remove());
+  hideSolveOverlay();
   closeModal();
   highestZ = 20;
   pieces.forEach(createPiece);
@@ -667,6 +722,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 resetButton.addEventListener("click", buildPieces);
+solveButton.addEventListener("click", solveCurrentPattern);
 
 buildAvatarStrip();
 buildPieces();

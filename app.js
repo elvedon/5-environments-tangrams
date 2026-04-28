@@ -159,6 +159,7 @@ const modal = document.getElementById("info-modal");
 const modalTitle = document.getElementById("modal-title");
 const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
+const introLink = document.getElementById("intro-link");
 const modalLinkCopy = document.getElementById("modal-link-copy");
 const modalContinueCopy = document.getElementById("modal-continue-copy");
 const modalContinueLink = document.getElementById("modal-continue-link");
@@ -303,6 +304,21 @@ function openModal(piece) {
 
 function closeModal() {
   modal.classList.add("hidden");
+}
+
+function openOverviewWindow(url) {
+  const popup = window.open(
+    url,
+    "five-environments-overview",
+    "popup=yes,width=960,height=760,resizable=yes,scrollbars=yes"
+  );
+
+  if (!popup) {
+    window.location.href = url;
+    return;
+  }
+
+  popup.focus();
 }
 
 function openFirstSolveModal() {
@@ -699,6 +715,14 @@ document.addEventListener("pointercancel", endInteraction);
 document.addEventListener("lostpointercapture", endInteraction, true);
 
 closeModalButton.addEventListener("click", closeModal);
+introLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  openOverviewWindow(event.currentTarget.href);
+});
+modalLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  openOverviewWindow(event.currentTarget.href);
+});
 modalContinueLink.addEventListener("click", (event) => {
   event.preventDefault();
   closeModal();

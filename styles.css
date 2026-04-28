@@ -588,6 +588,11 @@ h1 {
   padding: 34px 38px;
 }
 
+.detail-page .detail-back-link {
+  margin: 0 0 10px;
+  text-align: right;
+}
+
 .detail-page .intro-copy,
 .detail-page .detail-copy,
 .detail-page .detail-list {

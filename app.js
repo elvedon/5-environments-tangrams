@@ -184,6 +184,19 @@ const resetButton = document.getElementById("reset-button");
 const solveButton = document.getElementById("solve-button");
 const solveOverlay = document.getElementById("solve-overlay");
 const solveOverlayImage = document.getElementById("solve-overlay-image");
+const moveStartSound = document.getElementById("move-start-sound");
+const moveEndSound = document.getElementById("move-end-sound");
+const resetSound = document.getElementById("reset-sound");
+const solveSound = document.getElementById("solve-sound");
+const missSound = document.getElementById("miss-sound");
+const rotateSound = new Audio("block-drag.mp3");
+moveStartSound.volume = 0.28;
+moveEndSound.volume = 0.28;
+resetSound.volume = 0.28;
+solveSound.volume = 0.28;
+missSound.volume = 0.28;
+rotateSound.preload = "auto";
+rotateSound.volume = 0.12;
 
 let activeDrag = null;
 let highestZ = 20;
@@ -327,6 +340,11 @@ function openFirstSolveModal() {
   modalLinkCopy.classList.add("hidden");
   modalContinueCopy.classList.remove("hidden");
   modal.classList.remove("hidden");
+
+  if (missSound) {
+    missSound.currentTime = 0;
+    missSound.play().catch(() => {});
+  }
 }
 
 function showSolveOverlay(imageSrc) {
@@ -334,6 +352,11 @@ function showSolveOverlay(imageSrc) {
   solveOverlayImage.src = imageSrc;
   board.classList.add("showing-solution");
   solveOverlay.classList.remove("hidden");
+
+  if (solveSound) {
+    solveSound.currentTime = 0;
+    solveSound.play().catch(() => {});
+  }
 }
 
 function hideSolveOverlay() {
@@ -579,6 +602,11 @@ function beginDrag(event, element, state) {
   element.classList.add("dragging");
   bringToFront(element);
   element.setPointerCapture(event.pointerId);
+
+  if (moveStartSound) {
+    moveStartSound.currentTime = 0;
+    moveStartSound.play().catch(() => {});
+  }
 }
 
 function beginRotate(event, element, state) {
@@ -604,6 +632,12 @@ function beginRotate(event, element, state) {
   element.classList.add("rotating");
   bringToFront(element);
   element.setPointerCapture(event.pointerId);
+
+  if (rotateSound) {
+    rotateSound.loop = true;
+    rotateSound.currentTime = 0;
+    rotateSound.play().catch(() => {});
+  }
 }
 
 function updateMove(event) {
@@ -629,8 +663,20 @@ function endInteraction() {
     return;
   }
 
+  const wasMove = activeDrag.mode === "move";
+  const wasRotate = activeDrag.mode === "rotate";
   activeDrag.element.classList.remove("dragging", "rotating");
   activeDrag = null;
+
+  if (wasMove && moveEndSound) {
+    moveEndSound.currentTime = 0;
+    moveEndSound.play().catch(() => {});
+  }
+
+  if (wasRotate && rotateSound) {
+    rotateSound.pause();
+    rotateSound.currentTime = 0;
+  }
 }
 
 function createPiece(piece) {
@@ -764,7 +810,13 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-resetButton.addEventListener("click", buildPieces);
+resetButton.addEventListener("click", () => {
+  if (resetSound) {
+    resetSound.currentTime = 0;
+    resetSound.play().catch(() => {});
+  }
+  buildPieces();
+});
 solveButton.addEventListener("click", solveCurrentPattern);
 
 buildAvatarStrip();

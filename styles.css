@@ -617,6 +617,12 @@ h1 {
   padding-left: 8px;
 }
 
+.detail-page .detail-ref-link {
+  color: #8d5a31;
+  text-decoration: none;
+  font-weight: 700;
+}
+
 .detail-page .detail-avatar-row {
   display: flex;
   flex-wrap: wrap;
@@ -677,6 +683,27 @@ h1 {
   font-size: 0.94rem;
   line-height: 1.5;
   color: var(--muted);
+}
+
+.detail-page .detail-references {
+  margin-top: 28px;
+}
+
+.detail-page .detail-references-heading {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.detail-page .detail-reference-list {
+  margin: 0;
+  padding-left: 28px;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.detail-page .detail-reference-list li {
+  margin-bottom: 12px;
 }
 
 @media (max-width: 960px) {

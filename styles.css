@@ -278,6 +278,7 @@ h1 {
   user-select: none;
   transform-origin: 50% 50%;
   z-index: 1;
+  pointer-events: none;
 }
 
 .piece:focus-visible {
@@ -300,11 +301,6 @@ h1 {
   filter: drop-shadow(0 16px 12px rgba(39, 52, 61, 0.18));
 }
 
-.piece-svg,
-.piece-overlay {
-  pointer-events: none;
-}
-
 .piece-svg {
   width: 100%;
   height: 100%;
@@ -317,6 +313,7 @@ h1 {
   stroke: rgba(16, 31, 39, 0.36);
   stroke-width: 4;
   stroke-linejoin: round;
+  pointer-events: auto;
 }
 
 .piece-overlay {
@@ -329,6 +326,7 @@ h1 {
   gap: 8px;
   transform: translate(-50%, -50%) rotate(calc(var(--rotation, 0deg) * -1));
   z-index: 4;
+  pointer-events: none;
 }
 
 .piece-label {
@@ -345,6 +343,7 @@ h1 {
     1px 0 var(--muted),
     0 -1px var(--muted),
     0 2px 6px rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
 }
 
 .piece-no-label .piece-label {
@@ -359,6 +358,7 @@ h1 {
   display: flex;
   gap: 8px;
   align-items: center;
+  pointer-events: none;
 }
 
 .rotate-handle,

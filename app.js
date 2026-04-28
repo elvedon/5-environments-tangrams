@@ -530,11 +530,6 @@ function beginDrag(event, element, state) {
     return;
   }
 
-  const labelElement = element.querySelector(".piece-label");
-  if (!isPointerOnVisibleShape(event, element, state) && !isPointerOnLabel(event, labelElement)) {
-    return;
-  }
-
   const rect = element.getBoundingClientRect();
   activeDrag = {
     mode: "move",

@@ -7,7 +7,7 @@ const avatars = [
     imageSrc: "katie.png",
     filename: "katie.png",
     colors: ["#98bdd2", "#4d88a8"],
-    description: "Katie loves engaging deeply with complex, unconventional ideas, often drawing on strong verbal and conceptual thinking, and benefits from uninterrupted time to explore concepts in depth. She works best in focused environments where she can channel her energy independently or in small groups.",
+    description: "Katie isn’t just a collector of facts—she develops deep, self-directed expertise and thinks in patterns and systems with unusual precision. Past social experiences have made her cautious, so she often holds back, observing and refining her ideas. What can look like disengagement is often careful thinking shaped by a need for safety.",
     popupImageSolid: "cat-solid.png",
     popupImageHint: "cat-hint.png"
   },
@@ -15,7 +15,7 @@ const avatars = [
     imageSrc: "james.png",
     filename: "james.png",
     colors: ["#dfb2b6", "#c7858a"],
-    description: "James thrives in intense, intellectually demanding environments and prefers sustained independent work or small, idea-driven groups with similar-ability peers. He engages deeply with abstract, logical problems in math and programming and benefits from precise feedback and opportunities to extend his analytical thinking.",
+    description: "James is intensely verbal and fast-thinking, often generating ideas that shift discussions in meaningful ways. His emotions are equally intense but closely tied to his language—he can often reason his way back to regulation. Organization is a challenge, not from defiance, but from how his mind works. Clear, evidence-based framing strongly engages him.",
     popupImageSolid: "square-solid.png",
     popupImageHint: "square-hint.png"
   },
@@ -23,7 +23,7 @@ const avatars = [
     imageSrc: "alex.png",
     filename: "alex.png",
     colors: ["#b590c2", "#8c5e9f"],
-    description: "Alex thrives in high-energy, fast-paced environments and works best in active, social settings. He engages through movement, performance, and interaction-often using physical and expressive strengths-and benefits from frequent participation and opportunities to learn through doing.",
+    description: "Alex is a movement-based thinker who expresses ideas through dance, art, and spatial awareness, with strong discipline beneath a performative style. Dyslexia limits access to text-heavy tasks, not ability. Years of mismatch have led to deflection and disengagement, but their understanding becomes clear when expressed through action and creation.",
     popupImageSolid: "dancer-solid.png",
     popupImageHint: "dancer-hint.png"
   },
@@ -31,7 +31,7 @@ const avatars = [
     imageSrc: "olivia.png",
     name: "Olivia",
     colors: ["#e7cd80", "#d2a637"],
-    description: "Olivia engages through strong visual-spatial and naturalistic strengths, often drawn to imaginative, game-based tasks. She works best in calm, organized environments, preferring independent or low-conflict, structured groups, and benefits from clear expectations and predictable, self-paced work.",
+    description: "Olivia is a highly conceptual, pattern-oriented thinker with a rich, sensory inner world, including strong cross-modal associations. Her understanding is far ahead of her output due to very slow processing speed. She is often underestimated, not because of ability, but because typical tasks fail to capture how she thinks.",
     popupImageSolid: "tree-solid.png",
     popupImageHint: "tree-hint.png"
   }

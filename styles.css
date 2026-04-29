@@ -608,21 +608,6 @@ h1 {
   background: var(--panel);
 }
 
-.detail-page .intro-panel::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 245px;
-  height: 520px;
-  transform: scale(0.7);
-  transform-origin: center top;
-  background: url("house-hint.png") center center / contain no-repeat;
-  opacity: 0.14;
-  pointer-events: none;
-  z-index: -1;
-}
-
 .detail-page .intro-panel > * {
   position: relative;
   z-index: 1;
@@ -661,7 +646,30 @@ h1 {
 
 .detail-page .detail-list li {
   margin-bottom: 16px;
-  padding-left: 8px;
+  padding: 14px 16px;
+  padding-left: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(23, 49, 61, 0.08);
+}
+
+.detail-page #env-physical {
+  background: rgba(215, 108, 73, 0.12);
+}
+
+.detail-page #env-emotional {
+  background: rgba(140, 94, 159, 0.12);
+}
+
+.detail-page #env-social {
+  background: rgba(62, 155, 107, 0.12);
+}
+
+.detail-page #env-academic {
+  background: rgba(210, 166, 55, 0.12);
+}
+
+.detail-page #env-creative {
+  background: rgba(77, 136, 168, 0.12);
 }
 
 .detail-page .detail-ref-link {

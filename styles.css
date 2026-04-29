@@ -652,6 +652,7 @@ h1 {
 .detail-page .detail-list {
   margin: 0;
   padding-left: 40px;
+  list-style: none;
 }
 
 .detail-page .detail-list li {

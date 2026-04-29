@@ -613,9 +613,10 @@ h1 {
   position: absolute;
   left: 0;
   right: 0;
-  top: 290px;
+  top: 245px;
   height: 520px;
-  transform: none;
+  transform: scale(0.7);
+  transform-origin: center top;
   background: url("house-hint.png") center center / contain no-repeat;
   opacity: 0.14;
   pointer-events: none;
@@ -643,6 +644,14 @@ h1 {
 .detail-page .intro-copy,
 .detail-page .detail-copy {
   margin: 0 0 20px;
+}
+
+.detail-page .detail-section-heading {
+  margin: 28px 0 16px;
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+  line-height: 1;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .detail-page .detail-list {

@@ -771,7 +771,9 @@ h1 {
 }
 
 .detail-page .detail-references {
-  margin-top: 28px;
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 49, 61, 0.14);
 }
 
 .detail-page .detail-references-heading {
@@ -795,6 +797,12 @@ h1 {
 .detail-page .detail-sound-credits .detail-reference-list {
   font-size: 0.58rem;
   line-height: 1.25;
+}
+
+.detail-page .detail-sound-credits {
+  margin-top: 176px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 49, 61, 0.14);
 }
 
 @media (max-width: 960px) {

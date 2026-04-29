@@ -189,12 +189,15 @@ const moveEndSound = document.getElementById("move-end-sound");
 const resetSound = document.getElementById("reset-sound");
 const solveSound = document.getElementById("solve-sound");
 const missSound = document.getElementById("miss-sound");
+const clickSound = new Audio("click.mp3");
 const rotateSound = new Audio("block-drag.mp3");
 moveStartSound.volume = 0.28;
 moveEndSound.volume = 0.28;
 resetSound.volume = 0.28;
 solveSound.volume = 0.28;
 missSound.volume = 0.28;
+clickSound.preload = "auto";
+clickSound.volume = 0.28;
 rotateSound.preload = "auto";
 rotateSound.volume = 0.12;
 
@@ -284,6 +287,11 @@ function normalizeDegrees(degrees) {
     normalized += 360;
   }
   return normalized;
+}
+
+function playClickSound() {
+  clickSound.currentTime = 0;
+  clickSound.play().catch(() => {});
 }
 
 function applyPieceTransform(element, state) {
@@ -564,7 +572,10 @@ function buildAvatarStrip() {
     nameButton.className = "avatar-name";
     nameButton.type = "button";
     nameButton.textContent = avatar.name;
-    nameButton.addEventListener("click", () => openAvatarModal(avatar));
+    nameButton.addEventListener("click", () => {
+      playClickSound();
+      openAvatarModal(avatar);
+    });
 
     chip.appendChild(portrait);
     chip.appendChild(nameButton);
@@ -752,14 +763,17 @@ document.addEventListener("lostpointercapture", endInteraction, true);
 closeModalButton.addEventListener("click", closeModal);
 introLink.addEventListener("click", (event) => {
   event.preventDefault();
+  playClickSound();
   openOverviewWindow(event.currentTarget.href);
 });
 modalLink.addEventListener("click", (event) => {
   event.preventDefault();
+  playClickSound();
   openOverviewWindow(event.currentTarget.href);
 });
 modalContinueLink.addEventListener("click", (event) => {
   event.preventDefault();
+  playClickSound();
   closeModal();
 });
 modal.addEventListener("click", (event) => {
@@ -772,10 +786,16 @@ if (homeLink) {
   homeLink.addEventListener("click", openImageModal);
 }
 closeImageModalButton.addEventListener("click", closeImageModal);
-imageToggleLink.addEventListener("click", toggleImageModalHint);
+imageToggleLink.addEventListener("click", (event) => {
+  playClickSound();
+  toggleImageModalHint(event);
+});
 imageModalCard.addEventListener("pointerdown", beginImageModalDrag);
 closeAvatarModalButton.addEventListener("click", closeAvatarModal);
-avatarImageToggleLink.addEventListener("click", toggleAvatarModalHint);
+avatarImageToggleLink.addEventListener("click", (event) => {
+  playClickSound();
+  toggleAvatarModalHint(event);
+});
 avatarModalCard.addEventListener("pointerdown", beginAvatarModalDrag);
 document.addEventListener("pointermove", updateImageModalDrag);
 document.addEventListener("pointerup", endImageModalDrag);

@@ -78,6 +78,7 @@
           <li><em>Dragging chess pieces on the chess board.wav</em> by BiancaBothaPure -- <a class="intro-link" href="https://freesound.org/s/437486/" target="_blank" rel="noreferrer noopener">Freesound</a> -- License: Attribution NonCommercial 4.0. Modified from original.</li>
           <li><em>Dropping chess pieces on chess board.wav</em> by BiancaBothaPure -- <a class="intro-link" href="https://freesound.org/s/437485/" target="_blank" rel="noreferrer noopener">Freesound</a> -- License: Attribution NonCommercial 4.0. Modified from original.</li>
           <li><em>Placing chess pieces on chess board.wav</em> by BiancaBothaPure -- <a class="intro-link" href="https://freesound.org/s/437484/" target="_blank" rel="noreferrer noopener">Freesound</a> -- License: Attribution NonCommercial 4.0. Modified from original.</li>
+          <li><em>Videogame Menu BUTTON CLICK</em> by Christopherderp -- <a class="intro-link" href="https://freesound.org/s/342200/" target="_blank" rel="noreferrer noopener">Freesound</a> -- License: Creative Commons 0.</li>
         </ul>
       </footer>
     </section>
@@ -87,6 +88,9 @@
     const avatarDescription = document.getElementById("detail-avatar-description");
     const avatarDescriptionContent = document.getElementById("detail-avatar-description-content");
     const avatarArt = document.getElementById("detail-avatar-art");
+    const clickSound = new Audio("../click.mp3");
+    clickSound.preload = "auto";
+    clickSound.volume = 0.28;
     const avatarBackgrounds = {
       katie: "../cat-hint.png",
       james: "../square-hint.png",
@@ -135,12 +139,24 @@
         <strong>Creative:</strong> Give Olivia open-ended creative invitations with generous timelines and no single right form. She might write about the philosophy of dark matter. She might map her synesthetic color landscape onto a piece of music. She might spend two weeks on a single drawing of a black hole and produce something that makes the whole class go quiet. Don't rush the process &mdash; the universe didn't make anything worth looking at quickly.`
     };
 
+    function playClickSound() {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }
+
     avatarTriggers.forEach((trigger) => {
       trigger.addEventListener("click", () => {
+        playClickSound();
         avatarTriggers.forEach((button) => button.classList.remove("is-active"));
         trigger.classList.add("is-active");
         avatarDescriptionContent.innerHTML = avatarProfiles[trigger.dataset.profile] || "";
         avatarArt.src = avatarBackgrounds[trigger.dataset.profile] || "";
+      });
+    });
+
+    document.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        playClickSound();
       });
     });
   </script>

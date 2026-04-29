@@ -43,16 +43,19 @@
         </div>
       </div>
       <div id="detail-avatar-description" class="detail-avatar-description">
-        Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
-        But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
-        She is also a kid who has been burned. Past social experiences have taught her that being herself &mdash; enthusiastic, intense, a little encyclopedic &mdash; can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.<br><br>
-        The goal isn't to fix Katie's social caution or sand down her intensity. It's to build an environment where she doesn't have to choose between being safe and being herself!<br><br>
-        <strong>IDEAS FOR HER:</strong><br><br>
-        <strong>Physical:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
-        <strong>Emotional:</strong> Avoid surprise cold-calls or group sharing without warning. Instead, try: "I'd love to hear your take on this &mdash; want to share it with me first, or with the group?" Let her choose. Trust builds slowly and is lost fast.<br><br>
-        <strong>Academic:</strong> Don't make her prove she knows the basics &mdash; she does, and the repetition is alienating. Give her the harder question underneath the question: "Everyone's arguing about X &mdash; what are they all missing?" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.<br><br>
-        <strong>Social:</strong> She doesn't need a big group &mdash; she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.<br><br>
-        <strong>Creative:</strong> Katie's interests are not distractions &mdash; they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her.
+        <img id="detail-avatar-art" class="detail-avatar-art" src="../cat-hint.png" alt="" aria-hidden="true">
+        <div id="detail-avatar-description-content" class="detail-avatar-description-content">
+          Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
+          But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
+          She is also a kid who has been burned. Past social experiences have taught her that being herself &mdash; enthusiastic, intense, a little encyclopedic &mdash; can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.<br><br>
+          The goal isn't to fix Katie's social caution or sand down her intensity. It's to build an environment where she doesn't have to choose between being safe and being herself!<br><br>
+          <strong>IDEAS FOR HER:</strong><br><br>
+          <strong>Physical:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
+          <strong>Emotional:</strong> Avoid surprise cold-calls or group sharing without warning. Instead, try: "I'd love to hear your take on this &mdash; want to share it with me first, or with the group?" Let her choose. Trust builds slowly and is lost fast.<br><br>
+          <strong>Academic:</strong> Don't make her prove she knows the basics &mdash; she does, and the repetition is alienating. Give her the harder question underneath the question: "Everyone's arguing about X &mdash; what are they all missing?" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.<br><br>
+          <strong>Social:</strong> She doesn't need a big group &mdash; she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.<br><br>
+          <strong>Creative:</strong> Katie's interests are not distractions &mdash; they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her.
+        </div>
       </div>
       <section class="detail-references" aria-labelledby="references-heading">
         <p id="references-heading" class="detail-copy detail-references-heading">References</p>
@@ -81,6 +84,14 @@
   <script>
     const avatarTriggers = document.querySelectorAll(".detail-avatar-trigger");
     const avatarDescription = document.getElementById("detail-avatar-description");
+    const avatarDescriptionContent = document.getElementById("detail-avatar-description-content");
+    const avatarArt = document.getElementById("detail-avatar-art");
+    const avatarBackgrounds = {
+      katie: "../cat-hint.png",
+      james: "../square-hint.png",
+      alex: "../dancer-hint.png",
+      olivia: "../tree-hint.png"
+    };
     const avatarProfiles = {
       katie: `Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
         But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
@@ -127,7 +138,8 @@
       trigger.addEventListener("click", () => {
         avatarTriggers.forEach((button) => button.classList.remove("is-active"));
         trigger.classList.add("is-active");
-        avatarDescription.innerHTML = avatarProfiles[trigger.dataset.profile] || "";
+        avatarDescriptionContent.innerHTML = avatarProfiles[trigger.dataset.profile] || "";
+        avatarArt.src = avatarBackgrounds[trigger.dataset.profile] || "";
       });
     });
   </script>

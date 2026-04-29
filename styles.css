@@ -23,6 +23,18 @@ body {
     linear-gradient(150deg, var(--bg-top), var(--bg-bottom));
 }
 
+.main-credits {
+  padding: 0 24px 24px;
+}
+
+.main-credits p {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(23, 49, 61, 0.72);
+  text-align: center;
+}
+
 button {
   font: inherit;
 }
@@ -651,7 +663,7 @@ h1 {
 
 .detail-page .detail-list {
   margin: 0;
-  padding-left: 40px;
+  padding-left: 0;
   list-style: none;
 }
 
@@ -774,6 +786,10 @@ h1 {
   filter: brightness(1.08);
 }
 
+.detail-page .detail-avatar-description[data-profile="alex"] .detail-avatar-art {
+  width: 80%;
+}
+
 .detail-page .detail-avatar-description-content {
   position: relative;
   z-index: 1;
@@ -787,9 +803,16 @@ h1 {
   border-top: 1px solid rgba(23, 49, 61, 0.14);
 }
 
+.detail-page .detail-credits {
+  margin-top: 80px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 49, 61, 0.14);
+}
+
 .detail-page .detail-references-heading {
   margin-bottom: 10px;
   font-weight: 700;
+  text-align: center;
 }
 
 .detail-page .detail-reference-list {

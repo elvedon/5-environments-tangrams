@@ -72,6 +72,16 @@ h1 {
   max-width: 100%;
 }
 
+.learn-more-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: #d2a637;
+  color: #fff9ef;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);
+}
+
 .intro-copy,
 .board-subtitle,
 #modal-body {
@@ -218,7 +228,7 @@ h1 {
   border: 0;
   border-radius: 999px;
   padding: 12px 18px;
-  background: var(--muted);
+  background: #6f8f95;
   color: #fff9ef;
   cursor: pointer;
   box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);

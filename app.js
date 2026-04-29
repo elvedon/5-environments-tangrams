@@ -160,6 +160,7 @@ const modalTitle = document.getElementById("modal-title");
 const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
 const introLink = document.getElementById("intro-link");
+const introLearnMoreButton = document.getElementById("intro-learn-more-button");
 const modalLinkCopy = document.getElementById("modal-link-copy");
 const modalContinueCopy = document.getElementById("modal-continue-copy");
 const modalContinueLink = document.getElementById("modal-continue-link");
@@ -765,6 +766,10 @@ introLink.addEventListener("click", (event) => {
   event.preventDefault();
   playClickSound();
   openOverviewWindow(event.currentTarget.href);
+});
+introLearnMoreButton.addEventListener("click", () => {
+  playClickSound();
+  openOverviewWindow("details/overview.html");
 });
 modalLink.addEventListener("click", (event) => {
   event.preventDefault();

@@ -719,6 +719,12 @@ h1 {
   margin-bottom: 12px;
 }
 
+.detail-page .detail-sound-credits .detail-references-heading,
+.detail-page .detail-sound-credits .detail-reference-list {
+  font-size: 0.58rem;
+  line-height: 1.25;
+}
+
 @media (max-width: 960px) {
   .app-shell {
     grid-template-columns: 1fr;

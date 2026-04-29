@@ -320,18 +320,7 @@ function closeModal() {
 }
 
 function openOverviewWindow(url) {
-  const popup = window.open(
-    url,
-    "five-environments-overview",
-    "popup=yes,width=960,height=760,resizable=yes,scrollbars=yes"
-  );
-
-  if (!popup) {
-    window.location.href = url;
-    return;
-  }
-
-  popup.focus();
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 function openFirstSolveModal() {
@@ -779,7 +768,9 @@ modal.addEventListener("click", (event) => {
   }
 });
 
-homeLink.addEventListener("click", openImageModal);
+if (homeLink) {
+  homeLink.addEventListener("click", openImageModal);
+}
 closeImageModalButton.addEventListener("click", closeImageModal);
 imageToggleLink.addEventListener("click", toggleImageModalHint);
 imageModalCard.addEventListener("pointerdown", beginImageModalDrag);

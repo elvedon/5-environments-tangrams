@@ -605,7 +605,7 @@ h1 {
   overflow: hidden;
   width: 100%;
   padding: 34px 38px;
-  background: #efe6d8;
+  background: var(--panel);
 }
 
 .detail-page .intro-panel::before {

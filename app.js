@@ -160,7 +160,16 @@ const modalTitle = document.getElementById("modal-title");
 const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
 const introLink = document.getElementById("intro-link");
+const introPhysicalLink = document.getElementById("intro-physical-link");
+const introEmotionalLink = document.getElementById("intro-emotional-link");
+const introSocialLink = document.getElementById("intro-social-link");
+const introAcademicLink = document.getElementById("intro-academic-link");
+const introCreativeLink = document.getElementById("intro-creative-link");
 const introLearnMoreButton = document.getElementById("intro-learn-more-button");
+const introAudio = document.getElementById("intro-audio");
+const introAudioToggle = document.getElementById("intro-audio-toggle");
+const introAudioProgressFill = document.getElementById("intro-audio-progress-fill");
+const introAudioTime = document.getElementById("intro-audio-time");
 const modalLinkCopy = document.getElementById("modal-link-copy");
 const modalContinueCopy = document.getElementById("modal-continue-copy");
 const modalContinueLink = document.getElementById("modal-continue-link");
@@ -295,6 +304,27 @@ function playClickSound() {
   clickSound.play().catch(() => {});
 }
 
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return "0:00";
+  }
+  const whole = Math.floor(seconds);
+  const mins = Math.floor(whole / 60);
+  const secs = whole % 60;
+  return `${mins}:${String(secs).padStart(2, "0")}`;
+}
+
+function updateIntroAudioUi() {
+  if (!introAudio || !introAudioToggle || !introAudioProgressFill || !introAudioTime) {
+    return;
+  }
+
+  const progress = introAudio.duration ? (introAudio.currentTime / introAudio.duration) * 100 : 0;
+  introAudioProgressFill.style.width = `${progress}%`;
+  introAudioTime.textContent = formatTime(introAudio.currentTime);
+  introAudioToggle.textContent = introAudio.paused ? "Play Audio" : "Pause Audio";
+}
+
 function applyPieceTransform(element, state) {
   element.style.left = `${state.x}px`;
   element.style.top = `${state.y}px`;
@@ -320,6 +350,15 @@ function openModal(piece) {
   modalBody.innerHTML = piece.info;
   modalLink.href = piece.learnMoreHref;
   modalLinkCopy.classList.remove("hidden");
+  modalContinueCopy.classList.add("hidden");
+  modal.classList.remove("hidden");
+}
+
+function openCustomModal(title, html, href = "", showReadMore = false) {
+  modalTitle.textContent = title;
+  modalBody.innerHTML = html;
+  modalLink.href = href || "#";
+  modalLinkCopy.classList.toggle("hidden", !showReadMore);
   modalContinueCopy.classList.add("hidden");
   modal.classList.remove("hidden");
 }
@@ -767,6 +806,46 @@ introLink.addEventListener("click", (event) => {
   playClickSound();
   openOverviewWindow(event.currentTarget.href);
 });
+introPhysicalLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  playClickSound();
+  openCustomModal(
+    "Physical",
+    'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).'
+  );
+});
+introEmotionalLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  playClickSound();
+  openCustomModal(
+    "Emotional",
+    'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).'
+  );
+});
+introSocialLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  playClickSound();
+  openCustomModal(
+    "Social",
+    'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).'
+  );
+});
+introAcademicLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  playClickSound();
+  openCustomModal(
+    "Academic",
+    'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).'
+  );
+});
+introCreativeLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  playClickSound();
+  openCustomModal(
+    "Creative",
+    'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).'
+  );
+});
 introLearnMoreButton.addEventListener("click", () => {
   playClickSound();
   openOverviewWindow("details/overview.html");
@@ -834,6 +913,23 @@ resetButton.addEventListener("click", () => {
   buildPieces();
 });
 solveButton.addEventListener("click", solveCurrentPattern);
+
+if (introAudio && introAudioToggle) {
+  introAudioToggle.addEventListener("click", () => {
+    playClickSound();
+    if (introAudio.paused) {
+      introAudio.play().catch(() => {});
+    } else {
+      introAudio.pause();
+    }
+  });
+  introAudio.addEventListener("timeupdate", updateIntroAudioUi);
+  introAudio.addEventListener("loadedmetadata", updateIntroAudioUi);
+  introAudio.addEventListener("play", updateIntroAudioUi);
+  introAudio.addEventListener("pause", updateIntroAudioUi);
+  introAudio.addEventListener("ended", updateIntroAudioUi);
+  updateIntroAudioUi();
+}
 
 buildAvatarStrip();
 buildPieces();

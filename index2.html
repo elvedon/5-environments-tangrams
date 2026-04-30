@@ -141,10 +141,14 @@
     }
 
     .index2-page .modal.index2-ideas-open {
-      background: rgba(17, 36, 43, 0.18);
+      background: transparent;
     }
 
     .index2-page .info-modal-card.is-ideas-modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: min(760px, 100%);
       max-height: min(82vh, 900px);
       overflow: auto;
@@ -152,6 +156,12 @@
       background: rgba(255, 249, 238, 0.62);
       backdrop-filter: blur(5px);
       box-shadow: 0 24px 60px rgba(23, 49, 61, 0.12);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .index2-page .info-modal-card.is-ideas-modal.dragging {
+      cursor: grabbing;
     }
 
     .index2-page .info-modal-card.is-ideas-modal #modal-body {
@@ -161,6 +171,10 @@
 
     .index2-page .board.is-solved .index2-target-image {
       opacity: 0.42;
+    }
+
+    .index2-page .board.showing-solution .index2-target-image {
+      opacity: 0;
     }
 
     .index2-page .tips-list li + li {
@@ -240,7 +254,7 @@
   <main class="app-shell">
     <section class="intro-panel">
       <p class="eyebrow">Interactive</p>
-      <h1>The Five Environments</h1>
+      <h1 id="page-title">The Five Environments</h1>
       <div class="intro-audio-player">
         <button id="intro-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play introduction audio">Play Audio</button>
         <div class="intro-audio-meta">
@@ -551,6 +565,7 @@
     const solveOverlayImage = document.getElementById("solve-overlay-image");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
     const introLink = document.getElementById("intro-link");
+    const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
     const introAudioPlayer = document.querySelector(".intro-audio-player");
     const introAudioToggle = document.getElementById("intro-audio-toggle");
@@ -595,9 +610,11 @@
     let showMaskDebug = false;
     let highestZ = 20;
     let activePointer = null;
+    let modalDrag = null;
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
+    const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
 
@@ -647,12 +664,24 @@
 
     function openCustomModal(title, html, options = {}) {
       const modalVariant = options.modalVariant || "";
+      const modalCard = modal.querySelector(".modal-card");
       persistentIdeasModal = modalVariant === "ideas";
       modalTitle.textContent = title;
       modalBody.innerHTML = html;
       modalLink.href = options.href || "details/overview.html";
       setModalArt(options.environmentKey || "");
-      modal.querySelector(".modal-card").classList.toggle("is-ideas-modal", modalVariant === "ideas");
+      modal.classList.toggle("index2-ideas-open", modalVariant === "ideas");
+      modalCard.classList.toggle("is-ideas-modal", modalVariant === "ideas");
+      modalCard.classList.remove("dragging");
+      if (modalVariant === "ideas") {
+        modalCard.style.left = "50%";
+        modalCard.style.top = "50%";
+        modalCard.style.transform = "translate(-50%, -50%)";
+      } else {
+        modalCard.style.left = "";
+        modalCard.style.top = "";
+        modalCard.style.transform = "";
+      }
       modalArt.classList.toggle("hidden", modalVariant === "ideas");
       modalLinkCopy.classList.toggle("hidden", !options.showReadMore);
       modalContinueCopy.classList.add("hidden");
@@ -664,10 +693,64 @@
     }
 
     function forceCloseModal() {
-      modal.querySelector(".modal-card").classList.remove("is-ideas-modal");
+      const modalCard = modal.querySelector(".modal-card");
+      modal.classList.remove("index2-ideas-open");
+      modalCard.classList.remove("is-ideas-modal", "dragging");
+      modalCard.style.left = "";
+      modalCard.style.top = "";
+      modalCard.style.transform = "";
       modalArt.classList.remove("hidden");
       persistentIdeasModal = false;
+      modalDrag = null;
       modal.classList.add("hidden");
+    }
+
+    function startIdeasModalDrag(event) {
+      const modalCard = modal.querySelector(".modal-card");
+      if (!persistentIdeasModal || !modalCard.classList.contains("is-ideas-modal")) {
+        return;
+      }
+      if (event.button !== 0) {
+        return;
+      }
+      if (event.target.closest("button, a")) {
+        return;
+      }
+      event.preventDefault();
+      const rect = modalCard.getBoundingClientRect();
+      modalDrag = {
+        pointerId: event.pointerId,
+        offsetX: event.clientX - rect.left,
+        offsetY: event.clientY - rect.top
+      };
+      modalCard.classList.add("dragging");
+      modalCard.style.transform = "none";
+      modalCard.style.left = `${rect.left}px`;
+      modalCard.style.top = `${rect.top}px`;
+      modalCard.setPointerCapture?.(event.pointerId);
+    }
+
+    function moveIdeasModalDrag(event) {
+      const modalCard = modal.querySelector(".modal-card");
+      if (!modalDrag || modalDrag.pointerId !== event.pointerId) {
+        return;
+      }
+      const maxLeft = Math.max(window.innerWidth - modalCard.offsetWidth - 12, 12);
+      const maxTop = Math.max(window.innerHeight - modalCard.offsetHeight - 12, 12);
+      const nextLeft = Math.min(Math.max(event.clientX - modalDrag.offsetX, 12), maxLeft);
+      const nextTop = Math.min(Math.max(event.clientY - modalDrag.offsetY, 12), maxTop);
+      modalCard.style.left = `${nextLeft}px`;
+      modalCard.style.top = `${nextTop}px`;
+    }
+
+    function endIdeasModalDrag(event) {
+      const modalCard = modal.querySelector(".modal-card");
+      if (!modalDrag || modalDrag.pointerId !== event.pointerId) {
+        return;
+      }
+      modalCard.classList.remove("dragging");
+      modalCard.releasePointerCapture?.(event.pointerId);
+      modalDrag = null;
     }
 
     function deriveSolveImageFromSource(imageSrc) {
@@ -702,9 +785,11 @@
     }
 
     function setSidebarContent(title, html) {
-      sidebarSubheading.textContent = title;
-      sidebarCopy.innerHTML = html;
       const isIntro = title === defaultSidebarTitle;
+      pageTitle.textContent = isIntro ? defaultPageTitle : `${title}'s Learning Profile`;
+      sidebarSubheading.textContent = isIntro ? defaultSidebarTitle : "";
+      sidebarSubheading.classList.toggle("hidden", !isIntro);
+      sidebarCopy.innerHTML = html;
       if (introAudioPlayer) {
         introAudioPlayer.classList.toggle("hidden", !isIntro);
       }
@@ -715,6 +800,13 @@
 
     function resetSidebarContent() {
       setSidebarContent(defaultSidebarTitle, defaultSidebarHtml);
+    }
+
+    function stripIdeasSection(html) {
+      if (!html) {
+        return "";
+      }
+      return html.split(/<strong>IDEAS FOR[^<]*:<\/strong>/i)[0].replace(/(<br><br>\s*)+$/i, "");
     }
 
     function buildAvatarStrip() {
@@ -749,7 +841,7 @@
           if (!activeStudent || activeStudent.id !== student.id) {
             selectStudent(student.id);
           }
-          setSidebarContent(student.name, student.sidebarHtml);
+          setSidebarContent(student.name, stripIdeasSection(student.sidebarHtml));
         });
         avatarStrip.appendChild(chip);
       });
@@ -1318,6 +1410,10 @@
     });
 
     closeModalButton.addEventListener("click", closeModal);
+    modal.querySelector(".modal-card").addEventListener("pointerdown", startIdeasModalDrag);
+    window.addEventListener("pointermove", moveIdeasModalDrag);
+    window.addEventListener("pointerup", endIdeasModalDrag);
+    window.addEventListener("pointercancel", endIdeasModalDrag);
     modal.addEventListener("click", (event) => {
       if (event.target === modal && !persistentIdeasModal) {
         closeModal();

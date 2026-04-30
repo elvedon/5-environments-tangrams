@@ -12,6 +12,17 @@
     <section class="intro-panel">
       <p class="eyebrow">Learn More</p>
       <h1>The Five Environments</h1>
+      <div class="intro-audio-player">
+        <button id="detail-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play overview audio">Play Audio</button>
+        <div class="intro-audio-meta">
+          <div class="intro-audio-track">Overview Audio</div>
+          <div class="intro-audio-progress">
+            <div id="detail-audio-progress-fill" class="intro-audio-progress-fill"></div>
+          </div>
+        </div>
+        <div id="detail-audio-time" class="intro-audio-time">0:00</div>
+        <audio id="detail-audio" preload="metadata" src="../environments.mp3"></audio>
+      </div>
       <p class="intro-copy">
         Learning doesn't happen in a vacuum &mdash; it emerges from the environment. In a strengths-based classroom, the conditions that surround a student are just as important as the curriculum in front of them. These five environments are not fixed structures handed down by a school or a system; they are the pieces &mdash; and teachers and students arrange them together, deliberately. There is no default configuration. There is only the one that fits.
       </p>
@@ -112,6 +123,10 @@
     </section>
   </main>
   <script>
+    const detailAudio = document.getElementById("detail-audio");
+    const detailAudioToggle = document.getElementById("detail-audio-toggle");
+    const detailAudioProgressFill = document.getElementById("detail-audio-progress-fill");
+    const detailAudioTime = document.getElementById("detail-audio-time");
     const avatarTriggers = document.querySelectorAll(".detail-avatar-trigger");
     const avatarDescription = document.getElementById("detail-avatar-description");
     const avatarDescriptionContent = document.getElementById("detail-avatar-description-content");
@@ -169,6 +184,44 @@
     function playClickSound() {
       clickSound.currentTime = 0;
       clickSound.play().catch(() => {});
+    }
+
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds) || seconds < 0) {
+        return "0:00";
+      }
+      const whole = Math.floor(seconds);
+      const mins = Math.floor(whole / 60);
+      const secs = whole % 60;
+      return `${mins}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function updateDetailAudioUi() {
+      if (!detailAudio || !detailAudioToggle || !detailAudioProgressFill || !detailAudioTime) {
+        return;
+      }
+
+      const progress = detailAudio.duration ? (detailAudio.currentTime / detailAudio.duration) * 100 : 0;
+      detailAudioProgressFill.style.width = `${progress}%`;
+      detailAudioTime.textContent = formatTime(detailAudio.currentTime);
+      detailAudioToggle.textContent = detailAudio.paused ? "Play Audio" : "Pause Audio";
+    }
+
+    if (detailAudio && detailAudioToggle) {
+      detailAudioToggle.addEventListener("click", () => {
+        playClickSound();
+        if (detailAudio.paused) {
+          detailAudio.play().catch(() => {});
+        } else {
+          detailAudio.pause();
+        }
+      });
+      detailAudio.addEventListener("timeupdate", updateDetailAudioUi);
+      detailAudio.addEventListener("loadedmetadata", updateDetailAudioUi);
+      detailAudio.addEventListener("play", updateDetailAudioUi);
+      detailAudio.addEventListener("pause", updateDetailAudioUi);
+      detailAudio.addEventListener("ended", updateDetailAudioUi);
+      updateDetailAudioUi();
     }
 
     avatarTriggers.forEach((trigger) => {

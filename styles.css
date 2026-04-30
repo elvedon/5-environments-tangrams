@@ -58,7 +58,7 @@ button {
 
 .intro-panel {
   padding: 28px;
-  align-self: start;
+  min-height: 640px;
 }
 
 
@@ -318,7 +318,7 @@ h1 {
 .board {
   position: relative;
   overflow: hidden;
-  min-height: 720px;
+  min-height: 640px;
   border-radius: 24px;
   border: 1px solid rgba(23, 49, 61, 0.08);
   background:
@@ -554,6 +554,59 @@ h1 {
   box-shadow: 0 20px 50px rgba(17, 36, 43, 0.25);
 }
 
+.info-modal-card {
+  width: min(540px, 100%);
+  padding: 26px 24px 22px;
+  border: 1px solid rgba(23, 49, 61, 0.12);
+  background: rgba(255, 249, 238, 0.98);
+  box-shadow: 0 24px 60px rgba(23, 49, 61, 0.18);
+  overflow: hidden;
+}
+
+.info-modal-card > *:not(.modal-art) {
+  position: relative;
+  z-index: 1;
+}
+
+.info-modal-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.info-modal-card #modal-body {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.info-modal-card .modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  left: auto;
+  font-size: 1.7rem;
+  color: var(--muted);
+}
+
+.modal-art {
+  position: absolute;
+  inset: 0;
+  width: 180px;
+  height: 180px;
+  margin: auto;
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.modal-art polygon {
+  fill: currentColor;
+}
+
 .image-modal-card {
   position: absolute;
   width: min(320px, 100%);
@@ -666,6 +719,7 @@ h1 {
   position: absolute;
   top: 10px;
   right: 12px;
+  z-index: 2;
   border: 0;
   background: transparent;
   font-size: 2rem;
@@ -727,11 +781,79 @@ h1 {
 }
 
 .detail-page .detail-list li {
+  position: relative;
   margin-bottom: 16px;
   padding: 14px 16px;
   padding-left: 18px;
   border-radius: 16px;
   border: 1px solid rgba(23, 49, 61, 0.08);
+  overflow: hidden;
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.detail-page .detail-list li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12), inset 0 0 0 999px rgba(255, 255, 255, 0.08);
+  filter: saturate(1.14);
+}
+
+.detail-page .detail-env-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.detail-page .detail-env-art {
+  position: absolute;
+  top: 50%;
+  width: 104px;
+  height: 104px;
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.detail-page .detail-env-art polygon {
+  fill: currentColor;
+}
+
+.detail-page .detail-env-art-right {
+  right: 12px;
+  transform: translateY(-50%);
+}
+
+.detail-page .detail-env-art-left {
+  left: 12px;
+  transform: translateY(-50%);
+}
+
+.detail-page #env-physical .detail-env-copy,
+.detail-page #env-social .detail-env-copy,
+.detail-page #env-creative .detail-env-copy {
+  max-width: calc(100% - 136px);
+}
+
+.detail-page #env-emotional .detail-env-copy,
+.detail-page #env-academic .detail-env-copy {
+  margin-left: 136px;
+}
+
+.detail-page #env-emotional .detail-env-art {
+  width: 92px;
+  height: 92px;
+}
+
+.detail-page #env-creative .detail-env-art {
+  width: 92px;
+  height: 92px;
+  right: 8px;
+}
+
+.detail-page .detail-list li:hover .detail-env-art-right {
+  transform: translateY(-50%) scale(1.04);
+}
+
+.detail-page .detail-list li:hover .detail-env-art-left {
+  transform: translateY(-50%) scale(1.04);
 }
 
 .detail-page #env-physical {
@@ -904,7 +1026,11 @@ h1 {
   }
 
   .board {
-    min-height: 620px;
+    min-height: 560px;
+  }
+
+  .intro-panel {
+    min-height: 560px;
   }
 
   .board-header {
@@ -935,7 +1061,11 @@ h1 {
   }
 
   .board {
-    min-height: 560px;
+    min-height: 500px;
+  }
+
+  .intro-panel {
+    min-height: 500px;
   }
 
   .piece {

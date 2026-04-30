@@ -13,7 +13,7 @@
       --border: rgba(23, 49, 61, 0.12);
       --shadow: 0 16px 40px rgba(23, 49, 61, 0.08);
       --cream: #fffdf8;
-      --overview-surface: #fffdf8;
+      --overview-surface: #fffefc;
       --physical: rgba(215, 108, 73, 0.1);
       --emotional: rgba(140, 94, 159, 0.1);
       --social: rgba(62, 155, 107, 0.1);
@@ -70,7 +70,7 @@
 
     .student-tabs-shell {
       display: grid;
-      grid-template-columns: 170px minmax(0, 1fr);
+      grid-template-columns: 216px minmax(0, 1fr);
       align-items: end;
       margin-bottom: 0;
     }
@@ -143,7 +143,7 @@
       overflow-x: auto;
       border: 1px solid var(--border);
       border-top-color: transparent;
-      border-radius: 24px;
+      border-radius: 24px 0 24px 24px;
       background: rgba(255, 255, 255, 0.66);
     }
 
@@ -151,6 +151,10 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
+    }
+
+    .student-table col:first-child {
+      width: 216px;
     }
 
     .student-table th,
@@ -166,7 +170,7 @@
     }
 
     .student-table th {
-      width: 170px;
+      width: 216px;
       text-align: left;
       font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
       font-size: 0.9rem;
@@ -174,6 +178,10 @@
       color: var(--ink);
       position: relative;
       overflow: hidden;
+    }
+
+    .env-cell {
+      cursor: pointer;
     }
 
     .env-cell-content {
@@ -262,6 +270,21 @@
     .row-creative th,
     .row-creative td { background: var(--creative); }
 
+    .student-table tbody tr:not(.row-overview) {
+      transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+    }
+
+    .student-table tbody tr:not(.row-overview):hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12), inset 0 0 0 999px rgba(255, 255, 255, 0.08);
+      filter: saturate(1.14);
+    }
+
+    .student-table tbody tr:not(.row-overview):hover .env-cell-art {
+      opacity: 0.28;
+      transform: scale(1.04);
+    }
+
     .student-table strong {
       color: #8d5a31;
     }
@@ -303,12 +326,13 @@
 
     .table-modal-card {
       position: relative;
-      width: min(460px, 100%);
+      width: min(540px, 100%);
       padding: 26px 24px 22px;
       border-radius: 24px;
       border: 1px solid rgba(23, 49, 61, 0.12);
       background: rgba(255, 249, 238, 0.98);
       box-shadow: 0 24px 60px rgba(23, 49, 61, 0.18);
+      overflow: hidden;
     }
 
     .table-modal-close {
@@ -330,6 +354,8 @@
     }
 
     .table-modal-body {
+      position: relative;
+      z-index: 1;
       margin: 0;
       font-size: 0.92rem;
       line-height: 1.7;
@@ -338,6 +364,21 @@
 
     .table-modal-body .accent-emphasis {
       color: #8d5a31;
+    }
+
+    .table-modal-art {
+      position: absolute;
+      inset: 0;
+      width: 170px;
+      height: 170px;
+      margin: auto;
+      opacity: 0.16;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .table-modal-art polygon {
+      fill: currentColor;
     }
 
     @media (max-width: 860px) {
@@ -355,11 +396,11 @@
       }
 
       .student-tabs-shell {
-        grid-template-columns: 128px minmax(0, 1fr);
+        grid-template-columns: 164px minmax(0, 1fr);
       }
 
       .student-table th {
-        width: 128px;
+        width: 164px;
       }
     }
 
@@ -413,13 +454,17 @@
 
     <div id="student-table-panel" class="student-table-wrap" role="tabpanel">
       <table class="student-table">
+        <colgroup>
+          <col>
+          <col>
+        </colgroup>
         <tbody>
           <tr class="row-overview">
             <th id="profile-label-cell" scope="row"><span class="env-label-static">STUDENT PROFILE</span></th>
             <td id="cell-overview"></td>
           </tr>
           <tr class="row-physical">
-            <th scope="row">
+            <th class="env-cell" scope="row" data-environment="physical">
               <svg class="env-cell-art" viewBox="0 0 210 210" aria-hidden="true" style="color:#d76c49;">
                 <polygon points="0,210 0,0 210,210"></polygon>
               </svg>
@@ -431,7 +476,7 @@
             <td id="cell-physical"></td>
           </tr>
           <tr class="row-emotional">
-            <th scope="row">
+            <th class="env-cell" scope="row" data-environment="emotional">
               <svg class="env-cell-art" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f; transform: rotate(50deg);">
                 <polygon points="0,148.5 0,0 148.5,148.5"></polygon>
               </svg>
@@ -443,7 +488,7 @@
             <td id="cell-emotional"></td>
           </tr>
           <tr class="row-social">
-            <th scope="row">
+            <th class="env-cell" scope="row" data-environment="social">
               <svg class="env-cell-art" viewBox="0 0 105 105" aria-hidden="true" style="color:#3e9b6b;">
                 <polygon points="0,0 105,0 105,105 0,105"></polygon>
               </svg>
@@ -455,7 +500,7 @@
             <td id="cell-social"></td>
           </tr>
           <tr class="row-academic">
-            <th scope="row">
+            <th class="env-cell" scope="row" data-environment="academic">
               <svg class="env-cell-art" viewBox="0 0 210 105" aria-hidden="true" style="color:#d2a637; width: 116px; height: 116px;">
                 <polygon points="0,105 105,0 210,0 105,105"></polygon>
               </svg>
@@ -467,7 +512,7 @@
             <td id="cell-academic"></td>
           </tr>
           <tr class="row-creative">
-            <th scope="row">
+            <th class="env-cell" scope="row" data-environment="creative">
               <svg class="env-cell-art" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8; transform: rotate(90deg);">
                 <polygon points="0,210 0,0 210,210"></polygon>
               </svg>
@@ -485,6 +530,7 @@
 
   <div id="table-modal" class="table-modal hidden" role="dialog" aria-modal="true" aria-labelledby="table-modal-title">
     <div class="table-modal-card">
+      <div id="table-modal-art" class="table-modal-art" aria-hidden="true"></div>
       <button id="table-modal-close" class="table-modal-close" type="button" aria-label="Close definition popup">×</button>
       <h2 id="table-modal-title" class="table-modal-title"></h2>
       <p id="table-modal-body" class="table-modal-body"></p>
@@ -496,29 +542,35 @@
     clickSound.preload = "auto";
     clickSound.volume = 0.28;
     const modal = document.getElementById("table-modal");
+    const modalArt = document.getElementById("table-modal-art");
     const modalTitle = document.getElementById("table-modal-title");
     const modalBody = document.getElementById("table-modal-body");
     const modalClose = document.getElementById("table-modal-close");
     const environmentDefinitions = {
       physical: {
         title: "Physical",
-        body: 'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).'
+        body: 'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).',
+        art: '<svg viewBox="0 0 210 210" style="color:#d76c49; width:100%; height:100%;"><polygon points="0,210 0,0 210,210"></polygon></svg>'
       },
       emotional: {
         title: "Emotional",
-        body: 'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).'
+        body: 'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).',
+        art: '<svg viewBox="0 0 148.5 148.5" style="color:#8c5e9f; width:100%; height:100%; transform:rotate(50deg);"><polygon points="0,148.5 0,0 148.5,148.5"></polygon></svg>'
       },
       social: {
         title: "Social",
-        body: 'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).'
+        body: 'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).',
+        art: '<svg viewBox="0 0 105 105" style="color:#3e9b6b; width:100%; height:100%;"><polygon points="0,0 105,0 105,105 0,105"></polygon></svg>'
       },
       academic: {
         title: "Academic",
-        body: 'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).'
+        body: 'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).',
+        art: '<svg viewBox="0 0 210 105" style="color:#d2a637; width:100%; height:100%;"><polygon points="0,105 105,0 210,0 105,105"></polygon></svg>'
       },
       creative: {
         title: "Creative",
-        body: 'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).'
+        body: 'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).',
+        art: '<svg viewBox="0 0 210 210" style="color:#4d88a8; width:100%; height:100%; transform:rotate(90deg);"><polygon points="0,210 0,0 210,210"></polygon></svg>'
       }
     };
 
@@ -587,6 +639,7 @@
 
     const tabs = document.querySelectorAll(".student-tab");
     const envLinks = document.querySelectorAll(".env-link");
+    const envCells = document.querySelectorAll(".env-cell");
     const profileLabelCell = document.getElementById("profile-label-cell");
 
     function playClickSound() {
@@ -599,6 +652,7 @@
       if (!definition) return;
       modalTitle.textContent = definition.title;
       modalBody.innerHTML = definition.body;
+      modalArt.innerHTML = definition.art || "";
       modal.classList.remove("hidden");
     }
 
@@ -647,9 +701,17 @@
     });
 
     envLinks.forEach((link) => {
-      link.addEventListener("click", () => {
+      link.addEventListener("click", (event) => {
+        event.stopPropagation();
         playClickSound();
         openEnvironmentModal(link.dataset.environment);
+      });
+    });
+
+    envCells.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        playClickSound();
+        openEnvironmentModal(cell.dataset.environment);
       });
     });
 

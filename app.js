@@ -156,6 +156,7 @@ const pieces = [
 const board = document.getElementById("board");
 const pieceTemplate = document.getElementById("piece-template");
 const modal = document.getElementById("info-modal");
+const modalArt = document.getElementById("modal-art");
 const modalTitle = document.getElementById("modal-title");
 const modalBody = document.getElementById("modal-body");
 const modalLink = document.getElementById("modal-link");
@@ -220,6 +221,13 @@ let avatarModalShowingHint = false;
 let activeAvatar = null;
 let activeSolveImage = "";
 let hasShownFirstSolveMessage = false;
+const modalArtByEnvironment = {
+  physical: '<svg viewBox="0 0 210 210" style="color:#d76c49; width:100%; height:100%;"><polygon points="0,210 0,0 210,210"></polygon></svg>',
+  emotional: '<svg viewBox="0 0 148.5 148.5" style="color:#8c5e9f; width:100%; height:100%; transform:rotate(50deg);"><polygon points="0,148.5 0,0 148.5,148.5"></polygon></svg>',
+  social: '<svg viewBox="0 0 105 105" style="color:#3e9b6b; width:100%; height:100%;"><polygon points="0,0 105,0 105,105 0,105"></polygon></svg>',
+  academic: '<svg viewBox="0 0 210 105" style="color:#d2a637; width:100%; height:100%;"><polygon points="0,105 105,0 210,0 105,105"></polygon></svg>',
+  creative: '<svg viewBox="0 0 210 210" style="color:#4d88a8; width:100%; height:100%; transform:rotate(90deg);"><polygon points="0,210 0,0 210,210"></polygon></svg>'
+};
 
 function labelFromFilename(filename) {
   const stem = filename.replace(/\.[^.]+$/, "");
@@ -345,19 +353,26 @@ function bringToFront(element) {
   element.style.zIndex = String(highestZ);
 }
 
+function setModalArt(environmentKey = "") {
+  if (!modalArt) return;
+  modalArt.innerHTML = modalArtByEnvironment[environmentKey] || "";
+}
+
 function openModal(piece) {
   modalTitle.textContent = piece.label;
   modalBody.innerHTML = piece.info;
   modalLink.href = piece.learnMoreHref;
+  setModalArt(piece.id);
   modalLinkCopy.classList.remove("hidden");
   modalContinueCopy.classList.add("hidden");
   modal.classList.remove("hidden");
 }
 
-function openCustomModal(title, html, href = "", showReadMore = false) {
+function openCustomModal(title, html, href = "", showReadMore = false, environmentKey = "") {
   modalTitle.textContent = title;
   modalBody.innerHTML = html;
   modalLink.href = href || "#";
+  setModalArt(environmentKey);
   modalLinkCopy.classList.toggle("hidden", !showReadMore);
   modalContinueCopy.classList.add("hidden");
   modal.classList.remove("hidden");
@@ -374,6 +389,7 @@ function openOverviewWindow(url) {
 function openFirstSolveModal() {
   modalTitle.textContent = "Feeling frustrated?";
   modalBody.textContent = "Getting the five environments right for a student rarely happens immediately. It requires ongoing attention, adjustment, and persistence.";
+  setModalArt("");
   modalLinkCopy.classList.add("hidden");
   modalContinueCopy.classList.remove("hidden");
   modal.classList.remove("hidden");
@@ -811,7 +827,10 @@ introPhysicalLink.addEventListener("click", (event) => {
   playClickSound();
   openCustomModal(
     "Physical",
-    'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).'
+    'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).',
+    "",
+    false,
+    "physical"
   );
 });
 introEmotionalLink.addEventListener("click", (event) => {
@@ -819,7 +838,10 @@ introEmotionalLink.addEventListener("click", (event) => {
   playClickSound();
   openCustomModal(
     "Emotional",
-    'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).'
+    'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).',
+    "",
+    false,
+    "emotional"
   );
 });
 introSocialLink.addEventListener("click", (event) => {
@@ -827,7 +849,10 @@ introSocialLink.addEventListener("click", (event) => {
   playClickSound();
   openCustomModal(
     "Social",
-    'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).'
+    'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).',
+    "",
+    false,
+    "social"
   );
 });
 introAcademicLink.addEventListener("click", (event) => {
@@ -835,7 +860,10 @@ introAcademicLink.addEventListener("click", (event) => {
   playClickSound();
   openCustomModal(
     "Academic",
-    'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).'
+    'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).',
+    "",
+    false,
+    "academic"
   );
 });
 introCreativeLink.addEventListener("click", (event) => {
@@ -843,7 +871,10 @@ introCreativeLink.addEventListener("click", (event) => {
   playClickSound();
   openCustomModal(
     "Creative",
-    'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).'
+    'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).',
+    "",
+    false,
+    "creative"
   );
 });
 introLearnMoreButton.addEventListener("click", () => {

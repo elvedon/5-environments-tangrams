@@ -266,6 +266,17 @@
         <div id="intro-audio-time" class="intro-audio-time">0:00</div>
         <audio id="intro-audio" preload="metadata" src="index-intro-TTS.mp3"></audio>
       </div>
+      <div id="katie-audio-player" class="intro-audio-player hidden">
+        <button id="katie-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play Katie profile audio">Play Audio</button>
+        <div class="intro-audio-meta">
+          <div class="intro-audio-track">Katie Audio</div>
+          <div class="intro-audio-progress">
+            <div id="katie-audio-progress-fill" class="intro-audio-progress-fill"></div>
+          </div>
+        </div>
+        <div id="katie-audio-time" class="intro-audio-time">0:00</div>
+        <audio id="katie-audio" preload="metadata" src="katie-profile.mp3"></audio>
+      </div>
       <h2 id="sidebar-subheading" class="sidebar-subheading">Introduction</h2>
       <div id="sidebar-copy" class="intro-copy">
         <p>
@@ -281,8 +292,10 @@
           Explore the five environments here. Arrange, rotate, and reconfigure &mdash; and click on the student profiles to see how the pieces come together differently for every student.
         </p>
       </div>
-      <p class="intro-link-copy"><a id="intro-link" class="intro-link" href="details/overview.html" target="_blank" rel="noreferrer noopener">Click here to read more about how the five environments help Katie, James, Alex, and Olivia learn.</a></p>
-      <p class="intro-link-copy"><a class="intro-link" href="table.html" target="_blank" rel="noreferrer noopener">TEST also see the student learning info as an interactive table.</a></p>
+      <div id="intro-sidebar-links">
+        <p class="intro-link-copy"><a id="intro-link" class="intro-link" href="details/overview.html" target="_blank" rel="noreferrer noopener">Click here to read more about how the five environments help Katie, James, Alex, and Olivia learn.</a></p>
+        <p class="intro-link-copy"><a class="intro-link" href="table.html" target="_blank" rel="noreferrer noopener">TEST also see the student learning info as an interactive table.</a></p>
+      </div>
     </section>
 
     <section class="game-panel">
@@ -571,6 +584,11 @@
     const introAudioToggle = document.getElementById("intro-audio-toggle");
     const introAudioProgressFill = document.getElementById("intro-audio-progress-fill");
     const introAudioTime = document.getElementById("intro-audio-time");
+    const katieAudio = document.getElementById("katie-audio");
+    const katieAudioPlayer = document.getElementById("katie-audio-player");
+    const katieAudioToggle = document.getElementById("katie-audio-toggle");
+    const katieAudioProgressFill = document.getElementById("katie-audio-progress-fill");
+    const katieAudioTime = document.getElementById("katie-audio-time");
     const introPhysicalLink = document.getElementById("intro-physical-link");
     const introEmotionalLink = document.getElementById("intro-emotional-link");
     const introSocialLink = document.getElementById("intro-social-link");
@@ -578,6 +596,7 @@
     const introCreativeLink = document.getElementById("intro-creative-link");
     const sidebarSubheading = document.getElementById("sidebar-subheading");
     const sidebarCopy = document.getElementById("sidebar-copy");
+    const introSidebarLinks = document.getElementById("intro-sidebar-links");
     const modal = document.getElementById("info-modal");
     const modalArt = document.getElementById("modal-art");
     const modalTitle = document.getElementById("modal-title");
@@ -648,14 +667,22 @@
       return `${mins}:${String(secs).padStart(2, "0")}`;
     }
 
-    function updateIntroAudioUi() {
-      if (!introAudio || !introAudioToggle || !introAudioProgressFill || !introAudioTime) {
+    function updateAudioPlayerUi(audio, toggle, progressFill, timeLabel) {
+      if (!audio || !toggle || !progressFill || !timeLabel) {
         return;
       }
-      const progress = introAudio.duration ? (introAudio.currentTime / introAudio.duration) * 100 : 0;
-      introAudioProgressFill.style.width = `${progress}%`;
-      introAudioTime.textContent = formatTime(introAudio.currentTime);
-      introAudioToggle.textContent = introAudio.paused ? "Play Audio" : "Pause Audio";
+      const progress = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      progressFill.style.width = `${progress}%`;
+      timeLabel.textContent = formatTime(audio.currentTime);
+      toggle.textContent = audio.paused ? "Play Audio" : "Pause Audio";
+    }
+
+    function updateIntroAudioUi() {
+      updateAudioPlayerUi(introAudio, introAudioToggle, introAudioProgressFill, introAudioTime);
+    }
+
+    function updateKatieAudioUi() {
+      updateAudioPlayerUi(katieAudio, katieAudioToggle, katieAudioProgressFill, katieAudioTime);
     }
 
     function setModalArt(environmentKey = "") {
@@ -674,7 +701,8 @@
       modalCard.classList.toggle("is-ideas-modal", modalVariant === "ideas");
       modalCard.classList.remove("dragging");
       if (modalVariant === "ideas") {
-        modalCard.style.left = "50%";
+        const boardRect = board.getBoundingClientRect();
+        modalCard.style.left = `${boardRect.left + boardRect.width / 2}px`;
         modalCard.style.top = "50%";
         modalCard.style.transform = "translate(-50%, -50%)";
       } else {
@@ -786,6 +814,7 @@
 
     function setSidebarContent(title, html) {
       const isIntro = title === defaultSidebarTitle;
+      const isKatie = title === "Katie";
       pageTitle.textContent = isIntro ? defaultPageTitle : `${title}'s Learning Profile`;
       sidebarSubheading.textContent = isIntro ? defaultSidebarTitle : "";
       sidebarSubheading.classList.toggle("hidden", !isIntro);
@@ -793,8 +822,17 @@
       if (introAudioPlayer) {
         introAudioPlayer.classList.toggle("hidden", !isIntro);
       }
+      if (katieAudioPlayer) {
+        katieAudioPlayer.classList.toggle("hidden", !isKatie);
+      }
+      if (introSidebarLinks) {
+        introSidebarLinks.classList.toggle("hidden", !isIntro);
+      }
       if (!isIntro && introAudio && !introAudio.paused) {
         introAudio.pause();
+      }
+      if (!isKatie && katieAudio && !katieAudio.paused) {
+        katieAudio.pause();
       }
     }
 
@@ -1371,6 +1409,21 @@
     introAudio.addEventListener("pause", updateIntroAudioUi);
     introAudio.addEventListener("ended", updateIntroAudioUi);
     updateIntroAudioUi();
+
+    katieAudioToggle.addEventListener("click", () => {
+      playClickSound();
+      if (katieAudio.paused) {
+        katieAudio.play().catch(() => {});
+      } else {
+        katieAudio.pause();
+      }
+    });
+    katieAudio.addEventListener("timeupdate", updateKatieAudioUi);
+    katieAudio.addEventListener("loadedmetadata", updateKatieAudioUi);
+    katieAudio.addEventListener("play", updateKatieAudioUi);
+    katieAudio.addEventListener("pause", updateKatieAudioUi);
+    katieAudio.addEventListener("ended", updateKatieAudioUi);
+    updateKatieAudioUi();
 
     introLink.addEventListener("click", (event) => {
       event.preventDefault();

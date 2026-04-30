@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finding What Fits</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    :root {
+      --ink: #17313d;
+      --muted: #526771;
+      --panel: rgba(255, 249, 238, 0.88);
+      --border: rgba(23, 49, 61, 0.12);
+      --shadow: 0 16px 40px rgba(23, 49, 61, 0.08);
+      --cream: #fffdf8;
+      --overview-surface: #fffdf8;
+      --physical: rgba(215, 108, 73, 0.1);
+      --emotional: rgba(140, 94, 159, 0.1);
+      --social: rgba(62, 155, 107, 0.1);
+      --academic: rgba(210, 166, 55, 0.11);
+      --creative: rgba(77, 136, 168, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 20px 48px;
+      font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(215, 108, 73, 0.08), transparent 24%),
+        radial-gradient(circle at top right, rgba(77, 136, 168, 0.08), transparent 26%),
+        linear-gradient(180deg, #f7efe2 0%, #f0e4d4 100%);
+    }
+
+    .table-shell {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8d5a31;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.55rem, 2.8vw, 2.4rem);
+      line-height: 1;
+    }
+
+    .intro {
+      margin: 0 0 24px;
+      max-width: 76ch;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .student-tabs-shell {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      align-items: end;
+      margin-bottom: 0;
+    }
+
+    .student-tabs-spacer {
+      min-height: 1px;
+    }
+
+    .student-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: -1px;
+    }
+
+    .student-tab {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 14px 12px 14px;
+      border: 1px solid rgba(23, 49, 61, 0.14);
+      border-bottom: 0;
+      border-radius: 20px 20px 0 0;
+      background: rgba(225, 214, 194, 0.94);
+      cursor: pointer;
+      transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .student-tab:hover,
+    .student-tab:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(23, 49, 61, 0.24);
+      box-shadow: 0 10px 24px rgba(23, 49, 61, 0.08);
+      outline: none;
+    }
+
+    .student-tab.is-active {
+      background: var(--overview-surface);
+      border-color: rgba(23, 49, 61, 0.2);
+      box-shadow: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .student-tab-image {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: linear-gradient(180deg, var(--avatar-top), var(--avatar-bottom));
+      box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12);
+    }
+
+    .student-tab-name {
+      font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1.2;
+      color: #8d5a31;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .student-tab.is-active .student-tab-name {
+      text-decoration-thickness: 3px;
+    }
+
+    .student-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-top-color: transparent;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .student-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .student-table th,
+    .student-table td {
+      padding: 16px 18px;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(23, 49, 61, 0.1);
+    }
+
+    .student-table tr:last-child th,
+    .student-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .student-table th {
+      width: 170px;
+      text-align: left;
+      font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .env-cell-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .env-cell-art {
+      position: absolute;
+      inset: 0;
+      width: 92px;
+      height: 92px;
+      margin: auto;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .env-cell-art polygon {
+      fill: currentColor;
+    }
+
+    .env-link {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8d5a31;
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .env-label-static {
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8d5a31;
+    }
+
+    .env-summary {
+      margin-top: 8px;
+      font-family: "Trebuchet MS", "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      font-size: 1rem;
+      line-height: 1.45;
+      color: rgba(23, 49, 61, 0.78);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
+
+    .student-table td {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    .student-table td p {
+      margin: 0 0 12px;
+    }
+
+    .student-table td p:last-child {
+      margin-bottom: 0;
+    }
+
+    .row-overview th,
+    .row-overview td { background: var(--overview-surface); }
+    .row-overview th,
+    .row-overview td {
+      position: relative;
+      overflow: hidden;
+    }
+    .row-physical th,
+    .row-physical td { background: var(--physical); }
+    .row-emotional th,
+    .row-emotional td { background: var(--emotional); }
+    .row-social th,
+    .row-social td { background: var(--social); }
+    .row-academic th,
+    .row-academic td { background: var(--academic); }
+    .row-creative th,
+    .row-creative td { background: var(--creative); }
+
+    .student-table strong {
+      color: #8d5a31;
+    }
+
+    .profile-cell-art {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 68%;
+      height: 68%;
+      margin: auto;
+      object-fit: contain;
+      opacity: 0.26;
+      pointer-events: none;
+      filter: brightness(1.06);
+    }
+
+    .profile-cell-content {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 253, 248, 0.72);
+      border-radius: 18px;
+      padding: 2px 4px;
+    }
+
+    .table-modal {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(23, 49, 61, 0.42);
+      z-index: 20;
+    }
+
+    .table-modal.hidden {
+      display: none;
+    }
+
+    .table-modal-card {
+      position: relative;
+      width: min(460px, 100%);
+      padding: 26px 24px 22px;
+      border-radius: 24px;
+      border: 1px solid rgba(23, 49, 61, 0.12);
+      background: rgba(255, 249, 238, 0.98);
+      box-shadow: 0 24px 60px rgba(23, 49, 61, 0.18);
+    }
+
+    .table-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      border: 0;
+      background: transparent;
+      font-size: 1.7rem;
+      line-height: 1;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .table-modal-title {
+      margin: 0 0 12px;
+      font-size: 1.4rem;
+      line-height: 1.1;
+    }
+
+    .table-modal-body {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    .table-modal-body .accent-emphasis {
+      color: #8d5a31;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 18px 12px 28px;
+      }
+
+      .table-shell {
+        padding: 18px;
+        border-radius: 22px;
+      }
+
+      .student-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .student-tabs-shell {
+        grid-template-columns: 128px minmax(0, 1fr);
+      }
+
+      .student-table th {
+        width: 128px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .student-tabs-shell {
+        grid-template-columns: 1fr;
+        margin-bottom: 12px;
+      }
+
+      .student-tabs-spacer {
+        display: none;
+      }
+
+      .student-tabs {
+        grid-template-columns: 1fr;
+        margin-bottom: 0;
+      }
+
+      .student-table th,
+      .student-table td {
+        padding: 14px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="table-shell">
+    <p class="eyebrow">Prototype</p>
+    <h1>Finding What Fits</h1>
+    <div class="student-tabs-shell">
+      <div class="student-tabs-spacer" aria-hidden="true"></div>
+      <div class="student-tabs" role="tablist" aria-label="Students">
+        <button class="student-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="student-table-panel" data-student="katie">
+          <img class="student-tab-image" src="katie.png" alt="" aria-hidden="true" style="--avatar-top: #98bdd2; --avatar-bottom: #4d88a8;">
+          <span class="student-tab-name">Katie</span>
+        </button>
+        <button class="student-tab" type="button" role="tab" aria-selected="false" aria-controls="student-table-panel" data-student="james">
+          <img class="student-tab-image" src="james.png" alt="" aria-hidden="true" style="--avatar-top: #dfb2b6; --avatar-bottom: #c7858a;">
+          <span class="student-tab-name">James</span>
+        </button>
+        <button class="student-tab" type="button" role="tab" aria-selected="false" aria-controls="student-table-panel" data-student="alex">
+          <img class="student-tab-image" src="alex.png" alt="" aria-hidden="true" style="--avatar-top: #b590c2; --avatar-bottom: #8c5e9f;">
+          <span class="student-tab-name">Alex</span>
+        </button>
+        <button class="student-tab" type="button" role="tab" aria-selected="false" aria-controls="student-table-panel" data-student="olivia">
+          <img class="student-tab-image" src="olivia.png" alt="" aria-hidden="true" style="--avatar-top: #e7cd80; --avatar-bottom: #d2a637;">
+          <span class="student-tab-name">Olivia</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="student-table-panel" class="student-table-wrap" role="tabpanel">
+      <table class="student-table">
+        <tbody>
+          <tr class="row-overview">
+            <th id="profile-label-cell" scope="row"><span class="env-label-static">STUDENT PROFILE</span></th>
+            <td id="cell-overview"></td>
+          </tr>
+          <tr class="row-physical">
+            <th scope="row">
+              <svg class="env-cell-art" viewBox="0 0 210 210" aria-hidden="true" style="color:#d76c49;">
+                <polygon points="0,210 0,0 210,210"></polygon>
+              </svg>
+              <div class="env-cell-content">
+                <button class="env-link" type="button" data-environment="physical">Physical</button>
+                <div class="env-summary">Space, materials, movement, and sensory conditions that shape access to learning.</div>
+              </div>
+            </th>
+            <td id="cell-physical"></td>
+          </tr>
+          <tr class="row-emotional">
+            <th scope="row">
+              <svg class="env-cell-art" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f; transform: rotate(50deg);">
+                <polygon points="0,148.5 0,0 148.5,148.5"></polygon>
+              </svg>
+              <div class="env-cell-content">
+                <button class="env-link" type="button" data-environment="emotional">Emotional</button>
+                <div class="env-summary">Safety, trust, and risk tolerance in the learning relationship.</div>
+              </div>
+            </th>
+            <td id="cell-emotional"></td>
+          </tr>
+          <tr class="row-social">
+            <th scope="row">
+              <svg class="env-cell-art" viewBox="0 0 105 105" aria-hidden="true" style="color:#3e9b6b;">
+                <polygon points="0,0 105,0 105,105 0,105"></polygon>
+              </svg>
+              <div class="env-cell-content">
+                <button class="env-link" type="button" data-environment="social">Social</button>
+                <div class="env-summary">Relationships, group structures, belonging, and collaboration patterns.</div>
+              </div>
+            </th>
+            <td id="cell-social"></td>
+          </tr>
+          <tr class="row-academic">
+            <th scope="row">
+              <svg class="env-cell-art" viewBox="0 0 210 105" aria-hidden="true" style="color:#d2a637; width: 116px; height: 116px;">
+                <polygon points="0,105 105,0 210,0 105,105"></polygon>
+              </svg>
+              <div class="env-cell-content">
+                <button class="env-link" type="button" data-environment="academic">Academic</button>
+                <div class="env-summary">Challenge, complexity, and the kind of thinking students are invited into.</div>
+              </div>
+            </th>
+            <td id="cell-academic"></td>
+          </tr>
+          <tr class="row-creative">
+            <th scope="row">
+              <svg class="env-cell-art" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8; transform: rotate(90deg);">
+                <polygon points="0,210 0,0 210,210"></polygon>
+              </svg>
+              <div class="env-cell-content">
+                <button class="env-link" type="button" data-environment="creative">Creative</button>
+                <div class="env-summary">Expression, originality, and flexible ways to show understanding.</div>
+              </div>
+            </th>
+            <td id="cell-creative"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <div id="table-modal" class="table-modal hidden" role="dialog" aria-modal="true" aria-labelledby="table-modal-title">
+    <div class="table-modal-card">
+      <button id="table-modal-close" class="table-modal-close" type="button" aria-label="Close definition popup">×</button>
+      <h2 id="table-modal-title" class="table-modal-title"></h2>
+      <p id="table-modal-body" class="table-modal-body"></p>
+    </div>
+  </div>
+
+  <script>
+    const clickSound = new Audio("click.mp3");
+    clickSound.preload = "auto";
+    clickSound.volume = 0.28;
+    const modal = document.getElementById("table-modal");
+    const modalTitle = document.getElementById("table-modal-title");
+    const modalBody = document.getElementById("table-modal-body");
+    const modalClose = document.getElementById("table-modal-close");
+    const environmentDefinitions = {
+      physical: {
+        title: "Physical",
+        body: 'The <strong class="accent-emphasis">physical</strong> environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).'
+      },
+      emotional: {
+        title: "Emotional",
+        body: 'Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When <strong class="accent-emphasis">emotional</strong> needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).'
+      },
+      social: {
+        title: "Social",
+        body: 'Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The <strong class="accent-emphasis">social</strong> environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).'
+      },
+      academic: {
+        title: "Academic",
+        body: 'The <strong class="accent-emphasis">academic</strong> environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).'
+      },
+      creative: {
+        title: "Creative",
+        body: 'Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The <strong class="accent-emphasis">creative</strong> environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).'
+      }
+    };
+
+    const studentData = {
+      katie: {
+        overview: [
+          "Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.",
+          "But she is not a quirky kid with random facts — she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.",
+          "She is also a kid who has been burned. Past social experiences have taught her that being herself — enthusiastic, intense, a little encyclopedic — can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.",
+          "The goal isn't to fix Katie's social caution or sand down her intensity. It's to build an environment where she doesn't have to choose between being safe and being herself!"
+        ],
+        physical: "Give Katie a consistent, low-traffic spot she can count on — predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.",
+        emotional: "Avoid surprise cold-calls or group sharing without warning for Katie. Instead, try: \"I'd love to hear your take on this — want to share it with me first, or with the group?\" Let her choose. Trust builds slowly and is lost fast.",
+        social: "She doesn't need a big group — she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.",
+        academic: "Don't make her prove she knows the basics — she does, and the repetition is alienating. Give her the harder question underneath the question: \"Everyone's arguing about X — what are they all missing?\" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.",
+        creative: "Katie's interests are not distractions — they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her."
+      },
+      james: {
+        overview: [
+          "James has approximately forty-seven thoughts per minute and would like to share all of them with you right now, please. He is the kid who finishes your sentence, derails the lesson with a genuinely interesting tangent, negotiates the terms of every assignment, and then — somehow — makes an observation that reframes the entire discussion. He is exhausting in the best possible way.",
+          "James' emotional world is just as loud as his verbal one. When something goes wrong, it involves big feelings, fast escalation, zero filter. But here's the thing about James: he can talk his way out of almost anything, including his own meltdowns. Language is not just his strength, it's his lifeline.",
+          "He will forget the worksheet. He will lose the worksheet. He will find the worksheet three weeks later at the bottom of a bag that also contains a granola bar from October. His handwriting looks like it was produced during turbulence. None of this is laziness or defiance — his brain is running a different operating system, one that was simply not designed with folder organization in mind.",
+          "What does work: tell him something is scientifically proven and he is immediately, completely on board. This is not a loophole — it's a gift."
+        ],
+        physical: "James needs to move, and fighting that is a losing battle. Build movement in before it becomes a behavior — a standing option, a quick errand, a lap around the hall between tasks. Seat James where his energy doesn't put him at the center of everyone else's distraction, but not in isolation, which will backfire.",
+        emotional: "When James escalates, don't match his energy and don't shut it down — talk with him. Use his verbal strengths. Try: \"Walk me through what just happened.\" He will. And somewhere in the retelling, he'll usually find his own way back. Afterward, when he's regulated, is the time for any reflection or problem-solving — not during.",
+        social: "James is a natural connector and a natural interrupter — sometimes simultaneously. Teach him discussion structures not as discipline but as strategy: \"The best debaters know when to hold their point — it lands harder.\" He responds to logic and social intelligence framing far better than to rules for their own sake.",
+        academic: "Ditch the handwriting requirement wherever possible. Voice memos, typed responses, verbal check-ins — any of these will get you a far more accurate picture of what James actually knows. He processes by talking, so let him. If you can frame a concept as \"researchers actually found that...\" he will absorb it instantly and cite it back to you for the rest of the year.",
+        creative: "Give him a creative container with real latitude inside it. He doesn't need total open-endedness — he needs a strong premise and permission to go weird with it. A Simpsons episode is, structurally, a masterclass in satire, social commentary, and absurdist logic. He already knows this. Let that count for something."
+      },
+      alex: {
+        overview: [
+          "Alex collects subway tokens from cities around the world — transit systems that no longer exist, currencies of movement that have been discontinued and forgotten. They are drawn to things that operate outside the mainstream — things that have their own rhythm, their own way of getting people where they need to go. Which makes sense because Alex expresses themselves in motion.",
+          "As a dancer, Alex thinks choreographically — in sequences, dynamics, and spatial relationships. As an artist, they move in the tradition of Banksy: art that is immediate, public, a little disruptive, and completely intentional about where it lands and who it's for. Their K-pop obsession is not passive fandom — it is a serious study in precision, synchronization, and the kind of rehearsed spontaneity that looks effortless only because of enormous discipline underneath.",
+          "What Alex's teachers have often missed — and what standardized reading and writing tasks consistently obscure — is that Alex is not a kid who struggles to read or think. They are a kid whose thinking lives in their body, their hands, and who has spent years being evaluated almost exclusively in the one medium that gives them the least access to what they actually know. Dyslexia doesn't dim Alex's intelligence. It just means that, in Alex's experience, traditional classrooms kept using the wrong key for the wrong door.",
+          "Years of feeling behind — of watching other kids move through text-based tasks with ease — leaves a mark. Alex may deflect with humor, disengage before they can fail, or undersell their own ideas before someone else can. The goal is not to remediate Alex into a more readable student. It's to build an environment where what Alex can do is finally legible to everyone else."
+        ],
+        physical: "Alex needs space to move and a visual environment that doesn't feel sterile. A classroom that feels alive — with color, texture, things on the walls that mean something — is one Alex can actually inhabit. If there's a way to let Alex work standing, moving, or in a less fixed configuration, take it.",
+        emotional: "Alex has a finely tuned detector for whether a space is safe for imperfection. Alex has been corrected on the surface-level stuff — spelling, decoding, transcription — so many times that it can be hard to believe the deeper stuff is valued. Lead with what landed: \"The idea here is strong — let's figure out the best way to get it out.\" Never let a spelling error be the first thing you address.",
+        social: "Alex is a natural at reading a room — Alex knows who's performing, who's checked out, who's actually connected. Put that to use. They can be a remarkable collaborator and an intuitive group anchor when the task plays to their strengths. Just don't make \"group work\" mean \"someone else writes it down and Alex watches.\"",
+        academic: "Separate the assessment of thinking from the assessment of transcription — these are not the same skill and should not be graded as one. Voice recording, oral explanation, visual presentation, and movement-based demonstration are all legitimate evidence of understanding. Alex may also benefit from text-to-speech and speech-to-text tools — not as accommodations that signal deficit, but as the right tools for the right brain.",
+        creative: "This is where Alex lives. Banksy built a global reputation making art in unauthorized spaces with materials that weren't supposed to be there — Alex understands that instinctively. Give them creative briefs that have a where and a who and a why, not just a what. Let the dance become the essay. Let the visual become the argument. Ask them to choreograph the concept and you may get the clearest explanation in the room."
+      },
+      olivia: {
+        overview: [
+          "Olivia knows that the light reaching her eyes when she looks at a star left that star thousands of years ago. She finds comfort in the idea that the universe operates on a timescale so vast that urgency becomes almost meaningless. She is not slow. She is on cosmic time.",
+          "She also sees the number seven as a deep, specific shade of burnt orange. Four is green. The word \"Wednesday\" is blue-grey, like morning fog. This is not metaphor for Olivia — it is simply how information arrives. Her inner world is chromatic, layered, and almost impossible to fully translate into the currency everyone else is using.",
+          "Olivia's psychoeducational profile is one of the most striking a diagnostician can encounter: verbal and conceptual reasoning in the 99th percentile, processing speed in the 6th. That gap — nearly 93 percentile points — means that what she understands and what she can produce on demand exist in almost completely different universes. She has almost certainly spent her entire academic life being quietly, consistently underestimated. Teachers have waited for her to finish and mistaken the wait for uncertainty. Timed tests have told her she is average. She is not average. She is someone for whom the measurement tool was built for an entirely different kind of mind."
+        ],
+        physical: "Olivia needs a calm, unhurried physical environment — one that doesn't signal urgency through its design. Timers on the board, rapid transitions, and cluttered visual spaces compounds the already significant cognitive work of translating Olivia's inner world into outer output. Soft, consistent, predictable physical conditions let Olivia actually arrive.",
+        emotional: "Never communicate impatience to Olivia, even accidentally. A glance at the clock, a gentle \"take your time\" said one too many times — Olivia notices. What Olivia needs to hear, consistently and credibly, is that depth is valued here, not just speed. Try: \"I want your real thought on this, not your fast one.\" Mean it every time.",
+        social: "Olivia may seem like she's not quite present in fast-moving group conversations — she is present, she's just still formulating her response to something that was said three exchanges ago. She needs social environments that don't leave her perpetually behind the rhythm. Smaller groups, slower conversations, and a peer or two who naturally pause and wonder rather than race and conclude are her people.",
+        academic: "Eliminate timed assessments for Olivia wherever possible — they are measuring her processing speed, not her knowledge. Give Olivia questions in advance when possible. Let her respond in writing on her own time, or verbally in a low-pressure one-on-one context. When she finally arrives at an answer, it will very likely be the most considered one in the room — make sure there's space for it to land.",
+        creative: "Give Olivia open-ended creative invitations with generous timelines and no single right form. She might write about the philosophy of dark matter. She might map her synesthetic color landscape onto a piece of music. She might spend two weeks on a single drawing of a black hole and produce something that makes the whole class go quiet. Don't rush the process — the universe didn't make anything worth looking at quickly."
+      }
+    };
+
+    const cells = {
+      overview: document.getElementById("cell-overview"),
+      physical: document.getElementById("cell-physical"),
+      emotional: document.getElementById("cell-emotional"),
+      social: document.getElementById("cell-social"),
+      academic: document.getElementById("cell-academic"),
+      creative: document.getElementById("cell-creative")
+    };
+
+    const tabs = document.querySelectorAll(".student-tab");
+    const envLinks = document.querySelectorAll(".env-link");
+    const profileLabelCell = document.getElementById("profile-label-cell");
+
+    function playClickSound() {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+    }
+
+    function openEnvironmentModal(key) {
+      const definition = environmentDefinitions[key];
+      if (!definition) return;
+      modalTitle.textContent = definition.title;
+      modalBody.innerHTML = definition.body;
+      modal.classList.remove("hidden");
+    }
+
+    function closeEnvironmentModal() {
+      modal.classList.add("hidden");
+    }
+
+    function renderStudent(studentKey) {
+      const student = studentData[studentKey];
+      if (!student) return;
+
+      const artByStudent = {
+        katie: "cat-hint.png",
+        james: "square-hint.png",
+        alex: "dancer-hint.png",
+        olivia: "tree-hint.png"
+      };
+
+      profileLabelCell.innerHTML = `
+        <span class="env-label-static">STUDENT PROFILE</span>
+        <img class="profile-cell-art" src="${artByStudent[studentKey] || ""}" alt="" aria-hidden="true">
+      `;
+      cells.overview.innerHTML = `
+        <div class="profile-cell-content">
+          ${student.overview.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        </div>
+      `;
+      cells.physical.innerHTML = `<p>${student.physical}</p>`;
+      cells.emotional.innerHTML = `<p>${student.emotional}</p>`;
+      cells.social.innerHTML = `<p>${student.social}</p>`;
+      cells.academic.innerHTML = `<p>${student.academic}</p>`;
+      cells.creative.innerHTML = `<p>${student.creative}</p>`;
+
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.student === studentKey;
+        tab.classList.toggle("is-active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        playClickSound();
+        renderStudent(tab.dataset.student);
+      });
+    });
+
+    envLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        playClickSound();
+        openEnvironmentModal(link.dataset.environment);
+      });
+    });
+
+    modalClose.addEventListener("click", closeEnvironmentModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeEnvironmentModal();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeEnvironmentModal();
+      }
+    });
+
+    renderStudent("katie");
+  </script>
+</body>
+</html>

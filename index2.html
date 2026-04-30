@@ -286,7 +286,7 @@
         </div>
         <div class="board-actions">
           <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
-          <button id="solve-button" class="solve-button" type="button">Check Coverage</button>
+          <button id="solve-button" class="solve-button" type="button">Solve</button>
           <button id="intro-learn-more-button" class="learn-more-button" type="button">Learn More</button>
         </div>
       </div>
@@ -295,6 +295,9 @@
         <div class="board-grid" aria-hidden="true"></div>
         <div id="target-layer" class="index2-target-layer" aria-hidden="true">
           <img id="target-image" class="index2-target-image hidden" alt="">
+        </div>
+        <div id="solve-overlay" class="solve-overlay hidden" aria-hidden="true">
+          <img id="solve-overlay-image" class="solve-overlay-image" src="cat-solve.png" alt="Solved tangram pattern">
         </div>
         <div id="mask-debug-layer" class="index2-mask-debug" aria-hidden="true"></div>
       </div>
@@ -544,9 +547,12 @@
     const maskDebugLayer = document.getElementById("mask-debug-layer");
     const resetButton = document.getElementById("reset-button");
     const solveButton = document.getElementById("solve-button");
+    const solveOverlay = document.getElementById("solve-overlay");
+    const solveOverlayImage = document.getElementById("solve-overlay-image");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
     const introLink = document.getElementById("intro-link");
     const introAudio = document.getElementById("intro-audio");
+    const introAudioPlayer = document.querySelector(".intro-audio-player");
     const introAudioToggle = document.getElementById("intro-audio-toggle");
     const introAudioProgressFill = document.getElementById("intro-audio-progress-fill");
     const introAudioTime = document.getElementById("intro-audio-time");
@@ -584,6 +590,7 @@
     let coverageRatio = 0;
     let solved = false;
     let pendingSolvedIdeas = false;
+    let activeSolveImage = "";
     let persistentIdeasModal = false;
     let showMaskDebug = false;
     let highestZ = 20;
@@ -663,6 +670,33 @@
       modal.classList.add("hidden");
     }
 
+    function deriveSolveImageFromSource(imageSrc) {
+      if (!imageSrc) {
+        return "";
+      }
+      return imageSrc.replace(/-solid\.(png|jpg|jpeg|gif)$/i, "-solve.$1");
+    }
+
+    function showSolveOverlay(imageSrc) {
+      if (!solveOverlay || !solveOverlayImage || !imageSrc) {
+        return;
+      }
+      activeSolveImage = imageSrc;
+      solveOverlayImage.src = imageSrc;
+      solveOverlay.classList.remove("hidden");
+      board.classList.add("showing-solution");
+      if (solveSound) {
+        solveSound.currentTime = 0;
+        solveSound.play().catch(() => {});
+      }
+    }
+
+    function hideSolveOverlay() {
+      activeSolveImage = "";
+      solveOverlay?.classList.add("hidden");
+      board.classList.remove("showing-solution");
+    }
+
     function openOverviewWindow(url) {
       window.open(url, "_blank", "noopener,noreferrer");
     }
@@ -670,6 +704,13 @@
     function setSidebarContent(title, html) {
       sidebarSubheading.textContent = title;
       sidebarCopy.innerHTML = html;
+      const isIntro = title === defaultSidebarTitle;
+      if (introAudioPlayer) {
+        introAudioPlayer.classList.toggle("hidden", !isIntro);
+      }
+      if (!isIntro && introAudio && !introAudio.paused) {
+        introAudio.pause();
+      }
     }
 
     function resetSidebarContent() {
@@ -1011,6 +1052,7 @@
     }
 
     function buildPieces() {
+      hideSolveOverlay();
       pieceElements.forEach((element) => element.remove());
       pieceElements.clear();
       pieceStates = getInitialPieceStates();
@@ -1147,6 +1189,7 @@
     function selectStudent(studentId) {
       const student = students.find((item) => item.id === studentId);
       if (!student) return;
+      hideSolveOverlay();
       activeStudent = student;
       updateAvatarSelectionUi();
       targetImage.classList.remove("hidden");
@@ -1209,15 +1252,6 @@
     function resetLayout() {
       playAudio(resetSound);
       buildPieces();
-    }
-
-    function showCoverageModal() {
-      const percentage = Math.round(coverageRatio * 100);
-      const title = coverageRatio >= 0.85 ? "Solved!" : "Coverage";
-      const body = coverageRatio >= 0.85
-        ? `You covered <strong class="accent-emphasis">${percentage}%</strong> of the target silhouette.`
-        : `You have covered <strong class="accent-emphasis">${percentage}%</strong> of the target silhouette. Reach <strong class="accent-emphasis">85%</strong> to solve.`;
-      openCustomModal(title, body, { showReadMore: false });
     }
 
     function handleResize() {
@@ -1293,7 +1327,16 @@
     resetButton.addEventListener("click", resetLayout);
     solveButton.addEventListener("click", () => {
       playClickSound();
-      showCoverageModal();
+      if (!activeStudent) {
+        return;
+      }
+      showSolveOverlay(deriveSolveImageFromSource(activeStudent.solidSrc));
+      if (activeStudent.ideasHtml) {
+        openCustomModal(`${activeStudent.name}'s Five Environments`, activeStudent.ideasHtml, {
+          showReadMore: false,
+          modalVariant: "ideas"
+        });
+      }
     });
     maskDebugButton.addEventListener("click", () => {
       playClickSound();

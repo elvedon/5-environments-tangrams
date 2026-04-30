@@ -408,6 +408,10 @@
         imageSrc: "james.png",
         colors: ["#dfb2b6", "#c7858a"],
         solidSrc: "square-solid.png",
+        targetBox: {
+          width: (LARGE_TRIANGLE_GRID_UNITS * GRID_SIZE * Math.SQRT2) * (512 / (489 - 23)),
+          height: (LARGE_TRIANGLE_GRID_UNITS * GRID_SIZE * Math.SQRT2) * (512 / (488 - 23))
+        },
         sidebarHtml: `James has approximately forty-seven thoughts per minute and would like to share all of them with you right now, please. He is the kid who finishes your sentence, derails the lesson with a genuinely interesting tangent, negotiates the terms of every assignment, and then &mdash; somehow &mdash; makes an observation that reframes the entire discussion. He is exhausting in the best possible way.<br><br>
           James&rsquo; emotional world is just as loud as his verbal one. When something goes wrong, it involves big feelings, fast escalation, zero filter. But here's the thing about James: he can talk his way out of almost anything, including his own meltdowns. Language is not just his strength, it's his lifeline.<br><br>
           He will forget the worksheet. He will lose the worksheet. He will find the worksheet three weeks later at the bottom of a bag that also contains a granola bar from October. His handwriting looks like it was produced during turbulence. None of this is laziness or defiance &mdash; his brain is running a different operating system, one that was simply not designed with folder organization in mind.<br><br>
@@ -999,6 +1003,36 @@
       context.restore();
     }
 
+    function getJamesMaskPoints() {
+      const sourceWidth = 512;
+      const sourceHeight = 512;
+      const points = [
+        [23, 23],
+        [489, 23],
+        [489, 488],
+        [23, 488]
+      ];
+      return points.map(([x, y]) => ({
+        x: targetRect.x + (x / sourceWidth) * targetRect.width,
+        y: targetRect.y + (y / sourceHeight) * targetRect.height
+      }));
+    }
+
+    function drawJamesMask(context, fillStyle = "#000") {
+      const points = getJamesMaskPoints();
+      if (!points.length) return;
+      context.save();
+      context.beginPath();
+      context.moveTo(points[0].x, points[0].y);
+      points.slice(1).forEach((point) => {
+        context.lineTo(point.x, point.y);
+      });
+      context.closePath();
+      context.fillStyle = fillStyle;
+      context.fill();
+      context.restore();
+    }
+
     function buildTargetMask() {
       const boardWidth = Math.round(board.clientWidth);
       const boardHeight = Math.round(board.clientHeight);
@@ -1013,6 +1047,8 @@
       targetMaskContext.clearRect(0, 0, boardWidth, boardHeight);
       if (activeStudent?.id === "katie") {
         drawKatieMask(targetMaskContext);
+      } else if (activeStudent?.id === "james") {
+        drawJamesMask(targetMaskContext);
       } else {
         targetMaskContext.drawImage(
           targetImage,
@@ -1039,7 +1075,7 @@
         targetPixels = 0;
       }
 
-      if (targetPixels === 0 && activeStudent?.id !== "katie") {
+      if (targetPixels === 0 && !["katie", "james"].includes(activeStudent?.id || "")) {
         const startX = Math.max(0, Math.floor(targetRect.x));
         const endX = Math.min(boardWidth, Math.ceil(targetRect.x + targetRect.width));
         const startY = Math.max(0, Math.floor(targetRect.y));
@@ -1372,6 +1408,8 @@
       let debugMarkup = `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">`;
       if (activeStudent?.id === "katie") {
         debugMarkup += `<polygon points="${getKatieMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
+      } else if (activeStudent?.id === "james") {
+        debugMarkup += `<polygon points="${getJamesMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
       } else {
         debugMarkup += `<rect x="${targetRect.x}" y="${targetRect.y}" width="${targetRect.width}" height="${targetRect.height}"></rect>`;
       }

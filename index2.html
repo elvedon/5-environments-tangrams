@@ -180,7 +180,33 @@
     }
 
     .index2-page .board.showing-solution .index2-target-image {
-      opacity: 0;
+      opacity: 1;
+      filter: none;
+    }
+
+    .index2-page .solve-label-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 31;
+    }
+
+    .index2-page .solve-label {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      max-width: 118px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.15rem;
+      line-height: 1.15;
+      color: #fdfaf2;
+      -webkit-text-stroke: 1px var(--muted);
+      text-shadow:
+        -1px 0 var(--muted),
+        0 1px var(--muted),
+        1px 0 var(--muted),
+        0 -1px var(--muted),
+        0 2px 6px rgba(0, 0, 0, 0.18);
     }
 
     .index2-page .tips-list li + li {
@@ -585,13 +611,15 @@
           </div>
         </div>
 
-        <div id="board" class="board" aria-label="Tangram coverage board">
+      <div id="board" class="board" aria-label="Tangram coverage board">
           <div class="board-grid" aria-hidden="true"></div>
           <div id="target-layer" class="index2-target-layer" aria-hidden="true">
             <img id="target-image" class="index2-target-image hidden" alt="">
           </div>
           <div id="solve-overlay" class="solve-overlay hidden" aria-hidden="true">
             <img id="solve-overlay-image" class="solve-overlay-image" src="cat-solve.png" alt="Solved tangram pattern">
+            <canvas id="solve-overlay-canvas" class="solve-overlay-image hidden" aria-hidden="true"></canvas>
+            <div id="solve-label-layer" class="solve-label-layer" aria-hidden="true"></div>
           </div>
         </div>
       </div>
@@ -858,6 +886,8 @@
     const solveButton = document.getElementById("solve-button");
     const solveOverlay = document.getElementById("solve-overlay");
     const solveOverlayImage = document.getElementById("solve-overlay-image");
+    const solveOverlayCanvas = document.getElementById("solve-overlay-canvas");
+    const solveLabelLayer = document.getElementById("solve-label-layer");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
     const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
@@ -907,6 +937,9 @@
     const targetMaskContext = targetMaskCanvas.getContext("2d", { willReadFrequently: true });
     const coverageCanvas = document.createElement("canvas");
     const coverageContext = coverageCanvas.getContext("2d", { willReadFrequently: true });
+    const solveBoundsCanvas = document.createElement("canvas");
+    const solveBoundsContext = solveBoundsCanvas.getContext("2d", { willReadFrequently: true });
+    const solveOverlayContext = solveOverlayCanvas.getContext("2d");
 
     let activeStudent = null;
     let isPlayMode = false;
@@ -928,10 +961,42 @@
     let targetActivationToken = 0;
     let showHintImage = false;
     let suppressTargetImageActivation = false;
+    const solveImageBoundsCache = new Map();
+    let hintStateBeforeSolve = false;
     const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
+    const solveLabelPositions = {
+      katie: {
+        social: { x: 0.22, y: 0.26, width: 0.16 },
+        emotional: { x: 0.19, y: 0.50, width: 0.18 },
+        creative: { x: 0.46, y: 0.52, width: 0.18 },
+        physical: { x: 0.43, y: 0.83, width: 0.22 },
+        academic: { x: 0.74, y: 0.82, width: 0.18 }
+      },
+      james: {
+        creative: { x: 0.17, y: 0.23, width: 0.18 },
+        social: { x: 0.50, y: 0.31, width: 0.18 },
+        emotional: { x: 0.82, y: 0.23, width: 0.22 },
+        physical: { x: 0.50, y: 0.79, width: 0.22 },
+        academic: { x: 0.86, y: 0.58, width: 0.18 }
+      },
+      alex: {
+        social: { x: 0.40, y: 0.11, width: 0.16 },
+        physical: { x: 0.57, y: 0.28, width: 0.19 },
+        academic: { x: 0.73, y: 0.24, width: 0.16 },
+        creative: { x: 0.38, y: 0.47, width: 0.18 },
+        emotional: { x: 0.56, y: 0.64, width: 0.18 }
+      },
+      olivia: {
+        emotional: { x: 0.50, y: 0.08, width: 0.2 },
+        physical: { x: 0.50, y: 0.27, width: 0.2 },
+        academic: { x: 0.77, y: 0.42, width: 0.18 },
+        creative: { x: 0.50, y: 0.58, width: 0.22 },
+        social: { x: 0.50, y: 0.78, width: 0.17 }
+      }
+    };
 
     function polygonArea(points) {
       let area = 0;
@@ -1096,12 +1161,18 @@
       return imageSrc.replace(/-solid\.(png|jpg|jpeg|gif)$/i, "-solve.$1");
     }
 
-    function showSolveOverlay(imageSrc) {
-      if (!solveOverlay || !solveOverlayImage || !imageSrc) {
+    function showSolveOverlay() {
+      if (!solveOverlay || !activeStudent) {
         return;
       }
-      activeSolveImage = imageSrc;
-      solveOverlayImage.src = imageSrc;
+      activeSolveImage = "";
+      hintStateBeforeSolve = showHintImage;
+      showHintImage = true;
+      updateHintButtonState();
+      setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
+      solveOverlayImage?.classList.add("hidden");
+      solveOverlayCanvas?.classList.add("hidden");
+      renderSolveLabels();
       solveOverlay.classList.remove("hidden");
       board.classList.add("showing-solution");
       if (solveSound) {
@@ -1114,6 +1185,185 @@
       activeSolveImage = "";
       solveOverlay?.classList.add("hidden");
       board.classList.remove("showing-solution");
+      solveOverlayCanvas?.classList.add("hidden");
+      solveOverlayImage?.classList.add("hidden");
+      if (solveLabelLayer) {
+        solveLabelLayer.innerHTML = "";
+      }
+      showHintImage = hintStateBeforeSolve;
+      updateHintButtonState();
+      if (activeStudent) {
+        setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
+      }
+    }
+
+    async function getOpaqueImageBounds(src) {
+      if (!src) {
+        return null;
+      }
+      if (solveImageBoundsCache.has(src)) {
+        return solveImageBoundsCache.get(src);
+      }
+
+      const image = new Image();
+      image.src = src;
+      try {
+        if (typeof image.decode === "function") {
+          await image.decode();
+        } else {
+          await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = reject;
+          });
+        }
+      } catch (_error) {
+        solveImageBoundsCache.set(src, null);
+        return null;
+      }
+
+      const width = image.naturalWidth || image.width;
+      const height = image.naturalHeight || image.height;
+      if (!width || !height) {
+        solveImageBoundsCache.set(src, null);
+        return null;
+      }
+
+      solveBoundsCanvas.width = width;
+      solveBoundsCanvas.height = height;
+      solveBoundsContext.clearRect(0, 0, width, height);
+      solveBoundsContext.drawImage(image, 0, 0);
+
+      let imageData;
+      try {
+        imageData = solveBoundsContext.getImageData(0, 0, width, height).data;
+      } catch (_error) {
+        solveImageBoundsCache.set(src, null);
+        return null;
+      }
+
+      let minX = width;
+      let minY = height;
+      let maxX = -1;
+      let maxY = -1;
+
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const alpha = imageData[(y * width + x) * 4 + 3];
+          if (alpha > 24) {
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      }
+
+      if (maxX < minX || maxY < minY) {
+        solveImageBoundsCache.set(src, null);
+        return null;
+      }
+
+      const bounds = {
+        minX,
+        minY,
+        maxX,
+        maxY,
+        width: maxX - minX + 1,
+        height: maxY - minY + 1,
+        imageWidth: width,
+        imageHeight: height
+      };
+      solveImageBoundsCache.set(src, bounds);
+      return bounds;
+    }
+
+    async function syncSolveOverlayToTarget() {
+      if (!solveOverlayImage || !solveOverlayCanvas || !targetRect.width || !targetRect.height || !activeSolveImage) {
+        return;
+      }
+      const src = activeSolveImage;
+      const bounds = await getOpaqueImageBounds(src);
+      if (activeSolveImage !== src) {
+        return;
+      }
+      const image = solveOverlayImage;
+      try {
+        if (!image.complete || !image.naturalWidth) {
+          if (typeof image.decode === "function") {
+            await image.decode();
+          } else {
+            await new Promise((resolve, reject) => {
+              image.onload = resolve;
+              image.onerror = reject;
+            });
+          }
+        }
+      } catch (_error) {
+        return;
+      }
+
+      solveOverlayCanvas.width = Math.max(1, Math.round(board.clientWidth));
+      solveOverlayCanvas.height = Math.max(1, Math.round(board.clientHeight));
+      solveOverlayContext.clearRect(0, 0, solveOverlayCanvas.width, solveOverlayCanvas.height);
+
+      solveOverlayCanvas.style.position = "absolute";
+      solveOverlayCanvas.style.left = "0";
+      solveOverlayCanvas.style.top = "0";
+      solveOverlayCanvas.style.width = "100%";
+      solveOverlayCanvas.style.height = "100%";
+
+      if (bounds) {
+        solveOverlayContext.drawImage(
+          image,
+          bounds.minX,
+          bounds.minY,
+          bounds.width,
+          bounds.height,
+          targetRect.x,
+          targetRect.y,
+          targetRect.width,
+          targetRect.height
+        );
+      } else {
+        solveOverlayContext.drawImage(
+          image,
+          targetRect.x,
+          targetRect.y,
+          targetRect.width,
+          targetRect.height
+        );
+      }
+
+      solveOverlayImage.classList.add("hidden");
+      solveOverlayCanvas.classList.remove("hidden");
+    }
+
+    function renderSolveLabels() {
+      if (!solveLabelLayer || !activeStudent) {
+        return;
+      }
+      const positions = solveLabelPositions[activeStudent.id];
+      solveLabelLayer.innerHTML = "";
+      if (!positions) {
+        return;
+      }
+      ["physical", "emotional", "social", "academic", "creative"].forEach((id) => {
+        const position = positions[id];
+        const definition = pieceDefinitions.find((piece) => piece.id === id);
+        if (!position || !definition) {
+          return;
+        }
+        const label = document.createElement("div");
+        label.className = "solve-label";
+        label.textContent = definition.label;
+        label.style.left = `${targetRect.x + targetRect.width * position.x}px`;
+        label.style.top = `${targetRect.y + targetRect.height * position.y}px`;
+        label.style.maxWidth = `${targetRect.width * position.width}px`;
+        if (id === "academic") {
+          label.style.maxWidth = `${targetRect.width * Math.max(position.width, 0.2)}px`;
+        }
+        solveLabelLayer.appendChild(label);
+      });
     }
 
     function deriveHintImageFromSource(imageSrc) {
@@ -1400,6 +1650,8 @@
       targetImage.style.height = `${height}px`;
       targetImage.style.left = `${targetRect.x}px`;
       targetImage.style.top = `${targetRect.y}px`;
+      syncSolveOverlayToTarget();
+      renderSolveLabels();
     }
 
     function getKatieMaskPoints() {
@@ -1906,6 +2158,7 @@
       const student = students.find((item) => item.id === studentId);
       if (!student) return;
       hideSolveOverlay();
+      hintStateBeforeSolve = false;
       showHintImage = false;
       activeStudent = student;
       updateAvatarSelectionUi();
@@ -2083,7 +2336,7 @@
       if (!activeStudent) {
         return;
       }
-      showSolveOverlay(deriveSolveImageFromSource(activeStudent.solidSrc));
+      showSolveOverlay();
       if (activeStudent.ideasHtml) {
         openCustomModal(`${activeStudent.name}'s Five Environments`, activeStudent.ideasHtml, {
           showReadMore: false,

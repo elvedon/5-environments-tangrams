@@ -122,15 +122,16 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: min(760px, 100%);
-      max-height: min(82vh, 900px);
+      width: min(360px, 72vw);
+      height: min(360px, 62vh);
+      max-height: none;
       overflow: auto;
-      padding-right: 28px;
-      background: rgba(255, 249, 238, 0.62);
-      backdrop-filter: blur(5px);
+      padding: 22px 24px 24px;
+      background: rgba(255, 249, 238, 0.96);
       box-shadow: 0 24px 60px rgba(23, 49, 61, 0.12);
       cursor: grab;
       touch-action: none;
+      border-radius: 24px;
     }
 
     .index2-page .info-modal-card.is-ideas-modal.dragging {
@@ -145,7 +146,7 @@
       float: right;
       z-index: 3;
       margin: -6px -4px 8px 12px;
-      background: rgba(255, 249, 238, 0.82);
+      background: rgba(255, 249, 238, 0.9);
       border-radius: 999px;
       backdrop-filter: blur(4px);
     }
@@ -1176,7 +1177,7 @@
         modalCard.style.top = "";
         modalCard.style.transform = "";
       }
-      modalArt.classList.toggle("hidden", modalVariant === "ideas");
+      modalArt.classList.toggle("hidden", modalVariant === "ideas" && !options.environmentKey);
       modalLinkCopy.classList.toggle("hidden", !options.showReadMore);
       modalContinueCopy.classList.add("hidden");
       modal.classList.remove("hidden");
@@ -1647,7 +1648,8 @@
         playClickSound();
         openCustomModal("Student and Teacher", ideaHtml, {
           showReadMore: false,
-          environmentKey: ""
+          environmentKey: "",
+          modalVariant: "ideas"
         });
         return;
       }
@@ -1661,7 +1663,8 @@
       playClickSound();
       openCustomModal(`${activeStudent.name}'s ${definition.label} Environment`, ideaHtml, {
         showReadMore: false,
-        environmentKey: envKey
+        environmentKey: envKey,
+        modalVariant: "ideas"
       });
     }
 

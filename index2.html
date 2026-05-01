@@ -184,6 +184,11 @@
       filter: none;
     }
 
+    .index2-page .board.showing-solution .piece {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .index2-page .solve-label-layer {
       position: absolute;
       inset: 0;
@@ -2113,6 +2118,7 @@
         return;
       }
       pendingSolvedIdeas = false;
+      showSolveOverlay();
       openCustomModal(`${activeStudent.name}'s Five Environments`, activeStudent.ideasHtml, {
         showReadMore: false,
         modalVariant: "ideas"

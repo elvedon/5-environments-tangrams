@@ -469,7 +469,7 @@
       <h2 id="sidebar-subheading" class="sidebar-subheading">Introduction</h2>
       <div id="sidebar-copy" class="intro-copy">
         <p>
-          Every learner is one of a kind &mdash; not just in how they think, but in what they need to thrive. The five environments &mdash; <a id="intro-physical-link" class="intro-link" href="#">physical</a>, <a id="intro-emotional-link" class="intro-link" href="#">emotional</a>, <a id="intro-social-link" class="intro-link" href="#">social</a>, <a id="intro-academic-link" class="intro-link" href="#">academic</a>, and <a id="intro-creative-link" class="intro-link" href="#">creative</a> &mdash; are the domains that shape a student's learning experience: each one distinct, each one essential.
+          Every learner is one of a kind &mdash; not just in how they think, but in what they need to thrive. The five environments &mdash; physical, emotional, social, academic, and creative &mdash; are the domains that shape a student's learning experience: each one distinct, each one essential.
         </p>
         <p>
           But environments don't work the same way for every child. Like tangrams, the same pieces can come together in completely different configurations &mdash; and each configuration is its own valid, complete picture.
@@ -860,11 +860,6 @@
     const oliviaAudioToggle = document.getElementById("olivia-audio-toggle");
     const oliviaAudioProgressFill = document.getElementById("olivia-audio-progress-fill");
     const oliviaAudioTime = document.getElementById("olivia-audio-time");
-    const introPhysicalLink = document.getElementById("intro-physical-link");
-    const introEmotionalLink = document.getElementById("intro-emotional-link");
-    const introSocialLink = document.getElementById("intro-social-link");
-    const introAcademicLink = document.getElementById("intro-academic-link");
-    const introCreativeLink = document.getElementById("intro-creative-link");
     const sidebarSubheading = document.getElementById("sidebar-subheading");
     const sidebarCopy = document.getElementById("sidebar-copy");
     const introSidebarLinks = document.getElementById("intro-sidebar-links");
@@ -1975,32 +1970,6 @@
         revealReadEnvironment(toggle);
       });
     });
-    introPhysicalLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openCustomModal("Physical", environmentPopupBodies.physical, { environmentKey: "physical" });
-    });
-    introEmotionalLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openCustomModal("Emotional", environmentPopupBodies.emotional, { environmentKey: "emotional" });
-    });
-    introSocialLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openCustomModal("Social", environmentPopupBodies.social, { environmentKey: "social" });
-    });
-    introAcademicLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openCustomModal("Academic", environmentPopupBodies.academic, { environmentKey: "academic" });
-    });
-    introCreativeLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openCustomModal("Creative", environmentPopupBodies.creative, { environmentKey: "creative" });
-    });
-
     closeModalButton.addEventListener("click", closeModal);
     modal.querySelector(".modal-card").addEventListener("pointerdown", startIdeasModalDrag);
     window.addEventListener("pointermove", moveIdeasModalDrag);

@@ -1148,6 +1148,26 @@
       playNowWrap.classList.toggle("hidden", openedReadEnvironments.size < readEnvToggles.length);
     }
 
+    function lockReadItemHeights() {
+      readEnvToggles.forEach((toggle) => {
+        const parent = toggle.closest("li");
+        const copy = parent?.querySelector(".read-env-copy");
+        if (!parent || !copy) {
+          return;
+        }
+        const wasHidden = copy.classList.contains("hidden");
+        if (wasHidden) {
+          copy.classList.remove("hidden");
+        }
+        parent.style.height = "auto";
+        const measuredHeight = parent.scrollHeight;
+        parent.style.height = `${measuredHeight}px`;
+        if (wasHidden) {
+          copy.classList.add("hidden");
+        }
+      });
+    }
+
     function stripIdeasSection(html) {
       if (!html) {
         return "";
@@ -1815,6 +1835,7 @@
 
     function handleResize() {
       if (!playModeInitialized) {
+        lockReadItemHeights();
         return;
       }
       if (!activeStudent) {
@@ -1988,6 +2009,7 @@
     targetImage.addEventListener("load", activateTargetImage);
 
     window.addEventListener("resize", handleResize);
+    lockReadItemHeights();
     updateReadModeProgress();
   </script>
 </body>

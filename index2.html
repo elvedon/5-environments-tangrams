@@ -261,10 +261,8 @@
     }
 
     .index2-page .read-env-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 14px;
+      position: absolute;
+      top: 50%;
       border: 0;
       padding: 0;
       background: transparent;
@@ -272,24 +270,18 @@
       font: inherit;
       cursor: pointer;
       text-align: left;
+      z-index: 2;
+      transform: translateY(-50%);
     }
 
     .index2-page .read-env-toggle-right {
-      justify-content: flex-end;
+      width: 122px;
+      right: 12px;
     }
 
     .index2-page .read-env-toggle-left {
-      justify-content: flex-start;
-    }
-
-    .index2-page .read-env-label {
-      color: #8d5a31;
-      font-size: 0.9rem;
-      font-weight: 700;
-      line-height: 1.2;
-      text-decoration: underline;
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
+      width: 122px;
+      left: 12px;
     }
 
     .index2-page .read-env-copy {
@@ -302,13 +294,11 @@
     }
 
     .index2-page .read-env-art {
-      position: absolute;
-      top: 50%;
+      display: block;
       width: 104px;
       height: 104px;
-      pointer-events: none;
-      z-index: 1;
-      transition: transform 140ms ease, opacity 140ms ease;
+      transition: transform 140ms ease, filter 140ms ease, opacity 140ms ease;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.32)) drop-shadow(0 10px 18px rgba(23, 49, 61, 0.08));
     }
 
     .index2-page .read-env-art polygon {
@@ -316,13 +306,11 @@
     }
 
     .index2-page .read-env-art-right {
-      right: 12px;
-      transform: translateY(-50%);
+      margin-left: auto;
     }
 
     .index2-page .read-env-art-left {
-      left: 12px;
-      transform: translateY(-50%);
+      margin-right: auto;
     }
 
     .index2-page #read-env-physical .read-env-copy,
@@ -339,20 +327,23 @@
     .index2-page #read-env-emotional .read-env-art {
       width: 92px;
       height: 92px;
+      transform: scale(-1, -1);
     }
 
     .index2-page #read-env-creative .read-env-art {
       width: 92px;
       height: 92px;
       right: 8px;
+      transform: scaleX(-1);
     }
 
-    .index2-page .read-detail-list li:hover .read-env-art-right {
-      transform: translateY(-50%) scale(1.04);
+    .index2-page .read-env-toggle:hover .read-env-art,
+    .index2-page .read-env-toggle:focus-visible .read-env-art {
+      filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.48)) drop-shadow(0 12px 20px rgba(23, 49, 61, 0.12));
     }
 
-    .index2-page .read-detail-list li:hover .read-env-art-left {
-      transform: translateY(-50%) scale(1.04);
+    .index2-page .read-env-toggle:focus-visible {
+      outline: none;
     }
 
     .index2-page #read-env-physical {
@@ -474,7 +465,6 @@
         <ul class="read-detail-list">
           <li id="read-env-physical">
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="physical" aria-expanded="false">
-              <span class="read-env-label">Physical</span>
               <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#d76c49;">
                 <polygon points="0,210 0,0 210,210"></polygon>
               </svg>
@@ -483,16 +473,14 @@
           </li>
           <li id="read-env-emotional">
             <button class="read-env-toggle read-env-toggle-left" type="button" data-read-env="emotional" aria-expanded="false">
-              <svg class="read-env-art read-env-art-left" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f; transform: translateY(-50%) scale(-1, -1);">
+              <svg class="read-env-art read-env-art-left" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f;">
                 <polygon points="0,148.5 0,0 148.5,148.5"></polygon>
               </svg>
-              <span class="read-env-label">Emotional</span>
             </button>
             <p class="read-env-copy hidden"><strong>Emotional</strong> &mdash; Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When emotional needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).</p>
           </li>
           <li id="read-env-social">
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="social" aria-expanded="false">
-              <span class="read-env-label">Social</span>
               <svg class="read-env-art read-env-art-right" viewBox="0 0 105 105" aria-hidden="true" style="color:#3e9b6b;">
                 <polygon points="0,0 105,0 105,105 0,105"></polygon>
               </svg>
@@ -504,14 +492,12 @@
               <svg class="read-env-art read-env-art-left" viewBox="0 0 210 105" aria-hidden="true" style="color:#d2a637; width:116px; height:116px;">
                 <polygon points="0,105 105,0 210,0 105,105"></polygon>
               </svg>
-              <span class="read-env-label">Academic</span>
             </button>
             <p class="read-env-copy hidden"><strong>Academic</strong> &mdash; The intellectual environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).</p>
           </li>
           <li id="read-env-creative">
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="creative" aria-expanded="false">
-              <span class="read-env-label">Creative</span>
-              <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8; transform: translateY(-50%) scaleX(-1);">
+              <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8;">
                 <polygon points="0,210 0,0 210,210"></polygon>
               </svg>
             </button>

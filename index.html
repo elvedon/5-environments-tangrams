@@ -1841,9 +1841,6 @@
       const ideaHtml = getEnvironmentIdeaHtml(activeStudent, envKey);
       const definition = pieceDefinitions.find((piece) => piece.id === envKey);
       if (!definition) {
-        openCustomModal("Environment Click Error", "A solved environment was selected, but its label definition was not found.", {
-          showReadMore: false
-        });
         return;
       }
       if (envKey === "student" || envKey === "teacher") {
@@ -1854,10 +1851,6 @@
         return;
       }
       if (!ideaHtml) {
-        openCustomModal("Environment Click Error", `A solved environment was selected for ${definition.label}, but its idea text was not found.`, {
-          showReadMore: false,
-          environmentKey: envKey
-        });
         return;
       }
       playClickSound();

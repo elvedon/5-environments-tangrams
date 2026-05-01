@@ -580,8 +580,8 @@
           </div>
           <div class="board-actions">
             <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
+            <button id="intro-learn-more-button" class="learn-more-button" type="button" aria-pressed="false">Hint</button>
             <button id="solve-button" class="solve-button" type="button">Solve</button>
-            <button id="intro-learn-more-button" class="learn-more-button" type="button">Learn More</button>
           </div>
         </div>
 
@@ -926,6 +926,8 @@
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
+    let showHintImage = false;
+    let suppressTargetImageActivation = false;
     const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
@@ -1114,6 +1116,51 @@
       board.classList.remove("showing-solution");
     }
 
+    function deriveHintImageFromSource(imageSrc) {
+      if (!imageSrc) {
+        return "";
+      }
+      return imageSrc.replace(/-solid\.(png|jpg|jpeg|gif)$/i, "-hint.$1");
+    }
+
+    function getCurrentTargetArtSrc(student = activeStudent) {
+      if (!student) {
+        return "";
+      }
+      return showHintImage ? deriveHintImageFromSource(student.solidSrc) : student.solidSrc;
+    }
+
+    function updateHintButtonState() {
+      if (!introLearnMoreButton) {
+        return;
+      }
+      const canHint = Boolean(activeStudent);
+      introLearnMoreButton.disabled = !canHint;
+      introLearnMoreButton.setAttribute("aria-pressed", showHintImage ? "true" : "false");
+      introLearnMoreButton.textContent = showHintImage ? "Hide" : "Hint";
+    }
+
+    function setDisplayedTargetArt(src, { rebuild = false } = {}) {
+      if (!src) {
+        return;
+      }
+      if (targetImage.getAttribute("src") === src && targetImage.complete && targetImage.naturalWidth > 0) {
+        if (rebuild) {
+          activateTargetImage();
+        } else {
+          layoutTargetImage();
+        }
+        return;
+      }
+      suppressTargetImageActivation = !rebuild;
+      targetImage.src = src;
+      if (!rebuild && typeof targetImage.decode === "function") {
+        targetImage.decode().then(() => {
+          layoutTargetImage();
+        }).catch(() => {});
+      }
+    }
+
     function openOverviewWindow(url) {
       window.open(url, "_blank", "noopener,noreferrer");
     }
@@ -1169,6 +1216,7 @@
 
     function enterReadMode() {
       isPlayMode = false;
+      showHintImage = false;
       readView.classList.remove("hidden");
       playView.classList.add("hidden");
       forceCloseModal();
@@ -1281,6 +1329,13 @@
     }
 
     function activateTargetImage() {
+      if (suppressTargetImageActivation) {
+        suppressTargetImageActivation = false;
+        if (targetImage.naturalWidth && targetImage.naturalHeight) {
+          layoutTargetImage();
+        }
+        return;
+      }
       if (!targetImage.naturalWidth || !targetImage.naturalHeight) {
         return;
       }
@@ -1850,18 +1905,21 @@
       const student = students.find((item) => item.id === studentId);
       if (!student) return;
       hideSolveOverlay();
+      showHintImage = false;
       activeStudent = student;
       updateAvatarSelectionUi();
+      updateHintButtonState();
       targetImage.classList.remove("hidden");
-      if (targetImage.getAttribute("src") === student.solidSrc && targetImage.complete && targetImage.naturalWidth > 0) {
+      const targetArtSrc = getCurrentTargetArtSrc(student);
+      if (targetImage.getAttribute("src") === targetArtSrc && targetImage.complete && targetImage.naturalWidth > 0) {
         activateTargetImage();
       } else {
         buildPieces();
-        targetImage.src = student.solidSrc;
+        setDisplayedTargetArt(targetArtSrc, { rebuild: true });
         ensureTargetActivation(student);
         if (typeof targetImage.decode === "function") {
           targetImage.decode().then(() => {
-            if (activeStudent?.solidSrc === student.solidSrc) {
+            if (activeStudent?.solidSrc === student.solidSrc && targetImage.getAttribute("src") === targetArtSrc) {
               activateTargetImage();
             }
           }).catch(() => {});
@@ -1980,7 +2038,12 @@
 
     introLearnMoreButton.addEventListener("click", () => {
       playClickSound();
-      openOverviewWindow("details/overview.html");
+      if (!activeStudent) {
+        return;
+      }
+      showHintImage = !showHintImage;
+      updateHintButtonState();
+      setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
     });
     introReferencesLink.addEventListener("click", (event) => {
       event.preventDefault();
@@ -2041,6 +2104,7 @@
 
     window.addEventListener("resize", handleResize);
     lockReadItemHeights();
+    updateHintButtonState();
     updateReadModeProgress();
   </script>
 </body>

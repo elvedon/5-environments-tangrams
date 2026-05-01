@@ -39,24 +39,25 @@
 
     .index2-page .intro-chip-icon {
       display: block;
-      width: 78px;
-      height: 78px;
+      width: 80px;
+      height: 80px;
       margin: 0 auto 8px;
       object-fit: contain;
       border-radius: 50%;
       border: 2px solid rgba(23, 49, 61, 0.14);
-      background: linear-gradient(180deg, rgba(255, 249, 238, 0.96), rgba(242, 231, 211, 0.96));
+      background: linear-gradient(180deg, rgba(244, 232, 212, 0.98), rgba(230, 214, 188, 0.98));
       box-shadow: 0 10px 18px rgba(23, 49, 61, 0.14);
-      padding: 8px;
+      padding: 6px;
       box-sizing: border-box;
     }
 
     .index2-page .intro-chip-link {
-      margin: 0;
+      margin: 2px auto 0;
       color: #8d5a31;
       font: inherit;
       font-size: 0.72rem;
       line-height: 1.2;
+      max-width: 72px;
       text-decoration: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 3px;
@@ -102,33 +103,6 @@
 
     .index2-page .piece {
       z-index: 3;
-    }
-
-    .index2-mask-debug {
-      position: absolute;
-      inset: 0;
-      z-index: 8;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 140ms ease;
-    }
-
-    .index2-page .board.board-show-mask .index2-mask-debug {
-      opacity: 0.92;
-    }
-
-    .index2-mask-debug svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .index2-mask-debug polygon,
-    .index2-mask-debug rect {
-      fill: rgba(40, 210, 255, 0.42);
-      stroke: rgba(40, 210, 255, 0.96);
-      stroke-width: 3;
-      vector-effect: non-scaling-stroke;
     }
 
     .index2-page .piece-overlay {
@@ -370,12 +344,10 @@
         <div class="how-to-bubble">
           <p class="how-to-kicker">HOW TO "PLAY"</p>
           <ul class="tips-list">
-            <li>Select a student to load that student's tangram silhouette.</li>
-            <li>Drag a shape into place. Click and drag the button to rotate or click to flip.</li>
-            <li>Cover 85% of the muted silhouette to solve.</li>
+            <li>Select a student to read about their learning profile.</li>
+            <li>Drag each shape into place over the tangram silhouette.</li>
+            <li>Click and drag the button to rotate or click to flip.</li>
           </ul>
-          <p id="coverage-tracker" class="coverage-tracker">0%</p>
-          <button id="mask-debug-button" class="mask-debug-button" type="button">Show Coverage Mask</button>
         </div>
         <div class="board-actions">
           <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
@@ -392,7 +364,6 @@
         <div id="solve-overlay" class="solve-overlay hidden" aria-hidden="true">
           <img id="solve-overlay-image" class="solve-overlay-image" src="cat-solve.png" alt="Solved tangram pattern">
         </div>
-        <div id="mask-debug-layer" class="index2-mask-debug" aria-hidden="true"></div>
       </div>
     </section>
   </main>
@@ -648,9 +619,6 @@
     const targetLayer = document.getElementById("target-layer");
     const avatarStrip = document.getElementById("avatar-strip");
     const pieceTemplate = document.getElementById("piece-template");
-    const coverageTracker = document.getElementById("coverage-tracker");
-    const maskDebugButton = document.getElementById("mask-debug-button");
-    const maskDebugLayer = document.getElementById("mask-debug-layer");
     const resetButton = document.getElementById("reset-button");
     const solveButton = document.getElementById("solve-button");
     const solveOverlay = document.getElementById("solve-overlay");
@@ -720,7 +688,6 @@
     let pendingSolvedIdeas = false;
     let activeSolveImage = "";
     let persistentIdeasModal = false;
-    let showMaskDebug = false;
     let highestZ = 20;
     let activePointer = null;
     let modalDrag = null;
@@ -980,7 +947,7 @@
       introChip.className = "intro-chip";
       introChip.innerHTML = `
         <img class="intro-chip-icon" src="favicon.ico" alt="">
-        <p class="intro-chip-link">Intro</p>
+        <p class="intro-chip-link">Back to Intro</p>
       `;
       introChip.addEventListener("click", () => {
         playClickSound();
@@ -1497,7 +1464,6 @@
     function updateCoverage() {
       if (!targetAlpha || targetPixels === 0) {
         coverageRatio = 0;
-        coverageTracker.textContent = "0%";
         solved = false;
         pendingSolvedIdeas = false;
         board.classList.remove("is-solved");
@@ -1524,7 +1490,6 @@
       }
 
       coverageRatio = targetPixels ? overlap / targetPixels : 0;
-      coverageTracker.textContent = `${Math.round(coverageRatio * 100)}%`;
 
       if (coverageRatio >= 0.85 && !solved) {
         solved = true;
@@ -1630,35 +1595,6 @@
       }).join(" ");
     }
 
-    function renderMaskDebug() {
-      if (!maskDebugLayer) {
-        return;
-      }
-      const width = targetMaskCanvas.width;
-      const height = targetMaskCanvas.height;
-      if (!width || !height) {
-        return;
-      }
-      let debugMarkup = `<svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">`;
-      if (activeStudent?.id === "katie") {
-        debugMarkup += `<polygon points="${getKatieMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
-      } else if (activeStudent?.id === "james") {
-        debugMarkup += `<polygon points="${getJamesMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
-      } else if (activeStudent?.id === "alex") {
-        debugMarkup += getAlexMaskPolygons()
-          .map((points) => `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`)
-          .join("");
-      } else if (activeStudent?.id === "olivia") {
-        debugMarkup += getOliviaMaskPolygons()
-          .map((points) => `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`)
-          .join("");
-      } else {
-        debugMarkup += `<rect x="${targetRect.x}" y="${targetRect.y}" width="${targetRect.width}" height="${targetRect.height}"></rect>`;
-      }
-      debugMarkup += `</svg>`;
-      maskDebugLayer.innerHTML = debugMarkup;
-    }
-
     function resetLayout() {
       playAudio(resetSound);
       buildPieces();
@@ -1667,7 +1603,6 @@
     function handleResize() {
       if (!activeStudent) {
         buildPieces();
-        renderMaskDebug();
         return;
       }
       layoutTargetImage();
@@ -1807,13 +1742,6 @@
         });
       }
     });
-    maskDebugButton.addEventListener("click", () => {
-      playClickSound();
-      showMaskDebug = !showMaskDebug;
-      board.classList.toggle("board-show-mask", showMaskDebug);
-      maskDebugButton.textContent = showMaskDebug ? "Hide Coverage Mask" : "Show Coverage Mask";
-    });
-
     document.addEventListener("pointermove", pointerMove);
     document.addEventListener("pointerup", pointerEnd);
     document.addEventListener("pointercancel", pointerEnd);

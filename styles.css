@@ -766,8 +766,11 @@ h1 {
   margin: 0 0 20px;
 }
 
-.detail-page .detail-section-heading {
-  margin: 28px 0 16px;
+.detail-page .detail-section-heading,
+.detail-page .detail-references-heading {
+  margin: 40px 0 28px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(23, 49, 61, 0.14);
   font-size: clamp(1.35rem, 2.3vw, 2rem);
   line-height: 1;
   font-weight: 700;
@@ -892,7 +895,7 @@ h1 {
   flex-wrap: wrap;
   gap: 18px;
   align-items: flex-start;
-  margin-top: 28px;
+  margin-top: 0;
   margin-bottom: -1px;
 }
 
@@ -979,21 +982,27 @@ h1 {
 }
 
 .detail-page .detail-references {
-  margin-top: 40px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(23, 49, 61, 0.14);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .detail-page .detail-credits {
-  margin-top: 80px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(23, 49, 61, 0.14);
+  margin-top: 0;
+  padding: 20px 22px;
+  border: 1px solid rgba(23, 49, 61, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.82);
+  box-shadow: 0 10px 24px rgba(23, 49, 61, 0.08);
+}
+
+.detail-page .detail-credits .detail-copy:last-child {
+  margin-bottom: 0;
 }
 
 .detail-page .detail-references-heading {
-  margin-bottom: 10px;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
 }
 
 .detail-page .detail-reference-list {
@@ -1008,16 +1017,15 @@ h1 {
   margin-bottom: 12px;
 }
 
-.detail-page .detail-sound-credits .detail-references-heading,
 .detail-page .detail-sound-credits .detail-reference-list {
-  font-size: 0.58rem;
-  line-height: 1.25;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .detail-page .detail-sound-credits {
-  margin-top: 176px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(23, 49, 61, 0.14);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
 
 @media (max-width: 960px) {

@@ -344,6 +344,8 @@
     .index2-page .read-env-toggle {
       position: absolute;
       top: 50%;
+      display: grid;
+      place-items: center;
       border: 0;
       padding: 0;
       background: transparent;
@@ -379,6 +381,7 @@
       width: 104px;
       height: 104px;
       transition: transform 140ms ease, opacity 140ms ease;
+      margin: 0 auto;
     }
 
     .index2-page .read-env-art polygon {
@@ -390,11 +393,13 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: min(82px, 72%);
+      width: calc(100% - 12px);
+      max-width: 82px;
       color: #fdfaf2;
       font-size: 1.15rem;
       font-weight: 700;
       line-height: 1.15;
+      text-transform: uppercase;
       text-align: center;
       -webkit-text-stroke: 1px var(--muted);
       text-shadow:

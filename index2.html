@@ -1250,6 +1250,7 @@
       if (!parent || !copy || !envKey) {
         return;
       }
+      playClickSound();
       copy.classList.remove("hidden");
       toggle.setAttribute("aria-expanded", "true");
       toggle.classList.add("is-revealed");

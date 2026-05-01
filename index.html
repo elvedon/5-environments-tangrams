@@ -117,6 +117,13 @@
       background: transparent;
     }
 
+    .index2-page .ideas-popup-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 119;
+    }
+
     .index2-page .info-modal-card.is-ideas-modal {
       position: absolute;
       left: 50%;
@@ -152,6 +159,73 @@
     }
 
     .index2-page .info-modal-card.is-ideas-modal #modal-body {
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+
+    .index2-page .ideas-popup-card {
+      position: fixed;
+      width: min(360px, 72vw);
+      height: min(360px, 62vh);
+      overflow: auto;
+      padding: 22px 24px 24px;
+      border: 1px solid rgba(23, 49, 61, 0.14);
+      border-radius: 24px;
+      background: rgba(255, 249, 238, 0.96);
+      box-shadow: 0 24px 60px rgba(23, 49, 61, 0.12);
+      pointer-events: auto;
+      color: var(--muted);
+      touch-action: none;
+    }
+
+    .index2-page .ideas-popup-art {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .index2-page .ideas-popup-art svg {
+      width: 52%;
+      height: 52%;
+      opacity: 0.22;
+    }
+
+    .index2-page .ideas-popup-card > *:not(.ideas-popup-art) {
+      position: relative;
+      z-index: 1;
+    }
+
+    .index2-page .ideas-popup-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 3;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      background: rgba(255, 249, 238, 0.9);
+      border-radius: 999px;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .index2-page .ideas-popup-title {
+      margin: 0 44px 10px 0;
+      font-size: 1.1rem;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+
+    .index2-page .ideas-popup-body {
+      margin: 0;
       font-size: 0.94rem;
       line-height: 1.65;
     }
@@ -719,6 +793,7 @@
       <p id="modal-continue-copy" class="modal-link-copy hidden"><a id="modal-continue-link" class="modal-link" href="#">Keep going!</a></p>
     </div>
   </div>
+  <div id="ideas-popup-layer" class="ideas-popup-layer" aria-live="polite"></div>
 
   <template id="piece-template">
     <article class="piece" tabindex="0">
@@ -1007,6 +1082,7 @@
     const modalLinkCopy = document.getElementById("modal-link-copy");
     const modalContinueCopy = document.getElementById("modal-continue-copy");
     const closeModalButton = document.getElementById("close-modal");
+    const ideasPopupLayer = document.getElementById("ideas-popup-layer");
     const moveStartSound = document.getElementById("move-start-sound");
     const moveEndSound = document.getElementById("move-end-sound");
     const resetSound = document.getElementById("reset-sound");
@@ -1036,8 +1112,10 @@
     let activeSolveImage = "";
     let persistentIdeasModal = false;
     let highestZ = 20;
+    let highestIdeasPopupZ = 140;
     let activePointer = null;
     let modalDrag = null;
+    let activeIdeasPopupDrag = null;
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
@@ -1187,6 +1265,128 @@
       forceCloseModal();
     }
 
+    function clearIdeasPopups() {
+      if (!ideasPopupLayer) {
+        return;
+      }
+      ideasPopupLayer.innerHTML = "";
+      highestIdeasPopupZ = 140;
+    }
+
+    function openIdeasPopup(title, html, options = {}) {
+      if (!ideasPopupLayer) {
+        return;
+      }
+      const popup = document.createElement("article");
+      popup.className = "ideas-popup-card";
+      popup.style.zIndex = String(highestIdeasPopupZ);
+      highestIdeasPopupZ += 1;
+
+      const offset = ideasPopupLayer.children.length * 22;
+      const width = Math.min(360, Math.max(window.innerWidth * 0.72, 240));
+      const height = Math.min(360, Math.max(window.innerHeight * 0.62, 240));
+      const left = Math.max(window.innerWidth - width - 24 - offset, 12);
+      const top = Math.min(118 + offset, Math.max(window.innerHeight - height - 12, 12));
+      popup.style.left = `${left}px`;
+      popup.style.top = `${top}px`;
+      popup.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+      popup.addEventListener("pointerdown", startIdeasPopupDrag);
+
+      if (options.environmentKey && modalArtByEnvironment[options.environmentKey]) {
+        const art = document.createElement("div");
+        art.className = "ideas-popup-art";
+        art.setAttribute("aria-hidden", "true");
+        art.innerHTML = modalArtByEnvironment[options.environmentKey];
+        const artSvg = art.querySelector("svg");
+        const artDefinition = pieceDefinitions.find((piece) => piece.id === options.environmentKey);
+        if (artSvg) {
+          artSvg.style.width = "52%";
+          artSvg.style.height = "52%";
+          if (artDefinition) {
+            artSvg.style.color = artDefinition.color;
+            artSvg.querySelectorAll("polygon").forEach((polygon) => {
+              polygon.style.fill = artDefinition.color;
+            });
+          }
+          artSvg.style.opacity = "0.22";
+        }
+        popup.appendChild(art);
+      }
+
+      const close = document.createElement("button");
+      close.className = "ideas-popup-close";
+      close.type = "button";
+      close.setAttribute("aria-label", "Close information pop-up");
+      close.textContent = "×";
+      close.style.position = "absolute";
+      close.style.top = "8px";
+      close.style.right = "8px";
+      close.style.left = "auto";
+      close.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        popup.remove();
+      });
+      popup.appendChild(close);
+
+      const heading = document.createElement("h2");
+      heading.className = "ideas-popup-title";
+      heading.textContent = title;
+      popup.appendChild(heading);
+
+      const body = document.createElement("div");
+      body.className = "ideas-popup-body";
+      body.innerHTML = html;
+      popup.appendChild(body);
+
+      ideasPopupLayer.appendChild(popup);
+    }
+
+    function startIdeasPopupDrag(event) {
+      const popup = event.currentTarget;
+      if (event.button !== 0) {
+        return;
+      }
+      if (event.target.closest("button, a")) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      popup.style.zIndex = String(highestIdeasPopupZ);
+      highestIdeasPopupZ += 1;
+      const rect = popup.getBoundingClientRect();
+      activeIdeasPopupDrag = {
+        popup,
+        pointerId: event.pointerId,
+        offsetX: event.clientX - rect.left,
+        offsetY: event.clientY - rect.top
+      };
+      popup.setPointerCapture?.(event.pointerId);
+    }
+
+    function moveIdeasPopupDrag(event) {
+      if (!activeIdeasPopupDrag || activeIdeasPopupDrag.pointerId !== event.pointerId) {
+        return;
+      }
+      const popup = activeIdeasPopupDrag.popup;
+      const maxLeft = Math.max(window.innerWidth - popup.offsetWidth - 12, 12);
+      const maxTop = Math.max(window.innerHeight - popup.offsetHeight - 12, 12);
+      const nextLeft = Math.min(Math.max(event.clientX - activeIdeasPopupDrag.offsetX, 12), maxLeft);
+      const nextTop = Math.min(Math.max(event.clientY - activeIdeasPopupDrag.offsetY, 12), maxTop);
+      popup.style.left = `${nextLeft}px`;
+      popup.style.top = `${nextTop}px`;
+    }
+
+    function endIdeasPopupDrag(event) {
+      if (!activeIdeasPopupDrag || activeIdeasPopupDrag.pointerId !== event.pointerId) {
+        return;
+      }
+      activeIdeasPopupDrag.popup.releasePointerCapture?.(event.pointerId);
+      activeIdeasPopupDrag = null;
+    }
+
     function forceCloseModal() {
       const modalCard = modal.querySelector(".modal-card");
       const wasSolveInstruction = activeModalPurpose === "solve-instruction";
@@ -1291,6 +1491,7 @@
       if (activeStudent) {
         setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
       }
+      clearIdeasPopups();
     }
 
     async function getOpaqueImageBounds(src) {
@@ -1629,6 +1830,7 @@
     }
 
     function handleSolvedEnvironmentClick(event) {
+      event.stopPropagation();
       if (!board.classList.contains("showing-solution") || !modal.classList.contains("hidden")) {
         return;
       }
@@ -1646,10 +1848,8 @@
       }
       if (envKey === "student" || envKey === "teacher") {
         playClickSound();
-        openCustomModal("Student and Teacher", ideaHtml, {
-          showReadMore: false,
-          environmentKey: "",
-          modalVariant: "ideas"
+        openIdeasPopup("Student and Teacher", ideaHtml, {
+          environmentKey: ""
         });
         return;
       }
@@ -1661,10 +1861,8 @@
         return;
       }
       playClickSound();
-      openCustomModal(`${activeStudent.name}'s ${definition.label} Environment`, ideaHtml, {
-        showReadMore: false,
-        environmentKey: envKey,
-        modalVariant: "ideas"
+      openIdeasPopup(`${activeStudent.name}'s ${definition.label} Environment`, ideaHtml, {
+        environmentKey: envKey
       });
     }
 
@@ -1780,6 +1978,7 @@
       playView.classList.add("hidden");
       updatePostSolveChartLink();
       forceCloseModal();
+      clearIdeasPopups();
       resetSidebarContent();
       activeReadEnvironment = "";
       readEnvToggles.forEach((toggle) => {
@@ -2542,6 +2741,8 @@
 
     function resetLayout() {
       playAudio(resetSound);
+      clearIdeasPopups();
+      hideSolveOverlay();
       buildPieces();
     }
 
@@ -2668,8 +2869,10 @@
         closeModal();
       }
     });
+    window.addEventListener("pointermove", moveIdeasPopupDrag);
+    window.addEventListener("pointerup", endIdeasPopupDrag);
+    window.addEventListener("pointercancel", endIdeasPopupDrag);
     targetLayer.addEventListener("click", handleSolvedEnvironmentClick);
-    targetImage.addEventListener("click", handleSolvedEnvironmentClick);
 
     resetButton.addEventListener("click", resetLayout);
     solveButton.addEventListener("click", () => {

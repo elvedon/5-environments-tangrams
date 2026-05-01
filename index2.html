@@ -191,6 +191,10 @@
       z-index: 31;
     }
 
+    .index2-page .solve-label-layer.is-editing {
+      pointer-events: auto;
+    }
+
     .index2-page .solve-label {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -207,6 +211,11 @@
         1px 0 var(--muted),
         0 -1px var(--muted),
         0 2px 6px rgba(0, 0, 0, 0.18);
+      cursor: default;
+    }
+
+    .index2-page .solve-label-layer.is-editing .solve-label {
+      cursor: move;
     }
 
     .index2-page .tips-list li + li {
@@ -255,6 +264,33 @@
     .index2-page .board-actions button {
       padding: 10px 14px;
       font-size: 0.84rem;
+    }
+
+    .index2-page .label-edit-button {
+      background: #8c5e9f;
+      color: #fff9ef;
+      border: 0;
+      border-radius: 999px;
+      box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);
+    }
+
+    .index2-page .label-editor-output {
+      display: none;
+      margin: 6px 0 0;
+      padding: 10px 12px;
+      max-width: 240px;
+      border-radius: 14px;
+      background: rgba(255, 248, 236, 0.92);
+      border: 1px solid rgba(23, 49, 61, 0.1);
+      color: var(--muted);
+      font-size: 0.68rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .index2-page .label-editor-output.is-visible {
+      display: block;
     }
 
     .index2-page .read-view {
@@ -608,6 +644,8 @@
             <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
             <button id="intro-learn-more-button" class="learn-more-button" type="button" aria-pressed="false">Hint</button>
             <button id="solve-button" class="solve-button" type="button">Solve</button>
+            <button id="label-edit-button" class="label-edit-button" type="button" aria-pressed="false">Edit Labels</button>
+            <pre id="label-editor-output" class="label-editor-output" aria-live="polite"></pre>
           </div>
         </div>
 
@@ -889,6 +927,8 @@
     const solveOverlayCanvas = document.getElementById("solve-overlay-canvas");
     const solveLabelLayer = document.getElementById("solve-label-layer");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
+    const labelEditButton = document.getElementById("label-edit-button");
+    const labelEditorOutput = document.getElementById("label-editor-output");
     const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
     const introAudioPlayer = document.querySelector(".intro-audio-player");
@@ -956,6 +996,7 @@
     let highestZ = 20;
     let activePointer = null;
     let modalDrag = null;
+    let solveLabelDrag = null;
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
@@ -963,38 +1004,39 @@
     let suppressTargetImageActivation = false;
     const solveImageBoundsCache = new Map();
     let hintStateBeforeSolve = false;
+    let isEditingSolveLabels = false;
     const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
     const solveLabelPositions = {
       katie: {
-        social: { x: 0.22, y: 0.26, width: 0.16 },
-        emotional: { x: 0.19, y: 0.50, width: 0.18 },
-        creative: { x: 0.46, y: 0.52, width: 0.18 },
-        physical: { x: 0.43, y: 0.83, width: 0.22 },
-        academic: { x: 0.74, y: 0.82, width: 0.18 }
+        social: { x: 0.18400733584449405, y: 0.26250571013289037, width: 0.16 },
+        emotional: { x: 0.19635259719122022, y: 0.5025532080564784, width: 0.19 },
+        creative: { x: 0.408179931640625, y: 0.5796610257475083, width: 0.2 },
+        physical: { x: 0.4498490978422619, y: 0.8282900747508306, width: 0.24 },
+        academic: { x: 0.7790244838169643, y: 0.8571368874584717, width: 0.2 }
       },
       james: {
-        creative: { x: 0.17, y: 0.23, width: 0.18 },
-        social: { x: 0.50, y: 0.31, width: 0.18 },
-        emotional: { x: 0.82, y: 0.23, width: 0.22 },
-        physical: { x: 0.50, y: 0.79, width: 0.22 },
-        academic: { x: 0.86, y: 0.58, width: 0.18 }
+        creative: { x: 0.17098784776052597, y: 0.48609015846147086, width: 0.18 },
+        social: { x: 0.48253685070408275, y: 0.25358981289922017, width: 0.18 },
+        emotional: { x: 0.8198428765487513, y: 0.15469996512265524, width: 0.22 },
+        physical: { x: 0.49869211010039693, y: 0.8365518216800671, width: 0.22 },
+        academic: { x: 0.8606511546507075, y: 0.6317882199883884, width: 0.2 }
       },
       alex: {
-        social: { x: 0.40, y: 0.11, width: 0.16 },
-        physical: { x: 0.57, y: 0.28, width: 0.19 },
-        academic: { x: 0.73, y: 0.24, width: 0.16 },
-        creative: { x: 0.38, y: 0.47, width: 0.18 },
-        emotional: { x: 0.56, y: 0.64, width: 0.18 }
+        social: { x: 0.4211900845864661, y: 0.12, width: 0.16 },
+        physical: { x: 0.49206590695488717, y: 0.30759889453493067, width: 0.2 },
+        academic: { x: 0.6702357456140351, y: 0.3019420934849913, width: 0.18 },
+        creative: { x: 0.4371393327067669, y: 0.5661556905370844, width: 0.2 },
+        emotional: { x: 0.5988349780701754, y: 0.6695697603984386, width: 0.18 }
       },
       olivia: {
-        emotional: { x: 0.50, y: 0.08, width: 0.2 },
-        physical: { x: 0.50, y: 0.27, width: 0.2 },
-        academic: { x: 0.77, y: 0.42, width: 0.18 },
-        creative: { x: 0.50, y: 0.58, width: 0.22 },
-        social: { x: 0.50, y: 0.78, width: 0.17 }
+        emotional: { x: 0.5, y: 0.1416878043831169, width: 0.2 },
+        physical: { x: 0.5018833705357143, y: 0.3836543729707792, width: 0.22 },
+        academic: { x: 0.7619317336309523, y: 0.6004294338474025, width: 0.18 },
+        creative: { x: 0.49987599206349204, y: 0.6560640726461039, width: 0.22 },
+        social: { x: 0.49609375, y: 0.8852521306818182, width: 0.17 }
       }
     };
 
@@ -1190,8 +1232,10 @@
       if (solveLabelLayer) {
         solveLabelLayer.innerHTML = "";
       }
+      solveLabelDrag = null;
       showHintImage = hintStateBeforeSolve;
       updateHintButtonState();
+      updateLabelEditUi();
       if (activeStudent) {
         setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
       }
@@ -1345,6 +1389,7 @@
       const positions = solveLabelPositions[activeStudent.id];
       solveLabelLayer.innerHTML = "";
       if (!positions) {
+        updateLabelEditUi();
         return;
       }
       ["physical", "emotional", "social", "academic", "creative"].forEach((id) => {
@@ -1355,6 +1400,7 @@
         }
         const label = document.createElement("div");
         label.className = "solve-label";
+        label.dataset.env = id;
         label.textContent = definition.label;
         label.style.left = `${targetRect.x + targetRect.width * position.x}px`;
         label.style.top = `${targetRect.y + targetRect.height * position.y}px`;
@@ -1364,6 +1410,84 @@
         }
         solveLabelLayer.appendChild(label);
       });
+      updateLabelEditUi();
+      updateLabelEditorOutput();
+    }
+
+    function updateLabelEditorOutput() {
+      if (!labelEditorOutput || !activeStudent) {
+        return;
+      }
+      const positions = solveLabelPositions[activeStudent.id];
+      labelEditorOutput.textContent = `${activeStudent.id}: ${JSON.stringify(positions, null, 2)}`;
+    }
+
+    function updateLabelEditUi() {
+      if (!labelEditButton || !labelEditorOutput || !solveLabelLayer) {
+        return;
+      }
+      const canEdit = Boolean(activeStudent) && board.classList.contains("showing-solution");
+      labelEditButton.disabled = !canEdit;
+      labelEditButton.setAttribute("aria-pressed", isEditingSolveLabels ? "true" : "false");
+      labelEditButton.textContent = isEditingSolveLabels ? "Done Editing" : "Edit Labels";
+      solveLabelLayer.classList.toggle("is-editing", canEdit && isEditingSolveLabels);
+      labelEditorOutput.classList.toggle("is-visible", canEdit && isEditingSolveLabels);
+      if (canEdit && isEditingSolveLabels) {
+        updateLabelEditorOutput();
+      }
+    }
+
+    function startSolveLabelDrag(event) {
+      if (!isEditingSolveLabels || !activeStudent || !board.classList.contains("showing-solution")) {
+        return;
+      }
+      const label = event.target.closest(".solve-label");
+      if (!label) {
+        return;
+      }
+      event.preventDefault();
+      const envKey = label.dataset.env;
+      const position = solveLabelPositions[activeStudent.id]?.[envKey];
+      if (!position) {
+        return;
+      }
+      solveLabelDrag = {
+        pointerId: event.pointerId,
+        envKey,
+        label,
+        pointerStartX: event.clientX,
+        pointerStartY: event.clientY,
+        originX: position.x,
+        originY: position.y
+      };
+      label.setPointerCapture?.(event.pointerId);
+    }
+
+    function moveSolveLabelDrag(event) {
+      if (!solveLabelDrag || solveLabelDrag.pointerId !== event.pointerId || !activeStudent) {
+        return;
+      }
+      const position = solveLabelPositions[activeStudent.id]?.[solveLabelDrag.envKey];
+      if (!position || !targetRect.width || !targetRect.height) {
+        return;
+      }
+      const deltaX = (event.clientX - solveLabelDrag.pointerStartX) / targetRect.width;
+      const deltaY = (event.clientY - solveLabelDrag.pointerStartY) / targetRect.height;
+      position.x = Math.min(Math.max(solveLabelDrag.originX + deltaX, 0), 1);
+      position.y = Math.min(Math.max(solveLabelDrag.originY + deltaY, 0), 1);
+      const nextCenterX = targetRect.x + targetRect.width * position.x;
+      const nextCenterY = targetRect.y + targetRect.height * position.y;
+      solveLabelDrag.label.style.left = `${nextCenterX}px`;
+      solveLabelDrag.label.style.top = `${nextCenterY}px`;
+      updateLabelEditorOutput();
+    }
+
+    function endSolveLabelDrag(event) {
+      if (!solveLabelDrag || solveLabelDrag.pointerId !== event.pointerId) {
+        return;
+      }
+      solveLabelDrag.label.releasePointerCapture?.(event.pointerId);
+      solveLabelDrag = null;
     }
 
     function deriveHintImageFromSource(imageSrc) {
@@ -2299,6 +2423,14 @@
       updateHintButtonState();
       setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
     });
+    labelEditButton.addEventListener("click", () => {
+      playClickSound();
+      if (!activeStudent || !board.classList.contains("showing-solution")) {
+        return;
+      }
+      isEditingSolveLabels = !isEditingSolveLabels;
+      updateLabelEditUi();
+    });
     introReferencesLink.addEventListener("click", (event) => {
       event.preventDefault();
       playClickSound();
@@ -2321,9 +2453,13 @@
     });
     closeModalButton.addEventListener("click", closeModal);
     modal.querySelector(".modal-card").addEventListener("pointerdown", startIdeasModalDrag);
+    solveLabelLayer.addEventListener("pointerdown", startSolveLabelDrag);
     window.addEventListener("pointermove", moveIdeasModalDrag);
+    window.addEventListener("pointermove", moveSolveLabelDrag);
     window.addEventListener("pointerup", endIdeasModalDrag);
+    window.addEventListener("pointerup", endSolveLabelDrag);
     window.addEventListener("pointercancel", endIdeasModalDrag);
+    window.addEventListener("pointercancel", endSolveLabelDrag);
     modal.addEventListener("click", (event) => {
       if (event.target === modal && !persistentIdeasModal) {
         closeModal();
@@ -2359,6 +2495,7 @@
     window.addEventListener("resize", handleResize);
     lockReadItemHeights();
     updateHintButtonState();
+    updateLabelEditUi();
     updateReadModeProgress();
   </script>
 </body>

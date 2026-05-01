@@ -499,13 +499,13 @@
           There's no single "right" shape. There's only the shape that fits this learner.
         </p>
         <p>
-          Explore the five environments here. Arrange, rotate, and reconfigure &mdash; and click on the student profiles to see how the pieces come together differently for every student.
+          Read about the five environments here, and <a id="intro-references-link" class="intro-link" href="details/references.html" target="_blank" rel="noreferrer noopener">click here to find references</a> and resources where you can learn more.
+        </p>
+        <p>
+          Once you're ready, click "Play." You can arrange, rotate, and reconfigure &mdash; and click on the student profiles to explore how the pieces come together differently for every student.
         </p>
       </div>
-      <div id="intro-sidebar-links">
-        <p class="intro-link-copy"><a id="intro-link" class="intro-link" href="details/overview.html" target="_blank" rel="noreferrer noopener">Click here to read more about how the five environments help Katie, James, Alex, and Olivia learn.</a></p>
-        <p class="intro-link-copy"><a class="intro-link" href="table.html" target="_blank" rel="noreferrer noopener">TEST also see the student learning info as an interactive table.</a></p>
-      </div>
+      <div id="intro-sidebar-links"></div>
     </section>
 
     <section class="game-panel">
@@ -859,13 +859,13 @@
     const solveOverlay = document.getElementById("solve-overlay");
     const solveOverlayImage = document.getElementById("solve-overlay-image");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
-    const introLink = document.getElementById("intro-link");
     const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
     const introAudioPlayer = document.querySelector(".intro-audio-player");
     const introAudioToggle = document.getElementById("intro-audio-toggle");
     const introAudioProgressFill = document.getElementById("intro-audio-progress-fill");
     const introAudioTime = document.getElementById("intro-audio-time");
+    const introReferencesLink = document.getElementById("intro-references-link");
     const katieAudio = document.getElementById("katie-audio");
     const katieAudioPlayer = document.getElementById("katie-audio-player");
     const katieAudioToggle = document.getElementById("katie-audio-toggle");
@@ -1971,15 +1971,14 @@
     oliviaAudio.addEventListener("ended", updateOliviaAudioUi);
     updateOliviaAudioUi();
 
-    introLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openOverviewWindow(event.currentTarget.href);
-    });
-
     introLearnMoreButton.addEventListener("click", () => {
       playClickSound();
       openOverviewWindow("details/overview.html");
+    });
+    introReferencesLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      playClickSound();
+      openOverviewWindow(event.currentTarget.href);
     });
     playNowButton.addEventListener("click", () => {
       playClickSound();

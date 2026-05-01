@@ -315,6 +315,26 @@
       opacity: 0;
     }
 
+    .index2-page #read-env-physical.is-visited .read-env-watermark {
+      color: rgba(215, 108, 73, 0.34);
+    }
+
+    .index2-page #read-env-emotional.is-visited .read-env-watermark {
+      color: rgba(140, 94, 159, 0.34);
+    }
+
+    .index2-page #read-env-social.is-visited .read-env-watermark {
+      color: rgba(62, 155, 107, 0.34);
+    }
+
+    .index2-page #read-env-academic.is-visited .read-env-watermark {
+      color: rgba(210, 166, 55, 0.34);
+    }
+
+    .index2-page #read-env-creative.is-visited .read-env-watermark {
+      color: rgba(77, 136, 168, 0.34);
+    }
+
     .index2-page .read-detail-list li:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12), inset 0 0 0 999px rgba(255, 255, 255, 0.08);
@@ -457,11 +477,26 @@
       padding-top: 8px;
       display: flex;
       justify-content: center;
+      gap: 12px;
     }
 
     .index2-page .play-now-button {
       min-width: 160px;
       background: #8c5e9f;
+    }
+
+    .index2-page .see-more-button {
+      min-width: 160px;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: #d2a637;
+      color: #fff9ef;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);
+      text-decoration: none;
+      text-align: center;
+      font: inherit;
     }
 
     .index2-page .post-solve-chart-link {
@@ -615,7 +650,8 @@
           </li>
         </ul>
         <div id="play-now-wrap" class="play-now-wrap hidden">
-          <button id="play-now-button" class="solve-button play-now-button" type="button">Play Now</button>
+          <a class="see-more-button" href="details/overview.html" target="_blank" rel="noreferrer noopener">Read</a>
+          <button id="play-now-button" class="solve-button play-now-button" type="button">Experience</button>
         </div>
       </div>
 
@@ -997,6 +1033,7 @@
     let hintStateBeforeSolve = false;
     let hasSolvedAnyStudent = false;
     const openedReadEnvironments = new Set();
+    let activeReadEnvironment = "";
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
@@ -1709,6 +1746,13 @@
       updatePostSolveChartLink();
       forceCloseModal();
       resetSidebarContent();
+      activeReadEnvironment = "";
+      readEnvToggles.forEach((toggle) => {
+        setReadEnvironmentState(toggle, {
+          active: false,
+          visited: openedReadEnvironments.has(toggle.dataset.readEnv)
+        });
+      });
     }
 
     function enterPlayMode() {
@@ -1732,6 +1776,19 @@
       playNowWrap.classList.toggle("hidden", openedReadEnvironments.size < readEnvToggles.length);
     }
 
+    function setReadEnvironmentState(toggle, { active = false, visited = false } = {}) {
+      const parent = toggle.closest("li");
+      const copy = parent?.querySelector(".read-env-copy");
+      if (!parent || !copy) {
+        return;
+      }
+      copy.classList.toggle("hidden", !active);
+      toggle.setAttribute("aria-expanded", active ? "true" : "false");
+      toggle.classList.toggle("is-revealed", active);
+      parent.classList.toggle("is-revealed", active);
+      parent.classList.toggle("is-visited", visited && !active);
+    }
+
     function revealReadEnvironment(toggle) {
       const parent = toggle.closest("li");
       const copy = parent?.querySelector(".read-env-copy");
@@ -1739,12 +1796,20 @@
       if (!parent || !copy || !envKey) {
         return;
       }
+      if (activeReadEnvironment === envKey) {
+        return;
+      }
       playClickSound();
-      copy.classList.remove("hidden");
-      toggle.setAttribute("aria-expanded", "true");
-      toggle.classList.add("is-revealed");
-      parent.classList.add("is-revealed");
+      readEnvToggles.forEach((candidate) => {
+        const candidateKey = candidate.dataset.readEnv;
+        setReadEnvironmentState(candidate, {
+          active: candidateKey === envKey,
+          visited: openedReadEnvironments.has(candidateKey)
+        });
+      });
       openedReadEnvironments.add(envKey);
+      activeReadEnvironment = envKey;
+      setReadEnvironmentState(toggle, { active: true, visited: true });
       updateReadModeProgress();
     }
 

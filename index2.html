@@ -250,6 +250,7 @@
       padding-left: 18px;
       border-radius: 16px;
       border: 1px solid rgba(23, 49, 61, 0.08);
+      background: rgba(255, 249, 238, 0.9);
       overflow: hidden;
       transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
     }
@@ -377,23 +378,23 @@
       opacity: 1;
     }
 
-    .index2-page #read-env-physical {
+    .index2-page #read-env-physical.is-revealed {
       background: rgba(215, 108, 73, 0.12);
     }
 
-    .index2-page #read-env-emotional {
+    .index2-page #read-env-emotional.is-revealed {
       background: rgba(140, 94, 159, 0.12);
     }
 
-    .index2-page #read-env-social {
+    .index2-page #read-env-social.is-revealed {
       background: rgba(62, 155, 107, 0.12);
     }
 
-    .index2-page #read-env-academic {
+    .index2-page #read-env-academic.is-revealed {
       background: rgba(210, 166, 55, 0.12);
     }
 
-    .index2-page #read-env-creative {
+    .index2-page #read-env-creative.is-revealed {
       background: rgba(77, 136, 168, 0.12);
     }
 
@@ -1964,6 +1965,7 @@
         copy.classList.remove("hidden");
         toggle.setAttribute("aria-expanded", "true");
         toggle.classList.add("is-revealed");
+        parent.classList.add("is-revealed");
         openedReadEnvironments.add(envKey);
         updateReadModeProgress();
       });

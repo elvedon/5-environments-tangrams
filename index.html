@@ -612,17 +612,31 @@
     }
 
     .index2-page .post-solve-chart-link {
-      margin: 4px auto 14px;
-      text-align: center;
-      font-size: 1rem;
-      line-height: 1.55;
+      margin: 6px 0 14px;
+      text-align: right;
       color: var(--muted);
     }
 
     .index2-page .post-solve-chart-link a {
-      color: #8d5a31;
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 0;
+      background: #4d88a8;
+      box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);
+      color: #fff9ef;
+      font-size: 0.96rem;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .index2-page .post-solve-chart-link a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(23, 49, 61, 0.22);
+      background: #3f7691;
     }
   </style>
 </head>
@@ -785,7 +799,7 @@
           </div>
         </div>
         <p id="post-solve-chart-link" class="post-solve-chart-link hidden">
-          <a href="details/chart.html" target="_blank" rel="noreferrer noopener">Click here for a chart summarizing these ideas about how the 5 environments can work to help each of these students thrive.</a>
+          <a href="details/chart.html" target="_blank" rel="noreferrer noopener">View Ideas for All</a>
         </p>
 
       <div id="board" class="board" aria-label="Tangram coverage board">
@@ -1150,6 +1164,7 @@
     const solveImageBoundsCache = new Map();
     let hintStateBeforeSolve = false;
     let hasSolvedAnyStudent = false;
+    let hasOpenedAnySolvedEnvironment = false;
     const openedReadEnvironments = new Set();
     let activeReadEnvironment = "";
     const defaultPageTitle = pageTitle.textContent;
@@ -1861,6 +1876,8 @@
       if (!definition) {
         return;
       }
+      hasOpenedAnySolvedEnvironment = true;
+      updatePostSolveChartLink();
       if (envKey === "student" || envKey === "teacher") {
         playClickSound();
         openIdeasPopup("Student and Teacher", ideaHtml, {
@@ -1905,7 +1922,7 @@
       if (!postSolveChartLink) {
         return;
       }
-      postSolveChartLink.classList.toggle("hidden", !isPlayMode || !hasSolvedAnyStudent);
+      postSolveChartLink.classList.toggle("hidden", !isPlayMode || !hasSolvedAnyStudent || !hasOpenedAnySolvedEnvironment);
     }
 
     function setDisplayedTargetArt(src, { rebuild = false } = {}) {

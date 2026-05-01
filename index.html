@@ -1057,28 +1057,36 @@
         emotional: { x: 0.19635259719122022, y: 0.5025532080564784, width: 0.19 },
         creative: { x: 0.408179931640625, y: 0.5796610257475083, width: 0.2 },
         physical: { x: 0.4498490978422619, y: 0.8282900747508306, width: 0.24 },
-        academic: { x: 0.7790244838169643, y: 0.8571368874584717, width: 0.2 }
+        academic: { x: 0.7790244838169643, y: 0.8571368874584717, width: 0.2 },
+        student: { x: 0.09200416201636907, y: 0.1531481000830565, width: 0.16 },
+        teacher: { x: 0.29765311104910713, y: 0.15409468438538199, width: 0.16 }
       },
       james: {
         creative: { x: 0.17098784776052597, y: 0.48609015846147086, width: 0.18 },
         social: { x: 0.48253685070408275, y: 0.25358981289922017, width: 0.18 },
         emotional: { x: 0.8198428765487513, y: 0.15469996512265524, width: 0.22 },
         physical: { x: 0.49869211010039693, y: 0.8365518216800671, width: 0.22 },
-        academic: { x: 0.8606511546507075, y: 0.6317882199883884, width: 0.2 }
+        academic: { x: 0.8606511546507075, y: 0.6317882199883884, width: 0.2 },
+        student: { x: 0.21410872913174442, y: 0.09119249803909144, width: 0.16 },
+        teacher: { x: 0.6078583808536338, y: 0.5105710843854051, width: 0.16 }
       },
       alex: {
         social: { x: 0.4211900845864661, y: 0.12, width: 0.16 },
         physical: { x: 0.49206590695488717, y: 0.30759889453493067, width: 0.2 },
         academic: { x: 0.6702357456140351, y: 0.3019420934849913, width: 0.18 },
         creative: { x: 0.4371393327067669, y: 0.5661556905370844, width: 0.2 },
-        emotional: { x: 0.5988349780701754, y: 0.6695697603984386, width: 0.18 }
+        emotional: { x: 0.5988349780701754, y: 0.6695697603984386, width: 0.18 },
+        student: { x: 0.23329280231829574, y: 0.7291191193296541, width: 0.16 },
+        teacher: { x: 0.5419727052005012, y: 0.8748600080764571, width: 0.16 }
       },
       olivia: {
         emotional: { x: 0.5, y: 0.1416878043831169, width: 0.2 },
         physical: { x: 0.5018833705357143, y: 0.3836543729707792, width: 0.22 },
         academic: { x: 0.7619317336309523, y: 0.6004294338474025, width: 0.18 },
         creative: { x: 0.49987599206349204, y: 0.6560640726461039, width: 0.22 },
-        social: { x: 0.49609375, y: 0.8852521306818182, width: 0.17 }
+        social: { x: 0.49609375, y: 0.8852521306818182, width: 0.17 },
+        student: { x: 0.3302269345238096, y: 0.5802348823051947, width: 0.16 },
+        teacher: { x: 0.17160776289682542, y: 0.624656554383117, width: 0.16 }
       }
     };
 
@@ -1472,6 +1480,9 @@
       if (!student?.ideasHtml) {
         return "";
       }
+      if (envKey === "student" || envKey === "teacher") {
+        return "These five environments do not exist in the abstract &mdash; the student and teacher are always integral parts of the picture.";
+      }
       const definition = pieceDefinitions.find((piece) => piece.id === envKey);
       if (!definition) {
         return "";
@@ -1535,7 +1546,7 @@
       );
 
       const envDefinitions = pieceDefinitions.filter((piece) =>
-        ["physical", "emotional", "social", "academic", "creative"].includes(piece.id)
+        ["physical", "emotional", "social", "academic", "creative", "student", "teacher"].includes(piece.id)
       );
       const envPalette = envDefinitions.map((definition) => ({
         id: definition.id,
@@ -1629,6 +1640,14 @@
       if (!definition) {
         openCustomModal("Environment Click Error", "A solved environment was selected, but its label definition was not found.", {
           showReadMore: false
+        });
+        return;
+      }
+      if (envKey === "student" || envKey === "teacher") {
+        playClickSound();
+        openCustomModal("Student and Teacher", ideaHtml, {
+          showReadMore: false,
+          environmentKey: ""
         });
         return;
       }

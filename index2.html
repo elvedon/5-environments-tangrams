@@ -321,6 +321,28 @@
         <div id="james-audio-time" class="intro-audio-time">0:00</div>
         <audio id="james-audio" preload="metadata" src="james-profile.mp3"></audio>
       </div>
+      <div id="alex-audio-player" class="intro-audio-player hidden">
+        <button id="alex-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play Alex profile audio">Play Audio</button>
+        <div class="intro-audio-meta">
+          <div class="intro-audio-track">Alex Audio</div>
+          <div class="intro-audio-progress">
+            <div id="alex-audio-progress-fill" class="intro-audio-progress-fill"></div>
+          </div>
+        </div>
+        <div id="alex-audio-time" class="intro-audio-time">0:00</div>
+        <audio id="alex-audio" preload="metadata" src="alex-profile.mp3"></audio>
+      </div>
+      <div id="olivia-audio-player" class="intro-audio-player hidden">
+        <button id="olivia-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play Olivia profile audio">Play Audio</button>
+        <div class="intro-audio-meta">
+          <div class="intro-audio-track">Olivia Audio</div>
+          <div class="intro-audio-progress">
+            <div id="olivia-audio-progress-fill" class="intro-audio-progress-fill"></div>
+          </div>
+        </div>
+        <div id="olivia-audio-time" class="intro-audio-time">0:00</div>
+        <audio id="olivia-audio" preload="metadata" src="olivia-profile.mp3"></audio>
+      </div>
       <h2 id="sidebar-subheading" class="sidebar-subheading">Introduction</h2>
       <div id="sidebar-copy" class="intro-copy">
         <p>
@@ -651,6 +673,16 @@
     const jamesAudioToggle = document.getElementById("james-audio-toggle");
     const jamesAudioProgressFill = document.getElementById("james-audio-progress-fill");
     const jamesAudioTime = document.getElementById("james-audio-time");
+    const alexAudio = document.getElementById("alex-audio");
+    const alexAudioPlayer = document.getElementById("alex-audio-player");
+    const alexAudioToggle = document.getElementById("alex-audio-toggle");
+    const alexAudioProgressFill = document.getElementById("alex-audio-progress-fill");
+    const alexAudioTime = document.getElementById("alex-audio-time");
+    const oliviaAudio = document.getElementById("olivia-audio");
+    const oliviaAudioPlayer = document.getElementById("olivia-audio-player");
+    const oliviaAudioToggle = document.getElementById("olivia-audio-toggle");
+    const oliviaAudioProgressFill = document.getElementById("olivia-audio-progress-fill");
+    const oliviaAudioTime = document.getElementById("olivia-audio-time");
     const introPhysicalLink = document.getElementById("intro-physical-link");
     const introEmotionalLink = document.getElementById("intro-emotional-link");
     const introSocialLink = document.getElementById("intro-social-link");
@@ -749,6 +781,14 @@
 
     function updateJamesAudioUi() {
       updateAudioPlayerUi(jamesAudio, jamesAudioToggle, jamesAudioProgressFill, jamesAudioTime);
+    }
+
+    function updateAlexAudioUi() {
+      updateAudioPlayerUi(alexAudio, alexAudioToggle, alexAudioProgressFill, alexAudioTime);
+    }
+
+    function updateOliviaAudioUi() {
+      updateAudioPlayerUi(oliviaAudio, oliviaAudioToggle, oliviaAudioProgressFill, oliviaAudioTime);
     }
 
     function setModalArt(environmentKey = "") {
@@ -882,6 +922,8 @@
       const isIntro = title === defaultSidebarTitle;
       const isKatie = title === "Katie";
       const isJames = title === "James";
+      const isAlex = title === "Alex";
+      const isOlivia = title === "Olivia";
       pageTitle.textContent = isIntro ? defaultPageTitle : `${title}'s Learning Profile`;
       sidebarSubheading.textContent = isIntro ? defaultSidebarTitle : "";
       sidebarSubheading.classList.toggle("hidden", !isIntro);
@@ -895,6 +937,12 @@
       if (jamesAudioPlayer) {
         jamesAudioPlayer.classList.toggle("hidden", !isJames);
       }
+      if (alexAudioPlayer) {
+        alexAudioPlayer.classList.toggle("hidden", !isAlex);
+      }
+      if (oliviaAudioPlayer) {
+        oliviaAudioPlayer.classList.toggle("hidden", !isOlivia);
+      }
       if (introSidebarLinks) {
         introSidebarLinks.classList.toggle("hidden", !isIntro);
       }
@@ -906,6 +954,12 @@
       }
       if (!isJames && jamesAudio && !jamesAudio.paused) {
         jamesAudio.pause();
+      }
+      if (!isAlex && alexAudio && !alexAudio.paused) {
+        alexAudio.pause();
+      }
+      if (!isOlivia && oliviaAudio && !oliviaAudio.paused) {
+        oliviaAudio.pause();
       }
     }
 
@@ -1665,6 +1719,36 @@
     jamesAudio.addEventListener("pause", updateJamesAudioUi);
     jamesAudio.addEventListener("ended", updateJamesAudioUi);
     updateJamesAudioUi();
+
+    alexAudioToggle.addEventListener("click", () => {
+      playClickSound();
+      if (alexAudio.paused) {
+        alexAudio.play().catch(() => {});
+      } else {
+        alexAudio.pause();
+      }
+    });
+    alexAudio.addEventListener("timeupdate", updateAlexAudioUi);
+    alexAudio.addEventListener("loadedmetadata", updateAlexAudioUi);
+    alexAudio.addEventListener("play", updateAlexAudioUi);
+    alexAudio.addEventListener("pause", updateAlexAudioUi);
+    alexAudio.addEventListener("ended", updateAlexAudioUi);
+    updateAlexAudioUi();
+
+    oliviaAudioToggle.addEventListener("click", () => {
+      playClickSound();
+      if (oliviaAudio.paused) {
+        oliviaAudio.play().catch(() => {});
+      } else {
+        oliviaAudio.pause();
+      }
+    });
+    oliviaAudio.addEventListener("timeupdate", updateOliviaAudioUi);
+    oliviaAudio.addEventListener("loadedmetadata", updateOliviaAudioUi);
+    oliviaAudio.addEventListener("play", updateOliviaAudioUi);
+    oliviaAudio.addEventListener("pause", updateOliviaAudioUi);
+    oliviaAudio.addEventListener("ended", updateOliviaAudioUi);
+    updateOliviaAudioUi();
 
     introLink.addEventListener("click", (event) => {
       event.preventDefault();

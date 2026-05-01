@@ -417,7 +417,7 @@
     const GRID_SIZE = 56;
     const BOARD_COLUMNS = 16;
     const BOARD_ROWS = 12;
-    const LARGE_TRIANGLE_GRID_UNITS = 4;
+    const DEFAULT_LARGE_TRIANGLE_HYPOTENUSE_GRID_UNITS = 4 * Math.SQRT2;
     const SMALL_TRIANGLE_LEG = 105;
     const LARGE_TRIANGLE_LEG = SMALL_TRIANGLE_LEG * 2;
     const MEDIUM_TRIANGLE_LEG = Math.sqrt(2) * SMALL_TRIANGLE_LEG;
@@ -429,6 +429,10 @@
         imageSrc: "katie.png",
         colors: ["#98bdd2", "#4d88a8"],
         solidSrc: "cat-solid.png",
+        targetBox: {
+          width: 9.6 * GRID_SIZE,
+          height: 10.75 * GRID_SIZE
+        },
         sidebarHtml: `Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
           But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
           She is also a kid who has been burned. Past social experiences have taught her that being herself &mdash; enthusiastic, intense, a little encyclopedic &mdash; can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.<br><br>
@@ -452,8 +456,8 @@
         colors: ["#dfb2b6", "#c7858a"],
         solidSrc: "square-solid.png",
         targetBox: {
-          width: (LARGE_TRIANGLE_GRID_UNITS * GRID_SIZE * Math.SQRT2) * (512 / (489 - 23)),
-          height: (LARGE_TRIANGLE_GRID_UNITS * GRID_SIZE * Math.SQRT2) * (512 / (488 - 23))
+          width: (DEFAULT_LARGE_TRIANGLE_HYPOTENUSE_GRID_UNITS * GRID_SIZE) * (512 / (489 - 23)),
+          height: (DEFAULT_LARGE_TRIANGLE_HYPOTENUSE_GRID_UNITS * GRID_SIZE) * (512 / (488 - 23))
         },
         sidebarHtml: `James has approximately forty-seven thoughts per minute and would like to share all of them with you right now, please. He is the kid who finishes your sentence, derails the lesson with a genuinely interesting tangent, negotiates the terms of every assignment, and then &mdash; somehow &mdash; makes an observation that reframes the entire discussion. He is exhausting in the best possible way.<br><br>
           James&rsquo; emotional world is just as loud as his verbal one. When something goes wrong, it involves big feelings, fast escalation, zero filter. But here's the thing about James: he can talk his way out of almost anything, including his own meltdowns. Language is not just his strength, it's his lifeline.<br><br>
@@ -499,6 +503,11 @@
         imageSrc: "olivia.png",
         colors: ["#e7cd80", "#d2a637"],
         solidSrc: "tree-solid.png",
+        pieceHypotenuseGridUnits: 6.5,
+        targetBox: {
+          width: 9 * GRID_SIZE,
+          height: 11 * GRID_SIZE
+        },
         sidebarHtml: `Olivia knows that the light reaching her eyes when she looks at a star left that star thousands of years ago. She finds comfort in the idea that the universe operates on a timescale so vast that urgency becomes almost meaningless. She is not slow. She is on cosmic time.<br><br>
           She also sees the number seven as a deep, specific shade of burnt orange. Four is green. The word "Wednesday" is blue-grey, like morning fog. This is not metaphor for Olivia &mdash; it is simply how information arrives. Her inner world is chromatic, layered, and almost impossible to fully translate into the currency everyone else is using.<br><br>
           Olivia's psychoeducational profile is one of the most striking a diagnostician can encounter: verbal and conceptual reasoning in the 99th percentile, processing speed in the 6th. That gap &mdash; nearly 93 percentile points &mdash; means that what she understands and what she can produce on demand exist in almost completely different universes. She has almost certainly spent her entire academic life being quietly, consistently underestimated. Teachers have waited for her to finish and mistaken the wait for uncertainty. Timed tests have told her she is average. She is not average. She is someone for whom the measurement tool was built for an entirely different kind of mind.<br><br>
@@ -1089,11 +1098,65 @@
       context.restore();
     }
 
+    function mapOliviaPoint(x, y) {
+      const sourceWidth = 852;
+      const sourceHeight = 1024;
+      return {
+        x: targetRect.x + (x / sourceWidth) * targetRect.width,
+        y: targetRect.y + (y / sourceHeight) * targetRect.height
+      };
+    }
+
+    function getOliviaMaskPolygons() {
+      return [
+        [
+          mapOliviaPoint(426, 0),
+          mapOliviaPoint(208, 218),
+          mapOliviaPoint(643, 218)
+        ],
+        [
+          mapOliviaPoint(425, 219),
+          mapOliviaPoint(123, 515),
+          mapOliviaPoint(728, 515)
+        ],
+        [
+          mapOliviaPoint(425, 516),
+          mapOliviaPoint(850, 724),
+          mapOliviaPoint(726, 810),
+          mapOliviaPoint(534, 810),
+          mapOliviaPoint(534, 1023),
+          mapOliviaPoint(317, 1023),
+          mapOliviaPoint(317, 810),
+          mapOliviaPoint(125, 810),
+          mapOliviaPoint(0, 724),
+          mapOliviaPoint(208, 516)
+        ]
+      ];
+    }
+
+    function drawOliviaMask(context, fillStyle = "#000") {
+      const polygons = getOliviaMaskPolygons();
+      if (!polygons.length) return;
+      context.save();
+      context.fillStyle = fillStyle;
+      polygons.forEach((points) => {
+        context.beginPath();
+        context.moveTo(points[0].x, points[0].y);
+        points.slice(1).forEach((point) => {
+          context.lineTo(point.x, point.y);
+        });
+        context.closePath();
+        context.fill();
+      });
+      context.restore();
+    }
+
     function buildTargetMask() {
       const boardWidth = Math.round(board.clientWidth);
       const boardHeight = Math.round(board.clientHeight);
       const boardScale = board.clientWidth / (BOARD_COLUMNS * GRID_SIZE);
-      const desiredLargeTriangleSide = LARGE_TRIANGLE_GRID_UNITS * GRID_SIZE * boardScale;
+      const hypotenuseGridUnits = activeStudent?.pieceHypotenuseGridUnits || DEFAULT_LARGE_TRIANGLE_HYPOTENUSE_GRID_UNITS;
+      const desiredLargeTriangleSide = (hypotenuseGridUnits / Math.SQRT2) * GRID_SIZE * boardScale;
       currentPieceScale = desiredLargeTriangleSide / LARGE_TRIANGLE_LEG;
 
       targetMaskCanvas.width = boardWidth;
@@ -1105,6 +1168,8 @@
         drawKatieMask(targetMaskContext);
       } else if (activeStudent?.id === "james") {
         drawJamesMask(targetMaskContext);
+      } else if (activeStudent?.id === "olivia") {
+        drawOliviaMask(targetMaskContext);
       } else {
         targetMaskContext.drawImage(
           targetImage,
@@ -1131,7 +1196,7 @@
         targetPixels = 0;
       }
 
-      if (targetPixels === 0 && !["katie", "james"].includes(activeStudent?.id || "")) {
+      if (targetPixels === 0 && !["katie", "james", "olivia"].includes(activeStudent?.id || "")) {
         const startX = Math.max(0, Math.floor(targetRect.x));
         const endX = Math.min(boardWidth, Math.ceil(targetRect.x + targetRect.width));
         const startY = Math.max(0, Math.floor(targetRect.y));
@@ -1466,6 +1531,10 @@
         debugMarkup += `<polygon points="${getKatieMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
       } else if (activeStudent?.id === "james") {
         debugMarkup += `<polygon points="${getJamesMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
+      } else if (activeStudent?.id === "olivia") {
+        debugMarkup += getOliviaMaskPolygons()
+          .map((points) => `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`)
+          .join("");
       } else {
         debugMarkup += `<rect x="${targetRect.x}" y="${targetRect.y}" width="${targetRect.width}" height="${targetRect.height}"></rect>`;
       }

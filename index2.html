@@ -164,6 +164,19 @@
       cursor: grabbing;
     }
 
+    .index2-page .info-modal-card.is-ideas-modal .modal-close {
+      position: sticky;
+      top: 10px;
+      right: 12px;
+      left: auto;
+      float: right;
+      z-index: 3;
+      margin: -6px -4px 8px 12px;
+      background: rgba(255, 249, 238, 0.82);
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
+
     .index2-page .info-modal-card.is-ideas-modal #modal-body {
       font-size: 0.94rem;
       line-height: 1.65;
@@ -276,6 +289,17 @@
         </div>
         <div id="katie-audio-time" class="intro-audio-time">0:00</div>
         <audio id="katie-audio" preload="metadata" src="katie-profile.mp3"></audio>
+      </div>
+      <div id="james-audio-player" class="intro-audio-player hidden">
+        <button id="james-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play James profile audio">Play Audio</button>
+        <div class="intro-audio-meta">
+          <div class="intro-audio-track">James Audio</div>
+          <div class="intro-audio-progress">
+            <div id="james-audio-progress-fill" class="intro-audio-progress-fill"></div>
+          </div>
+        </div>
+        <div id="james-audio-time" class="intro-audio-time">0:00</div>
+        <audio id="james-audio" preload="metadata" src="james-profile.mp3"></audio>
       </div>
       <h2 id="sidebar-subheading" class="sidebar-subheading">Introduction</h2>
       <div id="sidebar-copy" class="intro-copy">
@@ -395,8 +419,7 @@
           <strong>Academic:</strong> Don't make her prove she knows the basics &mdash; she does, and the repetition is alienating. Give her the harder question underneath the question: "Everyone's arguing about X &mdash; what are they all missing?" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.<br><br>
           <strong>Social:</strong> She doesn't need a big group &mdash; she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.<br><br>
           <strong>Creative:</strong> Katie's interests are not distractions &mdash; they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her.`,
-        ideasHtml: `<strong>IDEAS FOR HER:</strong><br><br>
-          <strong>Physical:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
+        ideasHtml: `<strong>Physical:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
           <strong>Emotional:</strong> Avoid surprise cold-calls or group sharing without warning. Instead, try: "I'd love to hear your take on this &mdash; want to share it with me first, or with the group?" Let her choose. Trust builds slowly and is lost fast.<br><br>
           <strong>Academic:</strong> Don't make her prove she knows the basics &mdash; she does, and the repetition is alienating. Give her the harder question underneath the question: "Everyone's arguing about X &mdash; what are they all missing?" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.<br><br>
           <strong>Social:</strong> She doesn't need a big group &mdash; she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.<br><br>
@@ -422,8 +445,7 @@
           <strong>Academic:</strong> Ditch the handwriting requirement wherever possible. Voice memos, typed responses, verbal check-ins &mdash; any of these will get you a far more accurate picture of what James actually knows. He processes by talking, so let him. If you can frame a concept as "researchers actually found that..." he will absorb it instantly and cite it back to you for the rest of the year.<br><br>
           <strong>Social:</strong> James is a natural connector and a natural interrupter &mdash; sometimes simultaneously. Teach him discussion structures not as discipline but as strategy: "The best debaters know when to hold their point &mdash; it lands harder." He responds to logic and social intelligence framing far better than to rules for their own sake.<br><br>
           <strong>Creative:</strong> Give James a creative container with real latitude inside it. He doesn't need total open-endedness &mdash; he needs a strong premise and permission to go weird with it. A Simpsons episode is, structurally, a masterclass in satire, social commentary, and absurdist logic. He already knows this. Let that count for something.`,
-        ideasHtml: `<strong>IDEAS FOR HIM:</strong><br><br>
-          <strong>Physical:</strong> James needs to move, and fighting that is a losing battle. Build movement in before it becomes a behavior &mdash; a standing option, a quick errand, a lap around the hall between tasks. Seat him where his energy doesn't put him at the center of everyone else's distraction, but not in isolation, which will backfire.<br><br>
+        ideasHtml: `<strong>Physical:</strong> James needs to move, and fighting that is a losing battle. Build movement in before it becomes a behavior &mdash; a standing option, a quick errand, a lap around the hall between tasks. Seat him where his energy doesn't put him at the center of everyone else's distraction, but not in isolation, which will backfire.<br><br>
           <strong>Emotional:</strong> When he escalates, don't match his energy and don't shut it down &mdash; talk with him. Use his verbal strengths. Try: "Walk me through what just happened." He will. And somewhere in the retelling, he'll usually find his own way back. Afterward, when he's regulated, is the time for any reflection or problem-solving &mdash; not during.<br><br>
           <strong>Academic:</strong> Ditch the handwriting requirement wherever possible. Voice memos, typed responses, verbal check-ins &mdash; any of these will get you a far more accurate picture of what James actually knows. He processes by talking, so let him. If you can frame a concept as "researchers actually found that..." he will absorb it instantly and cite it back to you for the rest of the year.<br><br>
           <strong>Social:</strong> James is a natural connector and a natural interrupter &mdash; sometimes simultaneously. Teach him discussion structures not as discipline but as strategy: "The best debaters know when to hold their point &mdash; it lands harder." He responds to logic and social intelligence framing far better than to rules for their own sake.<br><br>
@@ -445,8 +467,7 @@
           <strong>Academic:</strong> Separate the assessment of thinking from the assessment of transcription &mdash; these are not the same skill and should not be graded as one. Voice recording, oral explanation, visual presentation, and movement-based demonstration are all legitimate evidence of understanding. Alex may also benefit from text-to-speech and speech-to-text tools &mdash; not as accommodations that signal deficit, but as the right tools for the right brain.<br><br>
           <strong>Social:</strong> Alex is a natural at reading a room &mdash; they know who's performing, who's checked out, who's actually connected. Put that to use. They can be a remarkable collaborator and an intuitive group anchor when the task plays to their strengths. Just don't make "group work" mean "someone else writes it down and Alex watches."<br><br>
           <strong>Creative:</strong> This is where Alex lives. Banksy built a global reputation making art in unauthorized spaces with materials that weren't supposed to be there &mdash; Alex understands that instinctively. Give them creative briefs that have a where and a whoand a why, not just a what. Let the dance become the essay. Let the visual become the argument. Ask them to choreograph the concept and you may get the clearest explanation in the room.`,
-        ideasHtml: `<strong>IDEAS FOR THEM:</strong><br><br>
-          <strong>Physical:</strong> Alex needs space to move and a visual environment that doesn't feel sterile. A classroom that feels alive &mdash; with color, texture, things on the walls that mean something &mdash; is one Alex can actually inhabit. If there's a way to let them work standing, moving, or in a less fixed configuration, take it.<br><br>
+        ideasHtml: `<strong>Physical:</strong> Alex needs space to move and a visual environment that doesn't feel sterile. A classroom that feels alive &mdash; with color, texture, things on the walls that mean something &mdash; is one Alex can actually inhabit. If there's a way to let them work standing, moving, or in a less fixed configuration, take it.<br><br>
           <strong>Emotional:</strong> Alex has a finely tuned detector for whether a space is safe for imperfection. They've been corrected on the surface-level stuff &mdash; spelling, decoding, transcription &mdash; so many times that it can be hard to believe the deeper stuff is valued. Lead with what landed: "The idea here is strong &mdash; let's figure out the best way to get it out." Never let a spelling error be the first thing you address.<br><br>
           <strong>Academic:</strong> Separate the assessment of thinking from the assessment of transcription &mdash; these are not the same skill and should not be graded as one. Voice recording, oral explanation, visual presentation, and movement-based demonstration are all legitimate evidence of understanding. Alex may also benefit from text-to-speech and speech-to-text tools &mdash; not as accommodations that signal deficit, but as the right tools for the right brain.<br><br>
           <strong>Social:</strong> Alex is a natural at reading a room &mdash; they know who's performing, who's checked out, who's actually connected. Put that to use. They can be a remarkable collaborator and an intuitive group anchor when the task plays to their strengths. Just don't make "group work" mean "someone else writes it down and Alex watches."<br><br>
@@ -467,8 +488,7 @@
           <strong>Academic:</strong> Eliminate timed assessments wherever possible &mdash; they are measuring her processing speed, not her knowledge. Give her questions in advance when possible. Let her respond in writing on her own time, or verbally in a low-pressure one-on-one context. When she finally arrives at an answer, it will very likely be the most considered one in the room &mdash; make sure there's space for it to land.<br><br>
           <strong>Social:</strong> Olivia may seem like she's not quite present in fast-moving group conversations &mdash; she is present, she's just still formulating her response to something that was said three exchanges ago. She needs social environments that don't leave her perpetually behind the rhythm. Smaller groups, slower conversations, and a peer or two who naturally pause and wonder rather than race and conclude are her people.<br><br>
           <strong>Creative:</strong> Give Olivia open-ended creative invitations with generous timelines and no single right form. She might write about the philosophy of dark matter. She might map her synesthetic color landscape onto a piece of music. She might spend two weeks on a single drawing of a black hole and produce something that makes the whole class go quiet. Don't rush the process &mdash; the universe didn't make anything worth looking at quickly.`,
-        ideasHtml: `<strong>IDEAS FOR HER:</strong><br><br>
-          <strong>Physical:</strong> Olivia needs a calm, unhurried physical environment &mdash; one that doesn't signal urgency through its design. Timers on the board, rapid transitions, and cluttered visual spaces compounds the already significant cognitive work of translating her inner world into outer output. Soft, consistent, predictable physical conditions let her actually arrive.<br><br>
+        ideasHtml: `<strong>Physical:</strong> Olivia needs a calm, unhurried physical environment &mdash; one that doesn't signal urgency through its design. Timers on the board, rapid transitions, and cluttered visual spaces compounds the already significant cognitive work of translating her inner world into outer output. Soft, consistent, predictable physical conditions let her actually arrive.<br><br>
           <strong>Emotional:</strong> Never communicate impatience, even accidentally. A glance at the clock, a gentle "take your time" said one too many times &mdash; Olivia notices. What she needs to hear, consistently and credibly, is that depth is valued here, not just speed. Try: "I want your real thought on this, not your fast one." Mean it every time.<br><br>
           <strong>Academic:</strong> Eliminate timed assessments wherever possible &mdash; they are measuring her processing speed, not her knowledge. Give her questions in advance when possible. Let her respond in writing on her own time, or verbally in a low-pressure one-on-one context. When she finally arrives at an answer, it will very likely be the most considered one in the room &mdash; make sure there's space for it to land.<br><br>
           <strong>Social:</strong> Olivia may seem like she's not quite present in fast-moving group conversations &mdash; she is present, she's just still formulating her response to something that was said three exchanges ago. She needs social environments that don't leave her perpetually behind the rhythm. Smaller groups, slower conversations, and a peer or two who naturally pause and wonder rather than race and conclude are her people.<br><br>
@@ -593,6 +613,11 @@
     const katieAudioToggle = document.getElementById("katie-audio-toggle");
     const katieAudioProgressFill = document.getElementById("katie-audio-progress-fill");
     const katieAudioTime = document.getElementById("katie-audio-time");
+    const jamesAudio = document.getElementById("james-audio");
+    const jamesAudioPlayer = document.getElementById("james-audio-player");
+    const jamesAudioToggle = document.getElementById("james-audio-toggle");
+    const jamesAudioProgressFill = document.getElementById("james-audio-progress-fill");
+    const jamesAudioTime = document.getElementById("james-audio-time");
     const introPhysicalLink = document.getElementById("intro-physical-link");
     const introEmotionalLink = document.getElementById("intro-emotional-link");
     const introSocialLink = document.getElementById("intro-social-link");
@@ -687,6 +712,10 @@
 
     function updateKatieAudioUi() {
       updateAudioPlayerUi(katieAudio, katieAudioToggle, katieAudioProgressFill, katieAudioTime);
+    }
+
+    function updateJamesAudioUi() {
+      updateAudioPlayerUi(jamesAudio, jamesAudioToggle, jamesAudioProgressFill, jamesAudioTime);
     }
 
     function setModalArt(environmentKey = "") {
@@ -819,6 +848,7 @@
     function setSidebarContent(title, html) {
       const isIntro = title === defaultSidebarTitle;
       const isKatie = title === "Katie";
+      const isJames = title === "James";
       pageTitle.textContent = isIntro ? defaultPageTitle : `${title}'s Learning Profile`;
       sidebarSubheading.textContent = isIntro ? defaultSidebarTitle : "";
       sidebarSubheading.classList.toggle("hidden", !isIntro);
@@ -829,6 +859,9 @@
       if (katieAudioPlayer) {
         katieAudioPlayer.classList.toggle("hidden", !isKatie);
       }
+      if (jamesAudioPlayer) {
+        jamesAudioPlayer.classList.toggle("hidden", !isJames);
+      }
       if (introSidebarLinks) {
         introSidebarLinks.classList.toggle("hidden", !isIntro);
       }
@@ -837,6 +870,9 @@
       }
       if (!isKatie && katieAudio && !katieAudio.paused) {
         katieAudio.pause();
+      }
+      if (!isJames && jamesAudio && !jamesAudio.paused) {
+        jamesAudio.pause();
       }
     }
 
@@ -1462,6 +1498,21 @@
     katieAudio.addEventListener("pause", updateKatieAudioUi);
     katieAudio.addEventListener("ended", updateKatieAudioUi);
     updateKatieAudioUi();
+
+    jamesAudioToggle.addEventListener("click", () => {
+      playClickSound();
+      if (jamesAudio.paused) {
+        jamesAudio.play().catch(() => {});
+      } else {
+        jamesAudio.pause();
+      }
+    });
+    jamesAudio.addEventListener("timeupdate", updateJamesAudioUi);
+    jamesAudio.addEventListener("loadedmetadata", updateJamesAudioUi);
+    jamesAudio.addEventListener("play", updateJamesAudioUi);
+    jamesAudio.addEventListener("pause", updateJamesAudioUi);
+    jamesAudio.addEventListener("ended", updateJamesAudioUi);
+    updateJamesAudioUi();
 
     introLink.addEventListener("click", (event) => {
       event.preventDefault();

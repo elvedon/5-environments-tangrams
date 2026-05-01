@@ -252,6 +252,7 @@
       border: 1px solid rgba(23, 49, 61, 0.08);
       background: rgba(255, 249, 238, 0.9);
       overflow: hidden;
+      cursor: pointer;
       transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
     }
 
@@ -298,8 +299,7 @@
       display: block;
       width: 104px;
       height: 104px;
-      transition: transform 140ms ease, filter 140ms ease, opacity 140ms ease;
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.32)) drop-shadow(0 10px 18px rgba(23, 49, 61, 0.08));
+      transition: transform 140ms ease, opacity 140ms ease;
     }
 
     .index2-page .read-env-art polygon {
@@ -363,11 +363,6 @@
       height: 92px;
       right: 8px;
       transform: scaleX(-1);
-    }
-
-    .index2-page .read-env-toggle:hover .read-env-art,
-    .index2-page .read-env-toggle:focus-visible .read-env-art {
-      filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.48)) drop-shadow(0 12px 20px rgba(23, 49, 61, 0.12));
     }
 
     .index2-page .read-env-toggle:focus-visible {
@@ -1171,6 +1166,21 @@
       playNowWrap.classList.toggle("hidden", openedReadEnvironments.size < readEnvToggles.length);
     }
 
+    function revealReadEnvironment(toggle) {
+      const parent = toggle.closest("li");
+      const copy = parent?.querySelector(".read-env-copy");
+      const envKey = toggle.dataset.readEnv;
+      if (!parent || !copy || !envKey) {
+        return;
+      }
+      copy.classList.remove("hidden");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.classList.add("is-revealed");
+      parent.classList.add("is-revealed");
+      openedReadEnvironments.add(envKey);
+      updateReadModeProgress();
+    }
+
     function lockReadItemHeights() {
       readEnvToggles.forEach((toggle) => {
         const parent = toggle.closest("li");
@@ -1956,18 +1966,13 @@
     });
     readEnvToggles.forEach((toggle) => {
       toggle.addEventListener("click", () => {
-        const parent = toggle.closest("li");
-        const copy = parent?.querySelector(".read-env-copy");
-        const envKey = toggle.dataset.readEnv;
-        if (!parent || !copy || !envKey) {
+        revealReadEnvironment(toggle);
+      });
+      toggle.closest("li")?.addEventListener("click", (event) => {
+        if (event.target.closest(".read-env-toggle")) {
           return;
         }
-        copy.classList.remove("hidden");
-        toggle.setAttribute("aria-expanded", "true");
-        toggle.classList.add("is-revealed");
-        parent.classList.add("is-revealed");
-        openedReadEnvironments.add(envKey);
-        updateReadModeProgress();
+        revealReadEnvironment(toggle);
       });
     });
     introPhysicalLink.addEventListener("click", (event) => {

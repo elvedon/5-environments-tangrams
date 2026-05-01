@@ -2660,14 +2660,14 @@
 
       coverageRatio = targetPixels ? overlap / targetPixels : 0;
 
-      if (coverageRatio >= 0.85 && !solved) {
+      if (coverageRatio >= 0.9 && !solved) {
         solved = true;
         hasSolvedAnyStudent = true;
         pendingSolvedIdeas = Boolean(activeStudent?.ideasHtml);
         board.classList.add("is-solved");
         updatePostSolveChartLink();
         playAudio(solveSound);
-      } else if (coverageRatio < 0.85 && solved) {
+      } else if (coverageRatio < 0.9 && solved) {
         solved = false;
         pendingSolvedIdeas = false;
         board.classList.remove("is-solved");

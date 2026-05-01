@@ -256,6 +256,27 @@
       transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
     }
 
+    .index2-page .read-env-watermark {
+      position: absolute;
+      inset: 50% 0 auto 0;
+      transform: translateY(-50%);
+      z-index: 1;
+      color: rgba(141, 90, 49, 0.14);
+      font-size: clamp(2.1rem, 5.5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 0.9;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity 140ms ease;
+    }
+
+    .index2-page .read-detail-list li.is-revealed .read-env-watermark {
+      opacity: 0;
+    }
+
     .index2-page .read-detail-list li:hover {
       transform: translateY(-3px);
       box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12), inset 0 0 0 999px rgba(255, 255, 255, 0.08);
@@ -491,6 +512,7 @@
       <div id="read-view" class="read-view">
         <ul class="read-detail-list">
           <li id="read-env-physical">
+            <span class="read-env-watermark">Physical</span>
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="physical" aria-expanded="false">
               <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#d76c49;">
                 <polygon points="0,210 0,0 210,210"></polygon>
@@ -500,6 +522,7 @@
             <p class="read-env-copy hidden"><strong>Physical</strong> &mdash; The physical environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).</p>
           </li>
           <li id="read-env-emotional">
+            <span class="read-env-watermark">Emotional</span>
             <button class="read-env-toggle read-env-toggle-left" type="button" data-read-env="emotional" aria-expanded="false">
               <svg class="read-env-art read-env-art-left" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f;">
                 <polygon points="0,148.5 0,0 148.5,148.5"></polygon>
@@ -509,6 +532,7 @@
             <p class="read-env-copy hidden"><strong>Emotional</strong> &mdash; Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When emotional needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).</p>
           </li>
           <li id="read-env-social">
+            <span class="read-env-watermark">Social</span>
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="social" aria-expanded="false">
               <svg class="read-env-art read-env-art-right" viewBox="0 0 105 105" aria-hidden="true" style="color:#3e9b6b;">
                 <polygon points="0,0 105,0 105,105 0,105"></polygon>
@@ -518,6 +542,7 @@
             <p class="read-env-copy hidden"><strong>Social</strong> &mdash; Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The social environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).</p>
           </li>
           <li id="read-env-academic">
+            <span class="read-env-watermark">Academic</span>
             <button class="read-env-toggle read-env-toggle-left" type="button" data-read-env="academic" aria-expanded="false">
               <svg class="read-env-art read-env-art-left" viewBox="0 0 210 105" aria-hidden="true" style="color:#d2a637; width:116px; height:116px;">
                 <polygon points="0,105 105,0 210,0 105,105"></polygon>
@@ -527,6 +552,7 @@
             <p class="read-env-copy hidden"><strong>Academic</strong> &mdash; The intellectual environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).</p>
           </li>
           <li id="read-env-creative">
+            <span class="read-env-watermark">Creative</span>
             <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="creative" aria-expanded="false">
               <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8;">
                 <polygon points="0,210 0,0 210,210"></polygon>

@@ -65,8 +65,8 @@
     .index2-page .board {
       isolation: isolate;
       width: min(100%, 896px);
-      min-height: 672px;
-      aspect-ratio: 16 / 12;
+      min-height: 784px;
+      aspect-ratio: 16 / 14;
       margin-left: auto;
       margin-right: auto;
     }
@@ -416,7 +416,7 @@
   <script>
     const GRID_SIZE = 56;
     const BOARD_COLUMNS = 16;
-    const BOARD_ROWS = 12;
+    const BOARD_ROWS = 14;
     const DEFAULT_LARGE_TRIANGLE_HYPOTENUSE_GRID_UNITS = 4 * Math.SQRT2;
     const SMALL_TRIANGLE_LEG = 105;
     const LARGE_TRIANGLE_LEG = SMALL_TRIANGLE_LEG * 2;
@@ -481,6 +481,10 @@
         imageSrc: "alex.png",
         colors: ["#b590c2", "#8c5e9f"],
         solidSrc: "dancer-solid.png",
+        targetBox: {
+          width: 14.25 * GRID_SIZE,
+          height: 14.25 * GRID_SIZE
+        },
         sidebarHtml: `Alex collects subway tokens from cities around the world &mdash; transit systems that no longer exist, currencies of movement that have been discontinued and forgotten. They are drawn to things that operate outside the mainstream &mdash; things that have their own rhythm, their own way of getting people where they need to go. Which makes sense because Alex expresses themselves in motion.<br><br>
           As a dancer, Alex thinks choreographically &mdash; in sequences, dynamics, and spatial relationships. As an artist, they move in the tradition of Banksy: art that is immediate, public, a little disruptive, and completely intentional about where it lands and who it's for. Their K-pop obsession is not passive fandom &mdash; it is a serious study in precision, synchronization, and the kind of rehearsed spontaneity that looks effortless only because of enormous discipline underneath.<br><br>
           What Alex's teachers have often missed &mdash; and what standardized reading and writing tasks consistently obscure &mdash; is that Alex is not a kid who struggles to read or think. They are a kid whose thinking lives in their body, their hands, and who has spent years being evaluated almost exclusively in the one medium that gives them the least access to what they actually know. Dyslexia doesn’t dim Alex's intelligence. It just means that, in Alex’s experience, traditional classrooms kept using the wrong key for the wrong door.<br><br>
@@ -1098,6 +1102,59 @@
       context.restore();
     }
 
+    function mapAlexPoint(x, y) {
+      const sourceWidth = 420;
+      const sourceHeight = 420;
+      return {
+        x: targetRect.x + (x / sourceWidth) * targetRect.width,
+        y: targetRect.y + (y / sourceHeight) * targetRect.height
+      };
+    }
+
+    function getAlexMaskPolygons() {
+      return [
+        [
+          mapAlexPoint(175, 8),
+          mapAlexPoint(220, 52),
+          mapAlexPoint(180, 95),
+          mapAlexPoint(350, 95),
+          mapAlexPoint(287, 159),
+          mapAlexPoint(227, 159),
+          mapAlexPoint(226, 220),
+          mapAlexPoint(288, 283),
+          mapAlexPoint(248, 323),
+          mapAlexPoint(248, 411),
+          mapAlexPoint(203, 368),
+          mapAlexPoint(225, 344),
+          mapAlexPoint(225, 284),
+          mapAlexPoint(133, 283),
+          mapAlexPoint(69, 345),
+          mapAlexPoint(69, 282),
+          mapAlexPoint(100, 282),
+          mapAlexPoint(162, 220),
+          mapAlexPoint(162, 97),
+          mapAlexPoint(131, 52)
+        ]
+      ];
+    }
+
+    function drawAlexMask(context, fillStyle = "#000") {
+      const polygons = getAlexMaskPolygons();
+      if (!polygons.length) return;
+      context.save();
+      context.fillStyle = fillStyle;
+      polygons.forEach((points) => {
+        context.beginPath();
+        context.moveTo(points[0].x, points[0].y);
+        points.slice(1).forEach((point) => {
+          context.lineTo(point.x, point.y);
+        });
+        context.closePath();
+        context.fill();
+      });
+      context.restore();
+    }
+
     function mapOliviaPoint(x, y) {
       const sourceWidth = 852;
       const sourceHeight = 1024;
@@ -1168,6 +1225,8 @@
         drawKatieMask(targetMaskContext);
       } else if (activeStudent?.id === "james") {
         drawJamesMask(targetMaskContext);
+      } else if (activeStudent?.id === "alex") {
+        drawAlexMask(targetMaskContext);
       } else if (activeStudent?.id === "olivia") {
         drawOliviaMask(targetMaskContext);
       } else {
@@ -1196,7 +1255,7 @@
         targetPixels = 0;
       }
 
-      if (targetPixels === 0 && !["katie", "james", "olivia"].includes(activeStudent?.id || "")) {
+      if (targetPixels === 0 && !["katie", "james", "alex", "olivia"].includes(activeStudent?.id || "")) {
         const startX = Math.max(0, Math.floor(targetRect.x));
         const endX = Math.min(boardWidth, Math.ceil(targetRect.x + targetRect.width));
         const startY = Math.max(0, Math.floor(targetRect.y));
@@ -1531,6 +1590,10 @@
         debugMarkup += `<polygon points="${getKatieMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
       } else if (activeStudent?.id === "james") {
         debugMarkup += `<polygon points="${getJamesMaskPoints().map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`;
+      } else if (activeStudent?.id === "alex") {
+        debugMarkup += getAlexMaskPolygons()
+          .map((points) => `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`)
+          .join("");
       } else if (activeStudent?.id === "olivia") {
         debugMarkup += getOliviaMaskPolygons()
           .map((points) => `<polygon points="${points.map((point) => `${point.x},${point.y}`).join(" ")}"></polygon>`)

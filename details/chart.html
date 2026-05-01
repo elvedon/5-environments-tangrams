@@ -19,6 +19,11 @@
       line-height: 1.5;
     }
 
+    .detail-page .detail-avatar-name {
+      font-size: 1.14rem;
+      line-height: 1.2;
+    }
+
     .chart-ideas-heading {
       display: inline-block;
       font-size: 1.14rem;
@@ -44,6 +49,41 @@
 
     .ideas-env-creative {
       color: #4d88a8;
+    }
+
+    .chart-inline-audio {
+      display: inline-flex;
+      margin-left: 0.65rem;
+      vertical-align: middle;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      min-width: 0;
+    }
+
+    .chart-audio-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.28rem 0.62rem;
+      border: 0;
+      border-radius: 999px;
+      background: var(--audio-color, #4d88a8);
+      color: #fffdf7;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+
+    .chart-audio-button:hover,
+    .chart-audio-button:focus-visible {
+      background: var(--audio-hover, #3f7592);
+      transform: translateY(-1px);
+      outline: none;
     }
   </style>
 </head>
@@ -76,10 +116,19 @@
       <div id="detail-avatar-description" class="detail-avatar-description" data-profile="katie">
         <img id="detail-avatar-art" class="detail-avatar-art" src="../cat-hint.png" alt="" aria-hidden="true">
         <div id="detail-avatar-description-content" class="detail-avatar-description-content">
+          <div class="intro-audio-player chart-inline-audio" data-audio-player="katie-profile" style="--audio-color:#4d88a8; --audio-hover:#3f7592;">
+            <button class="chart-audio-button" type="button" aria-label="Play Katie profile audio">Play Profile Audio</button>
+            <audio preload="metadata" src="../katie-profile.mp3"></audio>
+          </div>
+          <strong class="chart-ideas-heading">KATIE'S PROFILE:</strong><br><br>
           Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
           But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
           She is also a kid who has been burned. Past social experiences have taught her that being herself &mdash; enthusiastic, intense, a little encyclopedic &mdash; can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.<br><br>
           The goal isn't to fix Katie's social caution or sand down her intensity. It's to build an environment where she doesn't have to choose between being safe and being herself!<br><br>
+          <div class="intro-audio-player chart-inline-audio" data-audio-player="katie-ideas" style="--audio-color:#4d88a8; --audio-hover:#3f7592;">
+            <button class="chart-audio-button" type="button" aria-label="Play Katie ideas audio">Play Ideas Audio</button>
+            <audio preload="metadata" src="../katie-ideas.mp3"></audio>
+          </div>
           <strong class="chart-ideas-heading">IDEAS FOR HER:</strong><br><br>
           <strong class="ideas-env-physical">PHYSICAL:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
           <strong class="ideas-env-emotional">EMOTIONAL:</strong> Avoid surprise cold-calls or group sharing without warning. Instead, try: "I'd love to hear your take on this &mdash; want to share it with me first, or with the group?" Let her choose. Trust builds slowly and is lost fast.<br><br>
@@ -88,12 +137,11 @@
           <strong class="ideas-env-creative">CREATIVE:</strong> Katie's interests are not distractions &mdash; they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her.
         </div>
       </div>
-      <p id="project-credits-heading" class="detail-copy detail-references-heading">Project Credits</p>
-      <section class="detail-credits" aria-labelledby="project-credits-heading">
-        <p class="detail-copy">Created by Tamara Clayton, Kathleen Hale, Karen Nerio, Monica Wallace, Cara Wegrzyn, and Andrea Yassemedis as part of their graduate work in Cognitive Diversity at <a class="intro-link" href="https://elmbridge.edu/" target="_blank" rel="noreferrer noopener">Elmbridge University</a>.</p>
-      </section>
     </section>
   </main>
+  <footer class="main-credits">
+    <p>Created by Tamara Clayton, Kathleen Hale, Karen Nerio, Monica Wallace, Cara Wegrzyn, and Andrea Yassemedis<br>as part of their graduate work in Cognitive Diversity at <a class="intro-link" href="https://elmbridge.edu/" target="_blank" rel="noreferrer noopener">Elmbridge University</a>.</p>
+  </footer>
   <script>
     const avatarTriggers = document.querySelectorAll(".detail-avatar-trigger");
     const avatarDescription = document.getElementById("detail-avatar-description");
@@ -102,6 +150,7 @@
     const clickSound = new Audio("../click.mp3");
     clickSound.preload = "auto";
     clickSound.volume = 0.28;
+    const audioPlayerCleanups = [];
     const avatarBackgrounds = {
       katie: "../cat-hint.png",
       james: "../square-hint.png",
@@ -109,17 +158,31 @@
       olivia: "../tree-hint.png"
     };
     const avatarProfiles = {
-      katie: `Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
+      katie: `<div class="intro-audio-player chart-inline-audio" data-audio-player="katie-profile" style="--audio-color:#4d88a8; --audio-hover:#3f7592;">
+          <button class="chart-audio-button" type="button" aria-label="Play Katie profile audio">Play Profile Audio</button>
+          <audio preload="metadata" src="../katie-profile.mp3"></audio>
+        </div>
+        <strong class="chart-ideas-heading">KATIE'S PROFILE:</strong><br><br>
+        Katie can tell you which U.S. presidents owned horses, identify a New Yorker cartoon's artist by linework alone, and rank My Little Ponies by narrative arc.<br><br>
         But she is not a quirky kid with random facts &mdash; she is a scholar with a portfolio of deep, self-directed expertise that most adults couldn't match in any of those domains. She thinks in systems, notices patterns others miss, and brings a level of conceptual precision to her ideas that is genuinely rare.<br><br>
         She is also a kid who has been burned. Past social experiences have taught her that being herself &mdash; enthusiastic, intense, a little encyclopedic &mdash; can make her a target. So she watches before she speaks. She edits herself. She may seem disengaged when she is actually composing a fully-formed thesis in her head, waiting to see if it's safe to say it out loud. Perfectionism isn't vanity for Katie; it's armor.<br><br>
         The goal isn't to fix Katie's social caution or sand down her intensity. It's to build an environment where she doesn't have to choose between being safe and being herself!<br><br>
+        <div class="intro-audio-player chart-inline-audio" data-audio-player="katie-ideas" style="--audio-color:#4d88a8; --audio-hover:#3f7592;">
+          <button class="chart-audio-button" type="button" aria-label="Play Katie ideas audio">Play Ideas Audio</button>
+          <audio preload="metadata" src="../katie-ideas.mp3"></audio>
+        </div>
         <strong class="chart-ideas-heading">IDEAS FOR HER:</strong><br><br>
         <strong class="ideas-env-physical">PHYSICAL:</strong> Give her a consistent, low-traffic spot she can count on &mdash; predictability reduces the cognitive load of just arriving somewhere new. Headphones should be an unquestioned option, not a negotiation.<br><br>
         <strong class="ideas-env-emotional">EMOTIONAL:</strong> Avoid surprise cold-calls or group sharing without warning. Instead, try: "I'd love to hear your take on this &mdash; want to share it with me first, or with the group?" Let her choose. Trust builds slowly and is lost fast.<br><br>
         <strong class="ideas-env-academic">ACADEMIC:</strong> Don't make her prove she knows the basics &mdash; she does, and the repetition is alienating. Give her the harder question underneath the question: "Everyone's arguing about X &mdash; what are they all missing?" Her perfectionism means she may not turn in work she considers unfinished; reframe completion as a draft, not a verdict.<br><br>
         <strong class="ideas-env-social">SOCIAL:</strong> She doesn't need a big group &mdash; she needs one right person. Pair her with someone who has a real opinion about something, anything. Interest-based connection is far safer than proximity-based grouping for Katie. If another student happens to love history or absurdist humor, that's your opening.<br><br>
         <strong class="ideas-env-creative">CREATIVE:</strong> Katie's interests are not distractions &mdash; they are her primary cognitive vocabulary. Let her write the WWII unit through the lens of leadership failure. Let the New Yorker cartoon become a model for political satire analysis. Meet her where her mind already lives, and she will go further than any prompt could take her.`,
-      james: `James has approximately forty-seven thoughts per minute and would like to share all of them with you right now, please. He is the kid who finishes your sentence, derails the lesson with a genuinely interesting tangent, negotiates the terms of every assignment, and then &mdash; somehow &mdash; makes an observation that reframes the entire discussion. He is exhausting in the best possible way.<br><br>
+      james: `<div class="intro-audio-player chart-inline-audio" data-audio-player="james-profile" style="--audio-color:#c7858a; --audio-hover:#b06f75;">
+          <button class="chart-audio-button" type="button" aria-label="Play James profile audio">Play Profile Audio</button>
+          <audio preload="metadata" src="../james-profile.mp3"></audio>
+        </div>
+        <strong class="chart-ideas-heading">JAMES'S PROFILE:</strong><br><br>
+        James has approximately forty-seven thoughts per minute and would like to share all of them with you right now, please. He is the kid who finishes your sentence, derails the lesson with a genuinely interesting tangent, negotiates the terms of every assignment, and then &mdash; somehow &mdash; makes an observation that reframes the entire discussion. He is exhausting in the best possible way.<br><br>
         James' emotional world is just as loud as his verbal one. When something goes wrong, it involves big feelings, fast escalation, zero filter. But here's the thing about James: he can talk his way out of almost anything, including his own meltdowns. Language is not just his strength, it's his lifeline.<br><br>
         He will forget the worksheet. He will lose the worksheet. He will find the worksheet three weeks later at the bottom of a bag that also contains a granola bar from October. His handwriting looks like it was produced during turbulence. None of this is laziness or defiance &mdash; his brain is running a different operating system, one that was simply not designed with folder organization in mind.<br><br>
         What does work: tell him something is scientifically proven and he is immediately, completely on board. This is not a loophole &mdash; it's a gift.<br><br>
@@ -129,7 +192,12 @@
         <strong class="ideas-env-academic">ACADEMIC:</strong> Ditch the handwriting requirement wherever possible. Voice memos, typed responses, verbal check-ins &mdash; any of these will get you a far more accurate picture of what James actually knows. He processes by talking, so let him. If you can frame a concept as "researchers actually found that..." he will absorb it instantly and cite it back to you for the rest of the year.<br><br>
         <strong class="ideas-env-social">SOCIAL:</strong> James is a natural connector and a natural interrupter &mdash; sometimes simultaneously. Teach him discussion structures not as discipline but as strategy: "The best debaters know when to hold their point &mdash; it lands harder." He responds to logic and social intelligence framing far better than to rules for their own sake.<br><br>
         <strong class="ideas-env-creative">CREATIVE:</strong> Give him a creative container with real latitude inside it. He doesn't need total open-endedness &mdash; he needs a strong premise and permission to go weird with it. A Simpsons episode is, structurally, a masterclass in satire, social commentary, and absurdist logic. He already knows this. Let that count for something.`,
-      alex: `Alex collects subway tokens from cities around the world &mdash; transit systems that no longer exist, currencies of movement that have been discontinued and forgotten. They are drawn to things that operate outside the mainstream &mdash; things that have their own rhythm, their own way of getting people where they need to go. Which makes sense because Alex expresses themselves in motion.<br><br>
+      alex: `<div class="intro-audio-player chart-inline-audio" data-audio-player="alex-profile" style="--audio-color:#8c5e9f; --audio-hover:#74478a;">
+          <button class="chart-audio-button" type="button" aria-label="Play Alex profile audio">Play Profile Audio</button>
+          <audio preload="metadata" src="../alex-profile.mp3"></audio>
+        </div>
+        <strong class="chart-ideas-heading">ALEX'S PROFILE:</strong><br><br>
+        Alex collects subway tokens from cities around the world &mdash; transit systems that no longer exist, currencies of movement that have been discontinued and forgotten. They are drawn to things that operate outside the mainstream &mdash; things that have their own rhythm, their own way of getting people where they need to go. Which makes sense because Alex expresses themselves in motion.<br><br>
         As a dancer, Alex thinks choreographically &mdash; in sequences, dynamics, and spatial relationships. As an artist, they move in the tradition of Banksy: art that is immediate, public, a little disruptive, and completely intentional about where it lands and who it's for. Their K-pop obsession is not passive fandom &mdash; it is a serious study in precision, synchronization, and the kind of rehearsed spontaneity that looks effortless only because of enormous discipline underneath.<br><br>
         What Alex's teachers have often missed &mdash; and what standardized reading and writing tasks consistently obscure &mdash; is that Alex is not a kid who struggles to read or think. They are a kid whose thinking lives in their body, their hands, and who has spent years being evaluated almost exclusively in the one medium that gives them the least access to what they actually know. Dyslexia doesn't dim Alex's intelligence. It just means that, in Alex's experience, traditional classrooms kept using the wrong key for the wrong door.<br><br>
         Years of feeling behind &mdash; of watching other kids move through text-based tasks with ease &mdash; leaves a mark. Alex may deflect with humor, disengage before they can fail, or undersell their own ideas before someone else can. The goal is not to remediate Alex into a more readable student. It's to build an environment where what Alex can do is finally legible to everyone else.<br><br>
@@ -139,7 +207,12 @@
         <strong class="ideas-env-academic">ACADEMIC:</strong> Separate the assessment of thinking from the assessment of transcription &mdash; these are not the same skill and should not be graded as one. Voice recording, oral explanation, visual presentation, and movement-based demonstration are all legitimate evidence of understanding. Alex may also benefit from text-to-speech and speech-to-text tools &mdash; not as accommodations that signal deficit, but as the right tools for the right brain.<br><br>
         <strong class="ideas-env-social">SOCIAL:</strong> Alex is a natural at reading a room &mdash; they know who's performing, who's checked out, who's actually connected. Put that to use. They can be a remarkable collaborator and an intuitive group anchor when the task plays to their strengths. Just don't make "group work" mean "someone else writes it down and Alex watches."<br><br>
         <strong class="ideas-env-creative">CREATIVE:</strong> This is where Alex lives. Banksy built a global reputation making art in unauthorized spaces with materials that weren't supposed to be there &mdash; Alex understands that instinctively. Give them creative briefs that have a where and a who and a why, not just a what. Let the dance become the essay. Let the visual become the argument. Ask them to choreograph the concept and you may get the clearest explanation in the room.`,
-      olivia: `Olivia knows that the light reaching her eyes when she looks at a star left that star thousands of years ago. She finds comfort in the idea that the universe operates on a timescale so vast that urgency becomes almost meaningless. She is not slow. She is on cosmic time.<br><br>
+      olivia: `<div class="intro-audio-player chart-inline-audio" data-audio-player="olivia-profile" style="--audio-color:#d2a637; --audio-hover:#b28a25;">
+          <button class="chart-audio-button" type="button" aria-label="Play Olivia profile audio">Play Profile Audio</button>
+          <audio preload="metadata" src="../olivia-profile.mp3"></audio>
+        </div>
+        <strong class="chart-ideas-heading">OLIVIA'S PROFILE:</strong><br><br>
+        Olivia knows that the light reaching her eyes when she looks at a star left that star thousands of years ago. She finds comfort in the idea that the universe operates on a timescale so vast that urgency becomes almost meaningless. She is not slow. She is on cosmic time.<br><br>
         She also sees the number seven as a deep, specific shade of burnt orange. Four is green. The word "Wednesday" is blue-grey, like morning fog. This is not metaphor for Olivia &mdash; it is simply how information arrives. Her inner world is chromatic, layered, and almost impossible to fully translate into the currency everyone else is using.<br><br>
         Olivia's psychoeducational profile is one of the most striking a diagnostician can encounter: verbal and conceptual reasoning in the 99th percentile, processing speed in the 6th. That gap &mdash; nearly 93 percentile points &mdash; means that what she understands and what she can produce on demand exist in almost completely different universes. She has almost certainly spent her entire academic life being quietly, consistently underestimated. Teachers have waited for her to finish and mistaken the wait for uncertainty. Timed tests have told her she is average. She is not average. She is someone for whom the measurement tool was built for an entirely different kind of mind.<br><br>
         <strong class="chart-ideas-heading">IDEAS FOR HER:</strong><br><br>
@@ -155,14 +228,57 @@
       clickSound.play().catch(() => {});
     }
 
+    function stopInlineAudioPlayers() {
+      audioPlayerCleanups.splice(0).forEach((cleanup) => cleanup());
+    }
+
+    function initInlineAudioPlayers(scope = document) {
+      stopInlineAudioPlayers();
+      scope.querySelectorAll(".intro-audio-player[data-audio-player]").forEach((player) => {
+        const audio = player.querySelector("audio");
+        const toggle = player.querySelector(".chart-audio-button");
+        if (!audio || !toggle) {
+          return;
+        }
+
+        const updateUi = () => {
+          toggle.textContent = audio.paused ? "Play ▶" : "Pause ||";
+        };
+
+        const onToggle = () => {
+          if (audio.paused) {
+            audio.play().catch(() => {});
+          } else {
+            audio.pause();
+          }
+        };
+
+        toggle.addEventListener("click", onToggle);
+        audio.addEventListener("play", updateUi);
+        audio.addEventListener("pause", updateUi);
+        audio.addEventListener("ended", updateUi);
+        updateUi();
+
+        audioPlayerCleanups.push(() => {
+          audio.pause();
+          toggle.removeEventListener("click", onToggle);
+          audio.removeEventListener("play", updateUi);
+          audio.removeEventListener("pause", updateUi);
+          audio.removeEventListener("ended", updateUi);
+        });
+      });
+    }
+
     avatarTriggers.forEach((trigger) => {
       trigger.addEventListener("click", () => {
         playClickSound();
+        stopInlineAudioPlayers();
         avatarTriggers.forEach((button) => button.classList.remove("is-active"));
         trigger.classList.add("is-active");
         avatarDescriptionContent.innerHTML = avatarProfiles[trigger.dataset.profile] || "";
         avatarArt.src = avatarBackgrounds[trigger.dataset.profile] || "";
         avatarDescription.dataset.profile = trigger.dataset.profile;
+        initInlineAudioPlayers(avatarDescriptionContent);
       });
     });
 
@@ -171,6 +287,8 @@
         playClickSound();
       });
     });
+
+    initInlineAudioPlayers(avatarDescriptionContent);
   </script>
 </body>
 </html>

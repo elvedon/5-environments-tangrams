@@ -182,6 +182,12 @@
     .index2-page .board.showing-solution .index2-target-image {
       opacity: 1;
       filter: none;
+      cursor: pointer;
+    }
+
+    .index2-page .board.showing-solution .index2-target-layer {
+      pointer-events: auto;
+      cursor: pointer;
     }
 
     .index2-page .board.showing-solution .piece {
@@ -945,6 +951,8 @@
     const coverageContext = coverageCanvas.getContext("2d", { willReadFrequently: true });
     const solveBoundsCanvas = document.createElement("canvas");
     const solveBoundsContext = solveBoundsCanvas.getContext("2d", { willReadFrequently: true });
+    const solvedHitCanvas = document.createElement("canvas");
+    const solvedHitContext = solvedHitCanvas.getContext("2d", { willReadFrequently: true });
     const solveOverlayContext = solveOverlayCanvas.getContext("2d");
 
     let activeStudent = null;
@@ -973,6 +981,7 @@
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
+    let activeModalPurpose = "";
     const solveLabelPositions = {
       katie: {
         social: { x: 0.18400733584449405, y: 0.26250571013289037, width: 0.16 },
@@ -1071,6 +1080,7 @@
     function openCustomModal(title, html, options = {}) {
       const modalVariant = options.modalVariant || "";
       const modalCard = modal.querySelector(".modal-card");
+      activeModalPurpose = options.purpose || "";
       persistentIdeasModal = modalVariant === "ideas";
       modalTitle.textContent = title;
       modalBody.innerHTML = html;
@@ -1101,6 +1111,7 @@
 
     function forceCloseModal() {
       const modalCard = modal.querySelector(".modal-card");
+      const wasSolveInstruction = activeModalPurpose === "solve-instruction";
       modal.classList.remove("index2-ideas-open");
       modalCard.classList.remove("is-ideas-modal", "dragging");
       modalCard.style.left = "";
@@ -1108,6 +1119,7 @@
       modalCard.style.transform = "";
       modalArt.classList.remove("hidden");
       persistentIdeasModal = false;
+      activeModalPurpose = "";
       modalDrag = null;
       modal.classList.add("hidden");
     }
@@ -1370,6 +1382,198 @@
           label.style.maxWidth = `${targetRect.width * Math.max(position.width, 0.2)}px`;
         }
         solveLabelLayer.appendChild(label);
+      });
+    }
+
+    function showSolveInstruction() {
+      if (!activeStudent) {
+        return;
+      }
+      openCustomModal(
+        "Explore the Environments",
+        `Click one of the environments to see how it can fit ${activeStudent.name}.`,
+        {
+          showReadMore: false,
+          purpose: "solve-instruction"
+        }
+      );
+    }
+
+    function getEnvironmentIdeaHtml(student, envKey) {
+      if (!student?.ideasHtml) {
+        return "";
+      }
+      const definition = pieceDefinitions.find((piece) => piece.id === envKey);
+      if (!definition) {
+        return "";
+      }
+      const labelsPattern = ["Physical", "Emotional", "Academic", "Social", "Creative"].join("|");
+      const regex = new RegExp(
+        `<strong[^>]*>${definition.label}:<\\/strong>\\s*([\\s\\S]*?)(?=(?:<br><br>\\s*<strong[^>]*>(?:${labelsPattern}):<\\/strong>)|$)`,
+        "i"
+      );
+      const match = student.ideasHtml.match(regex);
+      return match ? match[1].trim() : "";
+    }
+
+    function hexToRgb(hex) {
+      const normalized = hex.replace("#", "");
+      const safeHex = normalized.length === 3
+        ? normalized.split("").map((char) => char + char).join("")
+        : normalized;
+      const value = Number.parseInt(safeHex, 16);
+      return {
+        r: (value >> 16) & 255,
+        g: (value >> 8) & 255,
+        b: value & 255
+      };
+    }
+
+    function getSolvedEnvironmentAtPoint(clientX, clientY) {
+      if (!activeStudent || !targetImage.naturalWidth || !targetImage.naturalHeight || !targetRect.width || !targetRect.height) {
+        return null;
+      }
+      const boardRect = board.getBoundingClientRect();
+      const localX = clientX - boardRect.left;
+      const localY = clientY - boardRect.top;
+      if (
+        localX < targetRect.x ||
+        localX > targetRect.x + targetRect.width ||
+        localY < targetRect.y ||
+        localY > targetRect.y + targetRect.height
+      ) {
+        return null;
+      }
+
+      solvedHitCanvas.width = targetImage.naturalWidth;
+      solvedHitCanvas.height = targetImage.naturalHeight;
+      solvedHitContext.clearRect(0, 0, solvedHitCanvas.width, solvedHitCanvas.height);
+      solvedHitContext.drawImage(targetImage, 0, 0, solvedHitCanvas.width, solvedHitCanvas.height);
+
+      const imageX = Math.max(
+        0,
+        Math.min(
+          solvedHitCanvas.width - 1,
+          Math.floor(((localX - targetRect.x) / targetRect.width) * solvedHitCanvas.width)
+        )
+      );
+      const imageY = Math.max(
+        0,
+        Math.min(
+          solvedHitCanvas.height - 1,
+          Math.floor(((localY - targetRect.y) / targetRect.height) * solvedHitCanvas.height)
+        )
+      );
+
+      const envDefinitions = pieceDefinitions.filter((piece) =>
+        ["physical", "emotional", "social", "academic", "creative"].includes(piece.id)
+      );
+      const envPalette = envDefinitions.map((definition) => ({
+        id: definition.id,
+        color: hexToRgb(definition.color)
+      }));
+
+      const radius = 6;
+      const scores = new Map();
+      let sawOpaquePixel = false;
+
+      for (let dy = -radius; dy <= radius; dy += 1) {
+        for (let dx = -radius; dx <= radius; dx += 1) {
+          const sampleX = Math.max(0, Math.min(solvedHitCanvas.width - 1, imageX + dx));
+          const sampleY = Math.max(0, Math.min(solvedHitCanvas.height - 1, imageY + dy));
+          let pixel;
+          try {
+            pixel = solvedHitContext.getImageData(sampleX, sampleY, 1, 1).data;
+          } catch (_error) {
+            continue;
+          }
+          if (!pixel || pixel[3] < 24) {
+            continue;
+          }
+          sawOpaquePixel = true;
+
+          let bestMatch = null;
+          let bestDistance = Number.POSITIVE_INFINITY;
+          envPalette.forEach((entry) => {
+            const distance = Math.sqrt(
+              (pixel[0] - entry.color.r) ** 2 +
+              (pixel[1] - entry.color.g) ** 2 +
+              (pixel[2] - entry.color.b) ** 2
+            );
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              bestMatch = entry.id;
+            }
+          });
+
+          if (bestMatch) {
+            const weight = 512 - Math.min(bestDistance, 511);
+            scores.set(bestMatch, (scores.get(bestMatch) || 0) + weight);
+          }
+        }
+      }
+
+      let selected = null;
+      let bestScore = 0;
+      if (sawOpaquePixel) {
+        scores.forEach((score, envKey) => {
+          if (score > bestScore) {
+            bestScore = score;
+            selected = envKey;
+          }
+        });
+      }
+
+      const positions = solveLabelPositions[activeStudent.id];
+      if (!positions) {
+        return selected;
+      }
+      if (selected) {
+        return selected;
+      }
+      const normalizedX = (localX - targetRect.x) / targetRect.width;
+      const normalizedY = (localY - targetRect.y) / targetRect.height;
+      let nearestEnv = null;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      Object.entries(positions).forEach(([envKey, position]) => {
+        const dx = normalizedX - position.x;
+        const dy = normalizedY - position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestEnv = envKey;
+        }
+      });
+      return nearestEnv;
+    }
+
+    function handleSolvedEnvironmentClick(event) {
+      if (!board.classList.contains("showing-solution") || !modal.classList.contains("hidden")) {
+        return;
+      }
+      const envKey = getSolvedEnvironmentAtPoint(event.clientX, event.clientY);
+      if (!activeStudent) {
+        return;
+      }
+      const ideaHtml = getEnvironmentIdeaHtml(activeStudent, envKey);
+      const definition = pieceDefinitions.find((piece) => piece.id === envKey);
+      if (!definition) {
+        openCustomModal("Environment Click Error", "A solved environment was selected, but its label definition was not found.", {
+          showReadMore: false
+        });
+        return;
+      }
+      if (!ideaHtml) {
+        openCustomModal("Environment Click Error", `A solved environment was selected for ${definition.label}, but its idea text was not found.`, {
+          showReadMore: false,
+          environmentKey: envKey
+        });
+        return;
+      }
+      playClickSound();
+      openCustomModal(`${activeStudent.name}'s ${definition.label} Environment`, ideaHtml, {
+        showReadMore: false,
+        environmentKey: envKey
       });
     }
 
@@ -2119,10 +2323,7 @@
       }
       pendingSolvedIdeas = false;
       showSolveOverlay();
-      openCustomModal(`${activeStudent.name}'s Five Environments`, activeStudent.ideasHtml, {
-        showReadMore: false,
-        modalVariant: "ideas"
-      });
+      showSolveInstruction();
     }
 
     function pointerMove(event) {
@@ -2337,6 +2538,8 @@
         closeModal();
       }
     });
+    targetLayer.addEventListener("click", handleSolvedEnvironmentClick);
+    targetImage.addEventListener("click", handleSolvedEnvironmentClick);
 
     resetButton.addEventListener("click", resetLayout);
     solveButton.addEventListener("click", () => {
@@ -2345,12 +2548,7 @@
         return;
       }
       showSolveOverlay();
-      if (activeStudent.ideasHtml) {
-        openCustomModal(`${activeStudent.name}'s Five Environments`, activeStudent.ideasHtml, {
-          showReadMore: false,
-          modalVariant: "ideas"
-        });
-      }
+      showSolveInstruction();
     });
     document.addEventListener("pointermove", pointerMove);
     document.addEventListener("pointerup", pointerEnd);

@@ -463,6 +463,20 @@
       min-width: 160px;
       background: #8c5e9f;
     }
+
+    .index2-page .post-solve-chart-link {
+      margin: 4px auto 14px;
+      text-align: center;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .index2-page .post-solve-chart-link a {
+      color: #8d5a31;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
   </style>
 </head>
 <body class="index2-page">
@@ -617,11 +631,14 @@
             </ul>
           </div>
           <div class="board-actions">
-            <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
+            <button id="reset-button" class="reset-button" type="button">Reset</button>
             <button id="intro-learn-more-button" class="learn-more-button" type="button" aria-pressed="false">Hint</button>
             <button id="solve-button" class="solve-button" type="button">Solve</button>
           </div>
         </div>
+        <p id="post-solve-chart-link" class="post-solve-chart-link hidden">
+          <a href="details/overview.html" target="_blank" rel="noreferrer noopener">Click here for a chart summarizing these ideas about how the 5 environments can work to help each of these students thrive.</a>
+        </p>
 
       <div id="board" class="board" aria-label="Tangram coverage board">
           <div class="board-grid" aria-hidden="true"></div>
@@ -901,6 +918,7 @@
     const solveOverlayCanvas = document.getElementById("solve-overlay-canvas");
     const solveLabelLayer = document.getElementById("solve-label-layer");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
+    const postSolveChartLink = document.getElementById("post-solve-chart-link");
     const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
     const introAudioPlayer = document.querySelector(".intro-audio-player");
@@ -977,6 +995,7 @@
     let suppressTargetImageActivation = false;
     const solveImageBoundsCache = new Map();
     let hintStateBeforeSolve = false;
+    let hasSolvedAnyStudent = false;
     const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
@@ -1601,6 +1620,13 @@
       introLearnMoreButton.textContent = showHintImage ? "Hide" : "Hint";
     }
 
+    function updatePostSolveChartLink() {
+      if (!postSolveChartLink) {
+        return;
+      }
+      postSolveChartLink.classList.toggle("hidden", !isPlayMode || !hasSolvedAnyStudent);
+    }
+
     function setDisplayedTargetArt(src, { rebuild = false } = {}) {
       if (!src) {
         return;
@@ -1680,6 +1706,7 @@
       showHintImage = false;
       readView.classList.remove("hidden");
       playView.classList.add("hidden");
+      updatePostSolveChartLink();
       forceCloseModal();
       resetSidebarContent();
     }
@@ -1691,6 +1718,7 @@
       isPlayMode = true;
       readView.classList.add("hidden");
       playView.classList.remove("hidden");
+      updatePostSolveChartLink();
       if (!playModeInitialized) {
         buildAvatarStrip();
         buildPieces();
@@ -2307,8 +2335,10 @@
 
       if (coverageRatio >= 0.85 && !solved) {
         solved = true;
+        hasSolvedAnyStudent = true;
         pendingSolvedIdeas = Boolean(activeStudent?.ideasHtml);
         board.classList.add("is-solved");
+        updatePostSolveChartLink();
         playAudio(solveSound);
       } else if (coverageRatio < 0.85 && solved) {
         solved = false;
@@ -2547,6 +2577,8 @@
       if (!activeStudent) {
         return;
       }
+      hasSolvedAnyStudent = true;
+      updatePostSolveChartLink();
       showSolveOverlay();
       showSolveInstruction();
     });

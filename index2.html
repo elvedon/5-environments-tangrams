@@ -187,30 +187,6 @@
       margin-top: 4px;
     }
 
-    .index2-page .coverage-tracker {
-      display: inline-block;
-      margin: 8px 10px 0 0;
-      font-size: 0.84rem;
-      line-height: 1.2;
-      color: #8d5a31;
-    }
-
-    .index2-page .mask-debug-button {
-      display: inline-block;
-      margin-top: 8px;
-      border: 0;
-      padding: 0;
-      background: transparent;
-      color: #8d5a31;
-      font: inherit;
-      font-size: 0.82rem;
-      line-height: 1.2;
-      cursor: pointer;
-      text-decoration: underline;
-      text-decoration-thickness: 2px;
-      text-underline-offset: 3px;
-    }
-
     .index2-page .sidebar-subheading {
       margin: 14px 0 12px;
       font-size: 1.35rem;
@@ -253,6 +229,162 @@
     .index2-page .board-actions button {
       padding: 10px 14px;
       font-size: 0.84rem;
+    }
+
+    .index2-page .read-view {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .index2-page .read-detail-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .index2-page .read-detail-list li {
+      position: relative;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      padding-left: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(23, 49, 61, 0.08);
+      overflow: hidden;
+      transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+    }
+
+    .index2-page .read-detail-list li:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12), inset 0 0 0 999px rgba(255, 255, 255, 0.08);
+      filter: saturate(1.14);
+    }
+
+    .index2-page .read-env-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .index2-page .read-env-toggle-right {
+      justify-content: flex-end;
+    }
+
+    .index2-page .read-env-toggle-left {
+      justify-content: flex-start;
+    }
+
+    .index2-page .read-env-label {
+      color: #8d5a31;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.2;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .index2-page .read-env-copy {
+      position: relative;
+      z-index: 2;
+      margin: 12px 0 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .index2-page .read-env-art {
+      position: absolute;
+      top: 50%;
+      width: 104px;
+      height: 104px;
+      pointer-events: none;
+      z-index: 1;
+      transition: transform 140ms ease, opacity 140ms ease;
+    }
+
+    .index2-page .read-env-art polygon {
+      fill: currentColor;
+    }
+
+    .index2-page .read-env-art-right {
+      right: 12px;
+      transform: translateY(-50%);
+    }
+
+    .index2-page .read-env-art-left {
+      left: 12px;
+      transform: translateY(-50%);
+    }
+
+    .index2-page #read-env-physical .read-env-copy,
+    .index2-page #read-env-social .read-env-copy,
+    .index2-page #read-env-creative .read-env-copy {
+      max-width: calc(100% - 136px);
+    }
+
+    .index2-page #read-env-emotional .read-env-copy,
+    .index2-page #read-env-academic .read-env-copy {
+      margin-left: 136px;
+    }
+
+    .index2-page #read-env-emotional .read-env-art {
+      width: 92px;
+      height: 92px;
+    }
+
+    .index2-page #read-env-creative .read-env-art {
+      width: 92px;
+      height: 92px;
+      right: 8px;
+    }
+
+    .index2-page .read-detail-list li:hover .read-env-art-right {
+      transform: translateY(-50%) scale(1.04);
+    }
+
+    .index2-page .read-detail-list li:hover .read-env-art-left {
+      transform: translateY(-50%) scale(1.04);
+    }
+
+    .index2-page #read-env-physical {
+      background: rgba(215, 108, 73, 0.12);
+    }
+
+    .index2-page #read-env-emotional {
+      background: rgba(140, 94, 159, 0.12);
+    }
+
+    .index2-page #read-env-social {
+      background: rgba(62, 155, 107, 0.12);
+    }
+
+    .index2-page #read-env-academic {
+      background: rgba(210, 166, 55, 0.12);
+    }
+
+    .index2-page #read-env-creative {
+      background: rgba(77, 136, 168, 0.12);
+    }
+
+    .index2-page .play-now-wrap {
+      margin-top: auto;
+      padding-top: 8px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .index2-page .play-now-button {
+      min-width: 160px;
+      background: #8c5e9f;
     }
   </style>
 </head>
@@ -338,30 +470,85 @@
     </section>
 
     <section class="game-panel">
-      <div class="board-header">
-        <div id="avatar-strip" class="avatar-strip" aria-label="Select a student target"></div>
-        <div class="how-to-bubble">
-          <p class="how-to-kicker">HOW TO "PLAY"</p>
-          <ul class="tips-list">
-            <li>Select a student to read about their learning profile.</li>
-            <li>Drag each shape into place over the tangram silhouette.</li>
-            <li>Click and drag the button to rotate or click to flip.</li>
-          </ul>
-        </div>
-        <div class="board-actions">
-          <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
-          <button id="solve-button" class="solve-button" type="button">Solve</button>
-          <button id="intro-learn-more-button" class="learn-more-button" type="button">Learn More</button>
+      <div id="read-view" class="read-view">
+        <ul class="read-detail-list">
+          <li id="read-env-physical">
+            <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="physical" aria-expanded="false">
+              <span class="read-env-label">Physical</span>
+              <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#d76c49;">
+                <polygon points="0,210 0,0 210,210"></polygon>
+              </svg>
+            </button>
+            <p class="read-env-copy hidden"><strong>Physical</strong> &mdash; The physical environment is not just about comfort &mdash; it determines whether a student is spending energy regulating discomfort and stress, or is available to learn and grow. For twice-exceptional learners especially, the space should reduce sensory overload and distraction while still allowing for movement, flexibility, and access to materials that support exploration (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007; Horvath, 2021).</p>
+          </li>
+          <li id="read-env-emotional">
+            <button class="read-env-toggle read-env-toggle-left" type="button" data-read-env="emotional" aria-expanded="false">
+              <svg class="read-env-art read-env-art-left" viewBox="0 0 148.5 148.5" aria-hidden="true" style="color:#8c5e9f; transform: translateY(-50%) scale(-1, -1);">
+                <polygon points="0,148.5 0,0 148.5,148.5"></polygon>
+              </svg>
+              <span class="read-env-label">Emotional</span>
+            </button>
+            <p class="read-env-copy hidden"><strong>Emotional</strong> &mdash; Belonging and acceptance are not peripheral to learning &mdash; they are central to it. When emotional needs go unmet, students shift toward avoidance or seeking validation rather than engaging in growth. Stress, anxiety, and fear of embarrassment interfere directly with cognition, attention, and memory, while low-stakes, supportive environments do the opposite. Students need a place where risk-taking is welcomed, not penalized (Willis, 2007; Amabile, 1998; Drexel University School of Education, n.d.; Bridges 2e Center, 2019; Anchor, 2011).</p>
+          </li>
+          <li id="read-env-social">
+            <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="social" aria-expanded="false">
+              <span class="read-env-label">Social</span>
+              <svg class="read-env-art read-env-art-right" viewBox="0 0 105 105" aria-hidden="true" style="color:#3e9b6b;">
+                <polygon points="0,0 105,0 105,105 0,105"></polygon>
+              </svg>
+            </button>
+            <p class="read-env-copy hidden"><strong>Social</strong> &mdash; Belonging affects not only how students feel, but whether they invest effort and grow toward self-actualization. The social environment should support relationship-building, reduce isolation, and make neurodiversity an asset rather than a liability &mdash; through collaborative structures, interest-based groupings, and awareness of the impact of asynchronous development (Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Amabile, 1998; Nesterak, 2020).</p>
+          </li>
+          <li id="read-env-academic">
+            <button class="read-env-toggle read-env-toggle-left" type="button" data-read-env="academic" aria-expanded="false">
+              <svg class="read-env-art read-env-art-left" viewBox="0 0 210 105" aria-hidden="true" style="color:#d2a637; width:116px; height:116px;">
+                <polygon points="0,105 105,0 210,0 105,105"></polygon>
+              </svg>
+              <span class="read-env-label">Academic</span>
+            </button>
+            <p class="read-env-copy hidden"><strong>Academic</strong> &mdash; The intellectual environment determines whether learners encounter meaningful challenge and experience themselves as capable. Students learn best when instruction is relevant, curiosity-driven, and able to get through emotional and attentional filters &mdash; supported through open-ended assignments, alternatives to rote memorization, dual differentiation, and opportunities to solve problems in more than one way (Willis, 2007; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Horvath, 2021).</p>
+          </li>
+          <li id="read-env-creative">
+            <button class="read-env-toggle read-env-toggle-right" type="button" data-read-env="creative" aria-expanded="false">
+              <span class="read-env-label">Creative</span>
+              <svg class="read-env-art read-env-art-right" viewBox="0 0 210 210" aria-hidden="true" style="color:#4d88a8; transform: translateY(-50%) scaleX(-1);">
+                <polygon points="0,210 0,0 210,210"></polygon>
+              </svg>
+            </button>
+            <p class="read-env-copy hidden"><strong>Creative</strong> &mdash; Expressing learning &mdash; not just acquiring knowledge &mdash; is necessary for growth. The creative environment should not be ornamental; it must make genuine room for unusual strengths, deep interests, original methods, and multiple forms of expression. This means focusing on process over product, protecting space for awe and exploration, and resisting the conditions known to suppress creativity: controlling structures, overly critical evaluation, and pressure toward a single right answer (Amabile, 1998; Robinson, 2006; Bridges 2e Center, 2019; Drexel University School of Education, n.d.; Willis, 2007).</p>
+          </li>
+        </ul>
+        <div id="play-now-wrap" class="play-now-wrap hidden">
+          <button id="play-now-button" class="solve-button play-now-button" type="button">Play Now</button>
         </div>
       </div>
 
-      <div id="board" class="board" aria-label="Tangram coverage board">
-        <div class="board-grid" aria-hidden="true"></div>
-        <div id="target-layer" class="index2-target-layer" aria-hidden="true">
-          <img id="target-image" class="index2-target-image hidden" alt="">
+      <div id="play-view" class="hidden">
+        <div class="board-header">
+          <div id="avatar-strip" class="avatar-strip" aria-label="Select a student target"></div>
+          <div class="how-to-bubble">
+            <p class="how-to-kicker">HOW TO "PLAY"</p>
+            <ul class="tips-list">
+              <li>Select a student to read about their learning profile.</li>
+              <li>Drag each shape into place over the tangram silhouette.</li>
+              <li>Click and drag the button to rotate or click to flip.</li>
+            </ul>
+          </div>
+          <div class="board-actions">
+            <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
+            <button id="solve-button" class="solve-button" type="button">Solve</button>
+            <button id="intro-learn-more-button" class="learn-more-button" type="button">Learn More</button>
+          </div>
         </div>
-        <div id="solve-overlay" class="solve-overlay hidden" aria-hidden="true">
-          <img id="solve-overlay-image" class="solve-overlay-image" src="cat-solve.png" alt="Solved tangram pattern">
+
+        <div id="board" class="board" aria-label="Tangram coverage board">
+          <div class="board-grid" aria-hidden="true"></div>
+          <div id="target-layer" class="index2-target-layer" aria-hidden="true">
+            <img id="target-image" class="index2-target-image hidden" alt="">
+          </div>
+          <div id="solve-overlay" class="solve-overlay hidden" aria-hidden="true">
+            <img id="solve-overlay-image" class="solve-overlay-image" src="cat-solve.png" alt="Solved tangram pattern">
+          </div>
         </div>
       </div>
     </section>
@@ -613,6 +800,11 @@
 
     const totalBaseArea = pieceDefinitions.reduce((sum, piece) => sum + polygonArea(piece.points), 0);
 
+    const readView = document.getElementById("read-view");
+    const playNowWrap = document.getElementById("play-now-wrap");
+    const playView = document.getElementById("play-view");
+    const playNowButton = document.getElementById("play-now-button");
+    const readEnvToggles = [...document.querySelectorAll(".read-env-toggle")];
     const board = document.getElementById("board");
     const targetImage = document.getElementById("target-image");
     const targetLayer = document.getElementById("target-layer");
@@ -678,6 +870,8 @@
     const coverageContext = coverageCanvas.getContext("2d", { willReadFrequently: true });
 
     let activeStudent = null;
+    let isPlayMode = false;
+    let playModeInitialized = false;
     let targetRect = { x: 0, y: 0, width: 0, height: 0 };
     let currentPieceScale = 1;
     let targetAlpha = null;
@@ -693,6 +887,7 @@
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
+    const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
     const defaultSidebarHtml = sidebarCopy.innerHTML;
@@ -931,6 +1126,26 @@
 
     function resetSidebarContent() {
       setSidebarContent(defaultSidebarTitle, defaultSidebarHtml);
+    }
+
+    function enterPlayMode() {
+      if (isPlayMode) {
+        return;
+      }
+      isPlayMode = true;
+      readView.classList.add("hidden");
+      playView.classList.remove("hidden");
+      if (!playModeInitialized) {
+        buildAvatarStrip();
+        buildPieces();
+        playModeInitialized = true;
+      } else {
+        handleResize();
+      }
+    }
+
+    function updateReadModeProgress() {
+      playNowWrap.classList.toggle("hidden", openedReadEnvironments.size < readEnvToggles.length);
     }
 
     function stripIdeasSection(html) {
@@ -1572,7 +1787,6 @@
         }
       }
 
-      renderMaskDebug();
     }
 
     function getPolygonPointsString(definition, state) {
@@ -1600,6 +1814,9 @@
     }
 
     function handleResize() {
+      if (!playModeInitialized) {
+        return;
+      }
       if (!activeStudent) {
         buildPieces();
         return;
@@ -1689,7 +1906,24 @@
       playClickSound();
       openOverviewWindow("details/overview.html");
     });
-
+    playNowButton.addEventListener("click", () => {
+      playClickSound();
+      enterPlayMode();
+    });
+    readEnvToggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const parent = toggle.closest("li");
+        const copy = parent?.querySelector(".read-env-copy");
+        const envKey = toggle.dataset.readEnv;
+        if (!parent || !copy || !envKey) {
+          return;
+        }
+        copy.classList.remove("hidden");
+        toggle.setAttribute("aria-expanded", "true");
+        openedReadEnvironments.add(envKey);
+        updateReadModeProgress();
+      });
+    });
     introPhysicalLink.addEventListener("click", (event) => {
       event.preventDefault();
       playClickSound();
@@ -1754,13 +1988,7 @@
     targetImage.addEventListener("load", activateTargetImage);
 
     window.addEventListener("resize", handleResize);
-
-    buildAvatarStrip();
-    pieceStates = getInitialPieceStates();
-    pieceDefinitions.forEach((definition, index) => {
-      createPieceElement(definition, pieceStates[index]);
-    });
-    updateCoverage();
+    updateReadModeProgress();
   </script>
 </body>
 </html>

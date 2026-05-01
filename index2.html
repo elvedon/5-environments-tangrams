@@ -191,10 +191,6 @@
       z-index: 31;
     }
 
-    .index2-page .solve-label-layer.is-editing {
-      pointer-events: auto;
-    }
-
     .index2-page .solve-label {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -212,10 +208,6 @@
         0 -1px var(--muted),
         0 2px 6px rgba(0, 0, 0, 0.18);
       cursor: default;
-    }
-
-    .index2-page .solve-label-layer.is-editing .solve-label {
-      cursor: move;
     }
 
     .index2-page .tips-list li + li {
@@ -264,33 +256,6 @@
     .index2-page .board-actions button {
       padding: 10px 14px;
       font-size: 0.84rem;
-    }
-
-    .index2-page .label-edit-button {
-      background: #8c5e9f;
-      color: #fff9ef;
-      border: 0;
-      border-radius: 999px;
-      box-shadow: 0 10px 20px rgba(23, 49, 61, 0.18);
-    }
-
-    .index2-page .label-editor-output {
-      display: none;
-      margin: 6px 0 0;
-      padding: 10px 12px;
-      max-width: 240px;
-      border-radius: 14px;
-      background: rgba(255, 248, 236, 0.92);
-      border: 1px solid rgba(23, 49, 61, 0.1);
-      color: var(--muted);
-      font-size: 0.68rem;
-      line-height: 1.45;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .index2-page .label-editor-output.is-visible {
-      display: block;
     }
 
     .index2-page .read-view {
@@ -644,8 +609,6 @@
             <button id="reset-button" class="reset-button" type="button">Reset Layout</button>
             <button id="intro-learn-more-button" class="learn-more-button" type="button" aria-pressed="false">Hint</button>
             <button id="solve-button" class="solve-button" type="button">Solve</button>
-            <button id="label-edit-button" class="label-edit-button" type="button" aria-pressed="false">Edit Labels</button>
-            <pre id="label-editor-output" class="label-editor-output" aria-live="polite"></pre>
           </div>
         </div>
 
@@ -927,8 +890,6 @@
     const solveOverlayCanvas = document.getElementById("solve-overlay-canvas");
     const solveLabelLayer = document.getElementById("solve-label-layer");
     const introLearnMoreButton = document.getElementById("intro-learn-more-button");
-    const labelEditButton = document.getElementById("label-edit-button");
-    const labelEditorOutput = document.getElementById("label-editor-output");
     const pageTitle = document.getElementById("page-title");
     const introAudio = document.getElementById("intro-audio");
     const introAudioPlayer = document.querySelector(".intro-audio-player");
@@ -996,7 +957,6 @@
     let highestZ = 20;
     let activePointer = null;
     let modalDrag = null;
-    let solveLabelDrag = null;
     let pieceStates = [];
     let pieceElements = new Map();
     let targetActivationToken = 0;
@@ -1004,7 +964,6 @@
     let suppressTargetImageActivation = false;
     const solveImageBoundsCache = new Map();
     let hintStateBeforeSolve = false;
-    let isEditingSolveLabels = false;
     const openedReadEnvironments = new Set();
     const defaultPageTitle = pageTitle.textContent;
     const defaultSidebarTitle = sidebarSubheading.textContent;
@@ -1232,10 +1191,8 @@
       if (solveLabelLayer) {
         solveLabelLayer.innerHTML = "";
       }
-      solveLabelDrag = null;
       showHintImage = hintStateBeforeSolve;
       updateHintButtonState();
-      updateLabelEditUi();
       if (activeStudent) {
         setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
       }
@@ -1389,7 +1346,6 @@
       const positions = solveLabelPositions[activeStudent.id];
       solveLabelLayer.innerHTML = "";
       if (!positions) {
-        updateLabelEditUi();
         return;
       }
       ["physical", "emotional", "social", "academic", "creative"].forEach((id) => {
@@ -1410,84 +1366,6 @@
         }
         solveLabelLayer.appendChild(label);
       });
-      updateLabelEditUi();
-      updateLabelEditorOutput();
-    }
-
-    function updateLabelEditorOutput() {
-      if (!labelEditorOutput || !activeStudent) {
-        return;
-      }
-      const positions = solveLabelPositions[activeStudent.id];
-      labelEditorOutput.textContent = `${activeStudent.id}: ${JSON.stringify(positions, null, 2)}`;
-    }
-
-    function updateLabelEditUi() {
-      if (!labelEditButton || !labelEditorOutput || !solveLabelLayer) {
-        return;
-      }
-      const canEdit = Boolean(activeStudent) && board.classList.contains("showing-solution");
-      labelEditButton.disabled = !canEdit;
-      labelEditButton.setAttribute("aria-pressed", isEditingSolveLabels ? "true" : "false");
-      labelEditButton.textContent = isEditingSolveLabels ? "Done Editing" : "Edit Labels";
-      solveLabelLayer.classList.toggle("is-editing", canEdit && isEditingSolveLabels);
-      labelEditorOutput.classList.toggle("is-visible", canEdit && isEditingSolveLabels);
-      if (canEdit && isEditingSolveLabels) {
-        updateLabelEditorOutput();
-      }
-    }
-
-    function startSolveLabelDrag(event) {
-      if (!isEditingSolveLabels || !activeStudent || !board.classList.contains("showing-solution")) {
-        return;
-      }
-      const label = event.target.closest(".solve-label");
-      if (!label) {
-        return;
-      }
-      event.preventDefault();
-      const envKey = label.dataset.env;
-      const position = solveLabelPositions[activeStudent.id]?.[envKey];
-      if (!position) {
-        return;
-      }
-      solveLabelDrag = {
-        pointerId: event.pointerId,
-        envKey,
-        label,
-        pointerStartX: event.clientX,
-        pointerStartY: event.clientY,
-        originX: position.x,
-        originY: position.y
-      };
-      label.setPointerCapture?.(event.pointerId);
-    }
-
-    function moveSolveLabelDrag(event) {
-      if (!solveLabelDrag || solveLabelDrag.pointerId !== event.pointerId || !activeStudent) {
-        return;
-      }
-      const position = solveLabelPositions[activeStudent.id]?.[solveLabelDrag.envKey];
-      if (!position || !targetRect.width || !targetRect.height) {
-        return;
-      }
-      const deltaX = (event.clientX - solveLabelDrag.pointerStartX) / targetRect.width;
-      const deltaY = (event.clientY - solveLabelDrag.pointerStartY) / targetRect.height;
-      position.x = Math.min(Math.max(solveLabelDrag.originX + deltaX, 0), 1);
-      position.y = Math.min(Math.max(solveLabelDrag.originY + deltaY, 0), 1);
-      const nextCenterX = targetRect.x + targetRect.width * position.x;
-      const nextCenterY = targetRect.y + targetRect.height * position.y;
-      solveLabelDrag.label.style.left = `${nextCenterX}px`;
-      solveLabelDrag.label.style.top = `${nextCenterY}px`;
-      updateLabelEditorOutput();
-    }
-
-    function endSolveLabelDrag(event) {
-      if (!solveLabelDrag || solveLabelDrag.pointerId !== event.pointerId) {
-        return;
-      }
-      solveLabelDrag.label.releasePointerCapture?.(event.pointerId);
-      solveLabelDrag = null;
     }
 
     function deriveHintImageFromSource(imageSrc) {
@@ -2423,14 +2301,6 @@
       updateHintButtonState();
       setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
     });
-    labelEditButton.addEventListener("click", () => {
-      playClickSound();
-      if (!activeStudent || !board.classList.contains("showing-solution")) {
-        return;
-      }
-      isEditingSolveLabels = !isEditingSolveLabels;
-      updateLabelEditUi();
-    });
     introReferencesLink.addEventListener("click", (event) => {
       event.preventDefault();
       playClickSound();
@@ -2453,13 +2323,9 @@
     });
     closeModalButton.addEventListener("click", closeModal);
     modal.querySelector(".modal-card").addEventListener("pointerdown", startIdeasModalDrag);
-    solveLabelLayer.addEventListener("pointerdown", startSolveLabelDrag);
     window.addEventListener("pointermove", moveIdeasModalDrag);
-    window.addEventListener("pointermove", moveSolveLabelDrag);
     window.addEventListener("pointerup", endIdeasModalDrag);
-    window.addEventListener("pointerup", endSolveLabelDrag);
     window.addEventListener("pointercancel", endIdeasModalDrag);
-    window.addEventListener("pointercancel", endSolveLabelDrag);
     modal.addEventListener("click", (event) => {
       if (event.target === modal && !persistentIdeasModal) {
         closeModal();
@@ -2495,7 +2361,6 @@
     window.addEventListener("resize", handleResize);
     lockReadItemHeights();
     updateHintButtonState();
-    updateLabelEditUi();
     updateReadModeProgress();
   </script>
 </body>

@@ -1167,6 +1167,14 @@
       setSidebarContent(defaultSidebarTitle, defaultSidebarHtml);
     }
 
+    function enterReadMode() {
+      isPlayMode = false;
+      readView.classList.remove("hidden");
+      playView.classList.add("hidden");
+      forceCloseModal();
+      resetSidebarContent();
+    }
+
     function enterPlayMode() {
       if (isPlayMode) {
         return;
@@ -1239,8 +1247,7 @@
       `;
       introChip.addEventListener("click", () => {
         playClickSound();
-        forceCloseModal();
-        resetSidebarContent();
+        enterReadMode();
       });
       avatarStrip.appendChild(introChip);
 

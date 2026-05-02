@@ -97,6 +97,55 @@ h1 {
   box-shadow: 0 8px 18px rgba(23, 49, 61, 0.08);
 }
 
+.detail-media-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: stretch;
+  margin: 0 0 16px;
+}
+
+.detail-page .detail-media-row .intro-audio-player {
+  margin: 0;
+}
+
+.detail-pdf-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 72px;
+  padding: 12px 10px;
+  border: 1px solid rgba(23, 49, 61, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.82);
+  box-shadow: 0 8px 18px rgba(23, 49, 61, 0.08);
+  color: #8d5a31;
+  text-decoration: none;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.detail-pdf-link:hover,
+.detail-pdf-link:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(23, 49, 61, 0.12);
+  border-color: rgba(141, 90, 49, 0.28);
+  outline: none;
+}
+
+.detail-pdf-link svg {
+  width: 24px;
+  height: 24px;
+}
+
+.detail-pdf-link span {
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
 .intro-audio-toggle {
   border: 0;
   border-radius: 999px;
@@ -1136,5 +1185,132 @@ h1 {
 
   .piece-label {
     font-size: 0.9rem;
+  }
+}
+
+@page {
+  size: letter;
+  margin: 0.38in 0.45in 0.48in;
+}
+
+@media print {
+  body.detail-page {
+    background: #ffffff;
+    color: #1b2830;
+  }
+
+  .detail-page .app-shell {
+    display: block;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .detail-page .intro-panel {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .detail-page .intro-panel > * {
+    max-width: none;
+  }
+
+  .detail-page .eyebrow,
+  .detail-page .intro-audio-player,
+  .detail-page .main-sound-credits,
+  .detail-page .main-credits,
+  .detail-page .detail-sound-credits {
+    display: none !important;
+  }
+
+  .detail-page h1 {
+    margin: 0 0 0.08in;
+    font-size: 18pt;
+    line-height: 1;
+    color: #1b2830;
+  }
+
+  .detail-page .intro-copy,
+  .detail-page .detail-copy,
+  .detail-page .detail-env-copy,
+  .detail-page .detail-reference-list,
+  .detail-page .detail-reference-list li {
+    color: #24343d !important;
+  }
+
+  .detail-page .intro-copy {
+    margin: 0 0 0.12in;
+    font-size: 7.6pt;
+    line-height: 1.22;
+  }
+
+  .detail-page .detail-list {
+    margin: 0 0 0.12in;
+    padding: 0;
+  }
+
+  .detail-page .detail-list li {
+    margin: 0 0 0.06in;
+    padding: 0.08in 0.11in;
+    border: 1px solid rgba(35, 52, 61, 0.16);
+    border-radius: 12px;
+    background: #ffffff;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .detail-page .detail-env-copy {
+    font-size: 7pt;
+    line-height: 1.14;
+  }
+
+  .detail-page .detail-env-art {
+    width: 0.48in;
+    height: 0.48in;
+    opacity: 1;
+  }
+
+  .detail-page .detail-env-art polygon {
+    stroke-width: 3;
+  }
+
+  .detail-page .detail-references {
+    margin-top: 0.15in;
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .detail-page .detail-references-heading {
+    margin: 0 0 0.18in;
+    padding-top: 0;
+    border-top: 0;
+    font-size: 16pt;
+    line-height: 1.1;
+    color: #1b2830;
+  }
+
+  .detail-page .detail-reference-list {
+    padding-left: 0.35in;
+    font-size: 9pt;
+    line-height: 1.45;
+  }
+
+  .detail-page .detail-reference-list li {
+    margin-bottom: 0.12in;
+    padding-left: 0.18in;
+    text-indent: -0.18in;
+    border: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  .detail-page .detail-ref-link,
+  .detail-page .intro-link {
+    color: #1b2830;
+    text-decoration-color: #1b2830;
   }
 }

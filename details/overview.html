@@ -12,16 +12,29 @@
     <section class="intro-panel">
       <p class="eyebrow">Learn More</p>
       <h1>The Five Environments</h1>
-      <div class="intro-audio-player">
-        <button id="detail-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play overview audio">Play Audio</button>
-        <div class="intro-audio-meta">
-          <div class="intro-audio-track">Overview Audio</div>
-          <div class="intro-audio-progress">
-            <div id="detail-audio-progress-fill" class="intro-audio-progress-fill"></div>
+      <div class="detail-media-row">
+        <div class="intro-audio-player">
+          <button id="detail-audio-toggle" class="intro-audio-toggle" type="button" aria-label="Play overview audio">Play Audio</button>
+          <div class="intro-audio-meta">
+            <div class="intro-audio-track">Overview Audio</div>
+            <div class="intro-audio-progress">
+              <div id="detail-audio-progress-fill" class="intro-audio-progress-fill"></div>
+            </div>
           </div>
+          <div id="detail-audio-time" class="intro-audio-time">0:00</div>
+          <audio id="detail-audio" preload="metadata" src="../environments.mp3"></audio>
         </div>
-        <div id="detail-audio-time" class="intro-audio-time">0:00</div>
-        <audio id="detail-audio" preload="metadata" src="../environments.mp3"></audio>
+        <a class="detail-pdf-link" href="../5-environments-tangrams.pdf" download aria-label="Download PDF">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M7 2h7l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" fill="currentColor" opacity="0.16"></path>
+            <path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M7 2h7l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M8 16h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <path d="M8 13h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <path d="M8 10h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+          </svg>
+          <span>PDF</span>
+        </a>
       </div>
       <p class="intro-copy">
         Learning doesn't happen in a vacuum &mdash; it emerges from the environment. In a strengths-based classroom, the conditions that surround a student are just as important as the curriculum in front of them. These five environments are not fixed structures handed down by a school or a system; they are the pieces &mdash; and teachers and students arrange them together, deliberately. There is no default configuration. There is only the one that fits.

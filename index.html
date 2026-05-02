@@ -2934,6 +2934,10 @@
       if (!activeStudent) {
         return;
       }
+      if (solveOverlay && !solveOverlay.classList.contains("hidden")) {
+        pendingSolvedIdeas = false;
+        hideSolveOverlay();
+      }
       showHintImage = !showHintImage;
       updateHintButtonState();
       setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });

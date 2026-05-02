@@ -2730,15 +2730,16 @@
       }
 
       coverageRatio = targetPixels ? overlap / targetPixels : 0;
+      const solveThreshold = activeStudent?.id === "alex" ? 0.85 : 0.9;
 
-      if (coverageRatio >= 0.9 && !solved) {
+      if (coverageRatio >= solveThreshold && !solved) {
         solved = true;
         hasSolvedAnyStudent = true;
         pendingSolvedIdeas = Boolean(activeStudent?.ideasHtml);
         board.classList.add("is-solved");
         updatePostSolveChartLink();
         playAudio(solveSound);
-      } else if (coverageRatio < 0.9 && solved) {
+      } else if (coverageRatio < solveThreshold && solved) {
         solved = false;
         pendingSolvedIdeas = false;
         board.classList.remove("is-solved");

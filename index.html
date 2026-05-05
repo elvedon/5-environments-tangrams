@@ -768,7 +768,7 @@
           There's no single "right" shape. There's only the shape that fits this learner.
         </p>
         <p>
-          Click on each of the sections to the right to read about the five envionrments
+          Click each of the sections on the right to learn about the five environments, and <a id="intro-references-link" class="intro-link" href="details/overview.html#references-heading" target="_blank" rel="noreferrer noopener">click to find references</a> and resources where you can learn more.
         </p>
         <p>
           Once you're ready, click "Explore." You can arrange, rotate, and reconfigure the pieces to explore how the environments come together differently for each student.
@@ -2943,11 +2943,13 @@
       updateHintButtonState();
       setDisplayedTargetArt(getCurrentTargetArtSrc(activeStudent), { rebuild: false });
     });
-    introReferencesLink.addEventListener("click", (event) => {
-      event.preventDefault();
-      playClickSound();
-      openOverviewWindow(event.currentTarget.href);
-    });
+    if (introReferencesLink) {
+      introReferencesLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        playClickSound();
+        openOverviewWindow(event.currentTarget.href);
+      });
+    }
     playNowButton.addEventListener("click", () => {
       playClickSound();
       enterPlayMode();

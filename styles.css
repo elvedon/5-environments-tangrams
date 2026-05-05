@@ -115,8 +115,8 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 2px;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -136,14 +136,14 @@ h1 {
 }
 
 .detail-pdf-link svg {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
 }
 
 .detail-pdf-link span {
   display: block;
   margin-top: 1px;
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   line-height: 1;
   letter-spacing: 0.08em;
   font-weight: 700;

@@ -1062,6 +1062,7 @@ h1 {
 .detail-page .detail-reference-list {
   margin: 0;
   padding-left: 34px;
+  list-style: none;
   color: var(--muted);
   font-size: 0.88rem;
   line-height: 1.5;

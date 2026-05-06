@@ -35,6 +35,12 @@ body {
   text-align: center;
 }
 
+.main-credits .main-license {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 button {
   font: inherit;
 }
